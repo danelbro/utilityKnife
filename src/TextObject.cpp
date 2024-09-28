@@ -11,7 +11,7 @@
 
 TextObject::TextObject(GameWorld& gw, const Vec2d& pos, utl::Font& font,
     const utl::Colour& color, utl::Renderer& rend)
-    : Entity{ utl::EntityFlag::TEXT, gw, pos,
+    : Entity{ "TEXT", gw, pos,
     std::vector<Vec2d>{}, color, 1.0 },
       text{ }, m_texture{ nullptr }, m_font{ font }, m_size{ 0, 0 },
       m_rend{ rend }

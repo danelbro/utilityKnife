@@ -176,7 +176,7 @@ namespace utl {
         K_TOTAL
     };
 
-    // process SDL input into a more friendly form. Also deals withh
+    // process SDL input into a more friendly form. Also deals with
     // window resizing
     void process_input(GameWorld& gw, uint32_t windowID,
         std::array<bool,

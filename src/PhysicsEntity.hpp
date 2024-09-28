@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <string>
 #include <vector>
 
 #include "Entity.hpp"
@@ -29,7 +30,7 @@ public:
 
 	PhysicsComponent physicsComponent;
 protected:
-    PhysicsEntity(const utl::EntityFlag& new_type, GameWorld& new_gameWorld,
+    PhysicsEntity(const std::string& new_type, GameWorld& new_gameWorld,
                   const Vec2d& pos, const std::vector<Vec2d>& shape,
                   const utl::Colour& color, const double& scale,
                   const double& mass);

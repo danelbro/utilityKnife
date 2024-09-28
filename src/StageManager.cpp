@@ -9,23 +9,23 @@
 #include "utility.hpp"
 
 StageManager::StageManager(Application& app)
-    : current{ utl::StageID::STAGES_TOTAL }, next{ utl::StageID::STAGES_TOTAL }, m_app{ app }
+    : current{ "" }, next{""}, m_app{ app }
 {
     // if (!app) throw std::runtime_error("Application is null!\n");
     std::fill(keyState.begin(), keyState.end(), false);
 }
 
-void StageManager::add_stage(utl::StageID key, std::unique_ptr<Stage> new_stage)
+void StageManager::add_stage(const std::string& key, std::unique_ptr<Stage> new_stage)
 {
     stages[key] = std::move(new_stage);
 }
 
-void StageManager::set_current_stage(utl::StageID new_current)
+void StageManager::set_current_stage(const std::string& new_current)
 {
     current = new_current;
 }
 
-void StageManager::set_next_stage(utl::StageID new_next)
+void StageManager::set_next_stage(const std::string& new_next)
 {
     next = new_next;
 }
@@ -79,7 +79,7 @@ void StageManager::run()
             t += dt;
         }
 
-        if (next == utl::StageID::QUIT)
+        if (next == "QUIT")
             break;
 
         if (current_stage)

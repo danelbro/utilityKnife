@@ -9,7 +9,7 @@
 #include "Vec2d.hpp"
 
 namespace utl {
-    int wrapCoord(int p, int dim)
+    static int wrapCoord(int p, int dim)
     {
         if (p < 0)
             return dim + p;

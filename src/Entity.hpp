@@ -3,6 +3,7 @@
 // Entity class representing an on-screen object
 // to be drawn with vector graphics
 
+#include <string>
 #include <vector>
 
 #include "SDL_Interface.hpp"
@@ -25,14 +26,14 @@ public:
     virtual const Vec2d& getPos() const { return m_pos; }
     virtual bool toBeKilled() const { return kill_me; }
     virtual double scale() const { return m_scale; }
-    virtual utl::EntityFlag type() const { return m_type; };
+    virtual std::string type() const { return m_type; };
 
     virtual void kill_it() { kill_me = true; }
 
     GameWorld& gameWorld;
 
 protected:
-    Entity(const utl::EntityFlag& new_type, GameWorld& new_gameWorld,
+    Entity(const std::string& new_type, GameWorld& new_gameWorld,
            const Vec2d& pos, const std::vector<Vec2d>& shape,
            const utl::Colour& color, const double& scale)
         : gameWorld{ new_gameWorld }, m_type{ new_type }, m_pos{ pos },
@@ -40,7 +41,7 @@ protected:
         kill_me{ false }, fill{ false }
     {}
 
-    const utl::EntityFlag m_type;
+    const std::string m_type;
     Vec2d m_pos;
     std::vector<Vec2d> m_shape;
     utl::Colour m_color;

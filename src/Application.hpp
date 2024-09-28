@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "Box.hpp"
 #include "SDL_Interface.hpp"
 #include "StageManager.hpp"
@@ -10,7 +12,7 @@ public:
     virtual ~Application() { }
     virtual void run() { m_stageMan.run(); }
 
-    virtual void trigger_stage_change(utl::StageID new_stage) = 0;
+    virtual void trigger_stage_change(const std::string& new_stage) = 0;
 protected:
     Application(const std::string& title, int screenWidth, int screenHeight,
             uint32_t windowFlags, uint32_t renderFlags)

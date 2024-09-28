@@ -14,7 +14,7 @@ class TextObject : public Entity
 {
 public:
     TextObject(GameWorld& gw, utl::Renderer& rend, utl::Font& font)
-        : Entity{ utl::EntityFlag::E_TYPE_TOTAL, gw, {}, {}, {}, 1.0 },
+        : Entity{ "TEXT", gw, {}, {}, {}, 1.0 },
         text{ }, m_texture{ nullptr }, m_font{ font }, m_size{ },
         m_rend{ rend }
         {}

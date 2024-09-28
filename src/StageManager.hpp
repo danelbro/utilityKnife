@@ -15,22 +15,22 @@ class StageManager {
 public:
     StageManager(Application& app);
 
-    const utl::StageID& get_current() const { return current; }
+    const std::string& get_current() const { return current; }
     Stage* get_current_stage() { return stages[current].get(); }
     Stage* get_next_stage() { return stages[next].get(); }
-    const utl::StageID& get_next() const { return next; }
+    const std::string& get_next() const { return next; }
 
-    void add_stage(utl::StageID key, std::unique_ptr<Stage> new_stage);
-    void set_current_stage(utl::StageID new_current);
-    void set_next_stage(utl::StageID new_next);
+    void add_stage(const std::string& key, std::unique_ptr<Stage> new_stage);
+    void set_current_stage(const std::string& new_current);
+    void set_next_stage(const std::string& new_next);
 
     void run();
 private:
     void handle_stage_transition();
 
-    std::unordered_map<utl::StageID, std::unique_ptr<Stage>> stages{ };
-    utl::StageID current;
-    utl::StageID next;
+    std::unordered_map<std::string, std::unique_ptr<Stage>> stages{ };
+    std::string current;
+    std::string next;
     std::array<bool, static_cast<size_t>(utl::KeyFlag::K_TOTAL)> keyState{ };
     Application& m_app;
 };
