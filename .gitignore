@@ -17,3 +17,6 @@ obj/
 .cproject
 /.settings/
 /x64/
+/build/
+/extern/
+
