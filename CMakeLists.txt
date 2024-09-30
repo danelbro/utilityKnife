@@ -5,13 +5,15 @@ project(utilityKnife)
 option(UTILITYKNIFE_VENDORED "Use vendored libraries" ON)
 
 if(UTILITYKNIFE_VENDORED)
-    add_subdirectory(../SDL build)
+    add_subdirectory(extern/SDL)
+    add_subdirectory(extern/SDL_ttf)
 else()
     find_package(SDL2 REQUIRED CONFIG REQUIRED COMPONENTS SDL2)
     find_package(SDL2 REQUIRED CONFIG COMPONENTS SDL2main)
+    find_package(SDL2 REQUIRED CONFIG REQUIRED COMPONENTS SDL2_ttf)
 endif()
 
-add_library(${CMAKE_PROJECT_NAME} 
+add_library(utilityKnife STATIC
     src/Application.hpp
     src/Box.hpp
     src/Entity.hpp
@@ -28,7 +30,7 @@ add_library(${CMAKE_PROJECT_NAME}
     src/VectorDraw.hpp src/VectorDraw.cpp)
 
 if(TARGET SDL2::SDL2main)
-    target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SDL2::SDL2main)
+    target_link_libraries(utilityKnife PRIVATE SDL2::SDL2main)
 endif()
-
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SDL2::SDL2)
+target_link_libraries(utilityKnife PRIVATE SDL2::SDL2)
+target_link_libraries(utilityKnife PRIVATE SDL2_ttf::SDL2_ttf)
