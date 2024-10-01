@@ -3,9 +3,10 @@
 #include <array>
 #include <cstdint>
 #include <memory>
+#include <stdexcept>
 
-#include <SDL.h>
-#include <SDL_ttf.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "utility.hpp"
 

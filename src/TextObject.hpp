@@ -21,7 +21,7 @@ public:
 
     TextObject(GameWorld& gw, const Vec2d& pos, utl::Font& font,
                const utl::Colour& color, utl::Renderer& rend);
-    TextObject(const TextObject&) = default;
+    TextObject(const TextObject&) = delete;
     TextObject& operator=(const TextObject&) = delete;
     TextObject(TextObject&&) = default;
     TextObject& operator=(TextObject&&) = delete;

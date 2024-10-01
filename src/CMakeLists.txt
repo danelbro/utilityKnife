@@ -15,3 +15,4 @@ target_sources(${PROJECT_NAME} PRIVATE
     Vec2d.hpp Vec2d.cpp
     VectorDraw.hpp VectorDraw.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE utility_extern)
+target_include_directories(${PROJECT_NAME} PUBLIC ./)

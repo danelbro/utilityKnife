@@ -6,7 +6,6 @@
 
 #include "Application.hpp"
 #include "Stage.hpp"
-#include "utility.hpp"
 
 StageManager::StageManager(Application& app)
     : current{ "" }, next{""}, m_app{ app }

@@ -7,7 +7,6 @@
 #include "SDL_Interface.hpp"
 
 #include "Box.hpp"
-#include "utility.hpp"
 
 class Stage {
 public:

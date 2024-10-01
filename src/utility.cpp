@@ -1,6 +1,6 @@
 ﻿#include "utility.hpp"
 
-#include <chrono>
+#include <ctime>
 
 #include "Vec2d.hpp"
 

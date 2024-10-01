@@ -4,10 +4,7 @@
 #include <unordered_map>
 #include <memory>
 
-#include <SDL.h>
-
 #include "Stage.hpp"
-#include "utility.hpp"
 
 class Application;
 
