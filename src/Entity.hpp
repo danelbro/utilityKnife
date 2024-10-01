@@ -26,7 +26,8 @@ public:
     virtual const Vec2d& getPos() const { return m_pos; }
     virtual bool toBeKilled() const { return kill_me; }
     virtual double scale() const { return m_scale; }
-    virtual std::string type() const { return m_type; };
+    virtual std::string type() const { return m_type; }
+    virtual const utl::Colour& color() const { return m_color; }
 
     virtual void kill_it() { kill_me = true; }
 
