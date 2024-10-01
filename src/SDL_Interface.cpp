@@ -4,8 +4,8 @@
 #include <stdexcept>
 #include <string>
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
+#include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 #include "GameWorld.hpp"
 #include "utility.hpp"
@@ -17,15 +17,15 @@ namespace utl {
 
     void init(uint32_t sdlFlags)
     {
-        if (SDL_Init(sdlFlags) != 0)
+        if (!SDL_Init(sdlFlags))
             throw SdlException(
                 std::string{ "Cannot initialise SDL! SDL_Error: ",
                 SDL_GetError() });
 
-        if (TTF_Init() == -1)
+        if (!TTF_Init())
             throw SdlException(
                 std::string{ "Cannot initialise SDL_TTF! TTF_Error: ",
-                TTF_GetError() });
+                SDL_GetError() });
     }
 
     void quit_sdl()
@@ -40,13 +40,12 @@ namespace utl {
         : m_winPtr{ new_win, sdl_deleter() }
     {}
 
-    Window createWindow(const std::string& title, int x, int y, int w, int h,
-        uint32_t flags)
+    Window createWindow(const std::string& title, int w, int h, uint32_t flags)
     {
 #ifdef _DEBUG
         errorLogger << "creating a window\n";
 #endif
-        Window window{ SDL_CreateWindow(title.c_str(), x,y, w, h, flags) };
+        Window window{ SDL_CreateWindow(title.c_str(), w, h, flags) };
 
         if (!window.get())
             throw SdlException(
@@ -62,12 +61,12 @@ namespace utl {
         : m_rendPtr{ new_rend, sdl_deleter() }
     {}
 
-    Renderer createRenderer(Window& window, int index, uint32_t flags)
+    Renderer createRenderer(Window& window, const char* index)
     {
 #ifdef _DEBUG
         errorLogger << "creating a renderer\n";
 #endif
-        Renderer rend{ SDL_CreateRenderer(window.get(), index, flags) };
+        Renderer rend{ SDL_CreateRenderer(window.get(), index) };
 
         if (!rend.get())
             throw SdlException(
@@ -102,12 +101,12 @@ namespace utl {
     void copyTexturePortion(Renderer& rend, Texture& tex,
                             Rect& srcRect, Rect& dstRect)
     {
-        SDL_RenderCopy(rend.get(), tex.get(), srcRect.get(), dstRect.get());
+        SDL_RenderTexture(rend.get(), tex.get(), srcRect.get(), dstRect.get());
     }
 
     void drawPoint(Renderer& rend, int x, int y)
     {
-        SDL_RenderDrawPoint(rend.get(), x, y);
+        SDL_RenderPoint(rend.get(), x, y);
     }
 
     // Surface creation
@@ -134,7 +133,7 @@ namespace utl {
         errorLogger << "creating a text texture\n";
 #endif
         Surface textSurface{
-            TTF_RenderUTF8_Blended(font.get(), text.c_str(), text_colour)
+            TTF_RenderText_Blended(font.get(), text.c_str(), text.length(), text_colour)
         };
 
         if (!textSurface.get())
@@ -177,17 +176,17 @@ namespace utl {
         if (!font.get())
             throw SdlException(std::string{
                 "Failed to make font! TTF_Error: ",
-                TTF_GetError() });
+                SDL_GetError() });
 
         return font;
     }
 
-    Rect::Rect(SDL_Rect* new_rect)
+    Rect::Rect(SDL_FRect* new_rect)
         : m_rectPtr{ new_rect }
     {}
 
     Rect::Rect(int x, int y, int w, int h)
-        : m_rectPtr{ std::make_unique<SDL_Rect>()}
+        : m_rectPtr{ std::make_unique<SDL_FRect>() }
     {
         m_rectPtr->x = x;
         m_rectPtr->y = y;
@@ -202,69 +201,68 @@ namespace utl {
         key_state[KeyFlag::WINDOW_CHANGE] = false;
 
         while (SDL_PollEvent(&ev)) {
-            if (ev.type == SDL_QUIT)
+            if (ev.type == SDL_EVENT_QUIT)
                 key_state[KeyFlag::QUIT] = true;
 
-            else if (ev.type == SDL_WINDOWEVENT) {
-                if (ev.window.windowID == windowID)
-                    if (ev.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+            else if (ev.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED) {
+                if (ev.window.windowID == windowID) {
                         gw.screen.w = ev.window.data1;
                         gw.screen.h = ev.window.data2;
                         key_state[KeyFlag::WINDOW_CHANGE] = true;
                     }
             }
 
-            else if (ev.type == SDL_KEYDOWN) {
-                switch (ev.key.keysym.sym) {
+            else if (ev.type == SDL_EVENT_KEY_DOWN) {
+                switch (ev.key.key) {
                 case SDLK_ESCAPE:
                     key_state[KeyFlag::K_ESCAPE] = true;
                     break;
-                case SDLK_LEFT: case SDLK_a:
+                case SDLK_LEFT: case SDLK_A:
                     key_state[KeyFlag::K_LEFT] = true;
                     break;
-                case SDLK_RIGHT: case SDLK_d:
+                case SDLK_RIGHT: case SDLK_D:
                     key_state[KeyFlag::K_RIGHT] = true;
                     break;
-                case SDLK_UP: case SDLK_w:
+                case SDLK_UP: case SDLK_W:
                     key_state[KeyFlag::K_UP] = true;
                     break;
-                case SDLK_DOWN: case SDLK_s:
+                case SDLK_DOWN: case SDLK_S:
                     key_state[KeyFlag::K_DOWN] = true;
                     break;
-                case SDLK_SPACE: case SDLK_p:
+                case SDLK_SPACE: case SDLK_P:
                     key_state[KeyFlag::K_SPACE] = true;
                     break;
                 case SDLK_RETURN:
                     key_state[KeyFlag::K_ENTER] = true;
                     break;
-                case SDLK_LSHIFT: case SDLK_t:
+                case SDLK_LSHIFT: case SDLK_T:
                     key_state[KeyFlag::K_LSHIFT] = true;
                     break;
                 default:
                     break;
                 }
             }
-            else if (ev.type == SDL_KEYUP) {
-                switch (ev.key.keysym.sym) {
+            else if (ev.type == SDL_EVENT_KEY_UP) {
+                switch (ev.key.key) {
                 case SDLK_ESCAPE:
                     key_state[KeyFlag::K_ESCAPE] = false;
                     break;
-                case SDLK_LEFT:
+                case SDLK_LEFT: case SDLK_A:
                     key_state[KeyFlag::K_LEFT] = false;
                     break;
-                case SDLK_RIGHT:
+                case SDLK_RIGHT: case SDLK_D:
                     key_state[KeyFlag::K_RIGHT] = false;
                     break;
-                case SDLK_UP:
+                case SDLK_UP: case SDLK_W:
                     key_state[KeyFlag::K_UP] = false;
                     break;
-                case SDLK_DOWN:
+                case SDLK_DOWN: case SDLK_S:
                     key_state[KeyFlag::K_DOWN] = false;
                     break;
-                case SDLK_SPACE:
+                case SDLK_SPACE: case SDLK_P:
                     key_state[KeyFlag::K_SPACE] = false;
                     break;
-                case SDLK_LSHIFT:
+                case SDLK_LSHIFT: case SDLK_T:
                     key_state[KeyFlag::K_LSHIFT] = false;
                     break;
                 default:

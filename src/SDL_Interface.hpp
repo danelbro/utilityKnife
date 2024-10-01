@@ -5,8 +5,8 @@
 #include <memory>
 #include <stdexcept>
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
+#include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 #include "utility.hpp"
 
@@ -41,9 +41,9 @@ namespace utl {
         }
         void operator()(SDL_Surface* s) const {
 #ifdef _DEBUG
-            errorLogger << "freeing a surface\n";
+            errorLogger << "destroying a surface\n";
 #endif
-            SDL_FreeSurface(s);
+            SDL_DestroySurface(s);
         }
         void operator()(SDL_Texture* t) const {
 #ifdef _DEBUG
@@ -123,20 +123,19 @@ namespace utl {
 
     struct Rect {
     public:
-        Rect(SDL_Rect*);
+        Rect(SDL_FRect*);
         Rect(int x, int y, int w, int h);
 
-        SDL_Rect* get() { return m_rectPtr.get(); }
+        SDL_FRect* get() { return m_rectPtr.get(); }
     private:
-        std::unique_ptr<SDL_Rect> m_rectPtr;
+        std::unique_ptr<SDL_FRect> m_rectPtr;
     };
 
     // Create an SDL_Window*. Throw an SdlException if creation fails
-    Window createWindow(const std::string& title, int x, int y,
-                        int w, int h, uint32_t flags);
+    Window createWindow(const std::string& title, int w, int h, Uint32 flags);
 
     // Create an SDL_Renderer*. Throw an SdlException if creation fails
-    Renderer createRenderer(Window& window, int index, uint32_t flags);
+    Renderer createRenderer(Window& window, const char* index);
 
     void clearScreen(Renderer&);
     void presentRenderer(Renderer&);

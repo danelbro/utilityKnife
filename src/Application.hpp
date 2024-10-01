@@ -14,19 +14,14 @@ public:
 
     virtual void trigger_stage_change(const std::string& new_stage) = 0;
 protected:
-    Application(const std::string& title, int screenWidth, int screenHeight,
-            uint32_t windowFlags, uint32_t renderFlags)
+    Application(const std::string& title, int screenWidth, int screenHeight, uint32_t flags)
     :  m_title{ title }, m_screenWidth{ screenWidth },
        m_screenHeight{ screenHeight },
        m_screen{ m_screenWidth, m_screenHeight },
-       m_windowFlags{ windowFlags },
-       m_window{ utl::createWindow(m_title.c_str(),
-                                   SDL_WINDOWPOS_CENTERED,
-                                   SDL_WINDOWPOS_CENTERED,
-                                   m_screen.w, m_screen.h, m_windowFlags) },
+       m_windowFlags{ flags },
+       m_window{ utl::createWindow(m_title.c_str(), m_screen.w, m_screen.h, m_windowFlags) },
        m_windowID{ m_window.ID() },
-       m_rendererFlags{ renderFlags },
-       m_renderer{ utl::createRenderer(m_window, -1, m_rendererFlags) },
+       m_renderer{ utl::createRenderer(m_window, NULL) },
        m_stageMan{ *this }
     {}
 
@@ -37,7 +32,6 @@ protected:
     const uint32_t m_windowFlags;
     utl::Window m_window;
     const uint32_t m_windowID;
-    const uint32_t m_rendererFlags;
     utl::Renderer m_renderer;
     StageManager m_stageMan;
 };

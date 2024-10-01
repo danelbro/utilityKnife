@@ -1,6 +1,7 @@
 ﻿#include "PhysicsComponent.hpp"
 
-#include <cmath>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 #include "Entity.hpp"
 #include "GameWorld.hpp"

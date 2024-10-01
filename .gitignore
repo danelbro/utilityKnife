@@ -18,4 +18,5 @@ obj/
 /.settings/
 /x64/
 /build/
-
+/out/
+CMakeSettings.json
