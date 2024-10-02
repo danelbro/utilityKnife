@@ -89,6 +89,7 @@ namespace utl {
         Renderer(SDL_Renderer*);
 
         SDL_Renderer* get() { return m_rendPtr.get(); }
+        bool setVSync(int vsync);
     private:
         std::unique_ptr<SDL_Renderer, sdl_deleter> m_rendPtr;
     };

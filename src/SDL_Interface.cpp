@@ -8,6 +8,8 @@
 #include <SDL3_ttf/SDL_ttf.h>
 
 #include "GameWorld.hpp"
+#include "SDL3/SDL_error.h"
+#include "SDL3/SDL_render.h"
 #include "utility.hpp"
 
 namespace utl {
@@ -74,6 +76,16 @@ namespace utl {
                 SDL_GetError() });
 
         return rend;
+    }
+
+    bool Renderer::setVSync(int vsync)
+    {
+        bool isVSyncSet{ SDL_SetRenderVSync(m_rendPtr.get(), vsync) };
+        if (!isVSyncSet)
+            throw SdlException(
+                std::string{ "Couldn't set vsync! SDL_Error: ",
+                SDL_GetError() });
+        return isVSyncSet;
     }
 
     void clearScreen(Renderer& rend)
