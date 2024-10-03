@@ -8,7 +8,9 @@
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
+#ifdef _DEBUG
 #include "utility.hpp"
+#endif
 
 struct GameWorld;
 
