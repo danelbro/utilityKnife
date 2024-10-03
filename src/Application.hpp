@@ -1,11 +1,5 @@
 #pragma once
 
-#include <string>
-
-#include "Box.hpp"
-#include "SDL_Interface.hpp"
-#include "StageManager.hpp"
-
 /**
  *
  * Application is the base class from which your app should derive. When writing your
@@ -36,6 +30,12 @@
  *
  */
 
+#include <string>
+
+#include "Box.hpp"
+#include "SDL_Interface.hpp"
+#include "StageManager.hpp"
+
 class Application
 {
 public:
@@ -45,13 +45,13 @@ public:
     virtual void trigger_stage_change(const std::string& new_stage) = 0;
 protected:
     Application(const std::string& title, int screenWidth, int screenHeight, uint32_t flags)
-    :  m_title{ title }, m_screenWidth{ screenWidth },
-       m_screenHeight{ screenHeight },
+    :  m_title{ title },
+       m_screenWidth{ screenWidth }, m_screenHeight{ screenHeight },
        m_screen{ m_screenWidth, m_screenHeight },
        m_windowFlags{ flags },
        m_window{ utl::createWindow(m_title.c_str(), m_screen.w, m_screen.h, m_windowFlags) },
        m_windowID{ m_window.ID() },
-       m_renderer{ utl::createRenderer(m_window, NULL) },
+       m_renderer{ utl::createRenderer(m_window, "\0") },
        m_stageMan{ *this }
     {}
 
