@@ -1,6 +1,7 @@
 ﻿#include "VectorDraw.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <vector>
 
 #include "SDL_Interface.hpp"
