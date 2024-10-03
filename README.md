@@ -19,7 +19,6 @@ git clone –-recursive https://github.com/danelbro/utilityKnife.git
 cd utilityKnife
 ./config.sh
 ./build.sh
-./run.sh
 ```
 
 ### Windows ###
