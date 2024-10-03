@@ -40,3 +40,14 @@ void PhysicsComponent::setAngle(double angle)
     else
         m_angle = angle;
 }
+
+void PhysicsComponent::setFacingAngle(double angle)
+{
+    if (angle < 0)
+        m_dir_vector = Vec2d{ 360 + angle };
+    else if (angle >= 360)
+        m_dir_vector = Vec2d{ angle - 360 };
+    else
+        m_dir_vector = Vec2d{ angle };
+}
+

@@ -11,25 +11,31 @@ public:
           m_owner { new_owner }
         {}
 
-    void setFrameImpulse(double power) { m_impulse = power; }
     void turn(double turnSpeed, double dt);
 
     double mass() const { return m_mass; }
     double impulse() const { return m_impulse; }
+    Vec2d acceleration() const { return m_acceleration; }
+    Vec2d velocity() const { return m_velocity; }
     double angle() const { return m_angle; }
     Vec2d facing() const { return m_dir_vector; }
-    Vec2d velocity() const { return m_velocity; }
+
     Entity* owner() const { return m_owner; }
 
-    void setAngle(double angle);
-    void setVelocity(Vec2d vel) { m_velocity = vel; }
+    void setMass(double mass) { m_mass = mass; }
+    void setFrameImpulse(double power) { m_impulse = power; }
     void setAcceleration(Vec2d accel) { m_acceleration = accel; }
+    void setVelocity(Vec2d vel) { m_velocity = vel; }
+    void setAngle(double angle);
+    void setFacingAngle(Vec2d angle) { m_dir_vector = angle; }
+    void setFacingAngle(double angle);
+
     void setOwner(Entity* new_owner) { m_owner = new_owner; }
 
     void update(double dt);
 
 private:
-    const double m_mass;
+    double m_mass;
     double m_impulse;
     Vec2d m_acceleration;
     Vec2d m_velocity;
