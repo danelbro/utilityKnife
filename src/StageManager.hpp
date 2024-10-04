@@ -23,7 +23,12 @@ public:
     template<typename T, typename... Args>
     void add_stage(const std::string& key, const Box& screen,
                    uint32_t windowID, utl::Renderer& renderer,
-                   const Args&... args);
+                   const Args&... args)
+    {
+        stages[key] = std::make_unique<T>(screen, windowID,
+                                          renderer, args...);
+    }
+
     void set_current_stage(const std::string& new_current);
     void set_next_stage(const std::string& new_next);
 
