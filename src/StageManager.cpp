@@ -14,9 +14,11 @@ StageManager::StageManager(Application& app)
     std::fill(keyState.begin(), keyState.end(), false);
 }
 
-void StageManager::add_stage(const std::string& key, std::unique_ptr<Stage> new_stage)
+template<typename T>
+void StageManager::add_stage(const std::string& key, const Box& screen,
+                             uint32_t windowID, utl::Renderer& renderer)
 {
-    stages[key] = std::move(new_stage);
+    stages[key] = std::make_unique<T>(screen, windowID, renderer);
 }
 
 void StageManager::set_current_stage(const std::string& new_current)

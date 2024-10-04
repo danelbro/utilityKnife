@@ -1,12 +1,15 @@
 ﻿#pragma once
 
 #include <array>
+#include <cstdint>
 #include <unordered_map>
 #include <memory>
 
+#include "SDL_Interface.hpp"
 #include "Stage.hpp"
 
 class Application;
+struct Box;
 
 class StageManager {
 public:
@@ -17,7 +20,9 @@ public:
     Stage* get_next_stage() { return stages[next].get(); }
     const std::string& get_next() const { return next; }
 
-    void add_stage(const std::string& key, std::unique_ptr<Stage> new_stage);
+    template<typename T>
+    void add_stage(const std::string& key, const Box& screen,
+                   uint32_t windowID, utl::Renderer& renderer);
     void set_current_stage(const std::string& new_current);
     void set_next_stage(const std::string& new_next);
 
