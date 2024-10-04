@@ -51,7 +51,7 @@ protected:
        m_windowFlags{ flags },
        m_window{ utl::createWindow(m_title.c_str(), m_screen.w, m_screen.h, m_windowFlags) },
        m_windowID{ m_window.ID() },
-       m_renderer{ utl::createRenderer(m_window, "\0") },
+       m_renderer{ utl::createRenderer(m_window, NULL) },
        m_stageMan{ *this }
     {}
 
