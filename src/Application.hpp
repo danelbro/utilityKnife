@@ -1,5 +1,14 @@
 #pragma once
 
+
+#include <string>
+
+#include "Box.hpp"
+#include "SDL_Interface.hpp"
+#include "StageManager.hpp"
+
+namespace utl {
+
 /**
  *
  * Application is the base class from which your app should derive. When writing your
@@ -29,13 +38,6 @@
  *   particularly if you’re on Windows).
  *
  */
-
-#include <string>
-
-#include "Box.hpp"
-#include "SDL_Interface.hpp"
-#include "StageManager.hpp"
-
 class Application
 {
 public:
@@ -49,9 +51,9 @@ protected:
        m_screenWidth{ screenWidth }, m_screenHeight{ screenHeight },
        m_screen{ m_screenWidth, m_screenHeight },
        m_windowFlags{ flags },
-       m_window{ utl::createWindow(m_title.c_str(), m_screen.w, m_screen.h, m_windowFlags) },
+       m_window{ createWindow(m_title.c_str(), m_screen.w, m_screen.h, m_windowFlags) },
        m_windowID{ m_window.ID() },
-       m_renderer{ utl::createRenderer(m_window, "\0") },
+       m_renderer{ createRenderer(m_window, NULL) },
        m_stageMan{ *this }
     {}
 
@@ -60,8 +62,10 @@ protected:
     const int m_screenHeight;
     const Box m_screen;
     const uint32_t m_windowFlags;
-    utl::Window m_window;
+    Window m_window;
     const uint32_t m_windowID;
-    utl::Renderer m_renderer;
+    Renderer m_renderer;
     StageManager m_stageMan;
 };
+
+} // namespace utl
