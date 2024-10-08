@@ -8,75 +8,55 @@
 #include "PhysicsComponent.hpp"
 #include "Vec2d.hpp"
 #include "VectorDraw.hpp"
-#include "utility.hpp"
 
-PhysicsEntity::PhysicsEntity(const std::string& new_type,
-                             GameWorld& new_gameWorld, const Vec2d& pos,
-                             const std::vector<Vec2d>& shape,
-                             const utl::Colour& color, const double& scale,
-                             const double& mass)
-    : Entity{ new_type, new_gameWorld, pos, shape, color, scale },
-      physicsComponent{ mass, this },
-      m_transShape{}, m_fillShape{}, m_collider{}, m_isVisible{ true }
+namespace utl {
+
+VecGraphPhysEnt::VecGraphPhysEnt(const std::string& type, const GameWorld& gameWorld, const Vec2d& pos, const std::vector<Vec2d>& shape,
+                                 const Colour& color, const double& scale, const double& mass, bool fill, bool wrap)
+    : Entity{ type, gameWorld.screen, pos }, physicsComponent{ mass, this }, m_gameWorld{ gameWorld }, m_color{ color }, m_scale { scale },
+      m_isVisible{ true }, m_killMe{ false }, m_fill{ fill }, m_wrap { wrap }, m_shape{ shape }, m_collider{}
 {
     update_shapes();
 }
 
-void PhysicsEntity::update_shapes()
+void VecGraphPhysEnt::update_shapes()
 {
-    m_transShape.clear();
-    m_transShape.reserve(m_shape.size());
-    m_fillShape.clear();
-    m_fillShape.reserve(m_shape.size());
     m_collider.clear();
     m_collider.reserve(m_shape.size());
 
     for (auto p : m_shape) {
-        p = p.rotate_deg(physicsComponent.angle());
+        p = p.rotate_deg(physicsComponent.facing());
         p = p * m_scale;
-        m_transShape.emplace_back(p);
-        m_fillShape.emplace_back(p);
+        p += m_pos;
         m_collider.emplace_back(p);
     }
-
-    for (auto& p : m_fillShape)
-        p += m_pos;
-
-    for (auto& p : m_collider)
-        p += m_pos;
 }
 
-void PhysicsEntity::render(utl::Renderer& renderer)
+void VecGraphPhysEnt::render(Renderer& renderer)
 {
-    if (!m_isVisible) return;
-
-    auto oldColor{ utl::getRendererDrawColour(renderer) };
-    utl::setRendererDrawColour(renderer, m_color);
-
-    for (size_t i{ 0 }; i < m_fillShape.size(); ++i) {
-        if (i == m_fillShape.size() - 1) {
-            utl::DrawWrapLine(renderer,
-                gameWorld.screen,
-                m_fillShape[i].x, m_fillShape[i].y,
-                m_fillShape[0].x, m_fillShape[0].y);
-        }
-        else {
-            utl::DrawWrapLine(renderer,
-                gameWorld.screen,
-                m_fillShape[i].x, m_fillShape[i].y,
-                m_fillShape[i + 1].x, m_fillShape[i + 1].y);
-        }
+    if (!m_isVisible) {
+        return;
     }
 
-    if (fill)
-        utl::ScanFill(gameWorld, m_fillShape, m_color, renderer);
+    auto oldColor{ getRendererDrawColour(renderer) };
+    setRendererDrawColour(renderer, m_color);
 
-    utl::setRendererDrawColour(renderer, oldColor);
+    const size_t& colliderSize{ m_collider.size() };
+    for (size_t i{ 0 }; i < colliderSize; ++i) {
+        DrawWrapLine(renderer, screenSpace, m_collider[i].x, m_collider[i].y, m_collider[(i + 1) % colliderSize].x, m_collider[(i + 1) % colliderSize].y);
+    }
+
+    if (m_fill) {
+        ScanFill(screenSpace, m_collider, m_color, renderer);
+    }
+
+    setRendererDrawColour(renderer, oldColor);
 }
 
-namespace utl {
-    bool areColliding(const PhysicsEntity &pe1, const PhysicsEntity &pe2)
-    {
-        return areColliding_SAT(pe1.collider(), pe2.collider());
-    }
+bool areColliding(const VecGraphPhysEnt &pe1, const VecGraphPhysEnt &pe2)
+{
+    // from VectorDraw.hpp
+    return areColliding_SAT(pe1.collider(), pe2.collider());
+}
+
 } // namespace utl

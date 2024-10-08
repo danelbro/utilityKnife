@@ -1,20 +1,19 @@
 ﻿#include "TextObject.hpp"
 
 #include <string>
-#include <vector>
 
 #include "SDL_Interface.hpp"
 #include "Entity.hpp"
-#include "GameWorld.hpp"
-#include "utility.hpp"
+#include "Box.hpp"
 #include "Vec2d.hpp"
 
-TextObject::TextObject(GameWorld& gw, const Vec2d& pos, utl::Font& font,
-    const utl::Colour& color, utl::Renderer& rend)
-    : Entity{ "TEXT", gw, pos,
-    std::vector<Vec2d>{}, color, 1.0 },
+namespace utl {
+
+TextObject::TextObject(const Box& screen, const Vec2d& pos, utl::Font& font,
+    const Colour& color, utl::Renderer& rend)
+    : Entity{ "TEXT", screen, pos},
       text{ }, m_texture{ nullptr }, m_font{ font }, m_size{ 0, 0 },
-      m_rend{ rend }
+      m_rend{ rend }, m_col{ color }
 {}
 
 void TextObject::free()
@@ -38,14 +37,14 @@ void TextObject::loadFromRenderedText(const std::string& textureText,
 
 void TextObject::recentre()
 {
-    m_pos.x = gameWorld.screen.w / 2.0 - m_size.x / 2.0;
-    m_pos.y = gameWorld.screen.h / 2.0 - m_size.y / 2.0;
+    m_pos.x = screenSpace.w / 2.0 - m_size.x / 2.0;
+    m_pos.y = screenSpace.h / 2.0 - m_size.y / 2.0;
 }
 
 void TextObject::updateText(std::string new_text)
 {
     text = new_text;
-    loadFromRenderedText(text, m_color);
+    loadFromRenderedText(text, m_col);
 }
 
 void TextObject::render(utl::Renderer& renderer)
@@ -58,3 +57,5 @@ void TextObject::render(utl::Renderer& renderer)
     utl::Rect nullRect{ nullptr };
     utl::copyTexturePortion(renderer, m_texture, nullRect, renderQuad);
 }
+
+} // namespace utl

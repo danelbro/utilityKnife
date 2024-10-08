@@ -3,12 +3,10 @@
 #include <fstream>
 #include <random>
 
-struct Vec2d;
-
 namespace utl {
-    extern std::ofstream errorLogger;
 
-    Vec2d randomPos(std::mt19937& rng, int w, int h);
+extern std::ofstream errorLogger;
 
-    std::mt19937 makeSeededRNG();
-}
+std::mt19937 makeSeededRNG();
+
+} // namespace utl

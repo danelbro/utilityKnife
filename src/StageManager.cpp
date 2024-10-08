@@ -1,16 +1,16 @@
 ﻿#include "StageManager.hpp"
 
 #include <chrono>
-#include <memory>
 #include <stdexcept>
 
 #include "Application.hpp"
 #include "Stage.hpp"
 
+namespace utl {
+
 StageManager::StageManager(Application& app)
     : current{ "" }, next{""}, m_app{ app }
 {
-    // if (!app) throw std::runtime_error("Application is null!\n");
     std::fill(keyState.begin(), keyState.end(), false);
 }
 
@@ -90,3 +90,5 @@ void StageManager::handle_stage_transition()
 
     stages[current].reset(nullptr);
 }
+
+} // namespace utl

@@ -1,36 +1,40 @@
 ﻿#pragma once
 
-#include "Entity.hpp"
 #include "Vec2d.hpp"
 
-class PhysicsComponent {
-public:
-    PhysicsComponent(double mass, Entity* new_owner)
-        : m_mass { mass }, m_impulse{ 0.0 }, m_acceleration{ 0.0, 0.0 },
-          m_velocity{ 0, 0 }, m_angle{ 0.0 }, m_dir_vector{0, 0},
-          m_owner { new_owner }
-        {}
+namespace utl {
 
-    void turn(double turnSpeed, double dt);
+class VecGraphPhysEnt;
+
+
+/**
+ * A component to be stored on a vector graphics physics entity - the component
+ * stores state and runs physics calculations when update() is called.
+ */
+class VecGraphPhysComp {
+public:
+    VecGraphPhysComp(double mass, VecGraphPhysEnt* new_owner)
+        : m_mass { mass }, m_impulse{ 0.0 }, m_acceleration{ 0.0, 0.0 }, m_velocity{ 0, 0 }, m_angle{ 0.0 }, m_dirVector{0, 0}, m_owner { new_owner }
+        {}
 
     double mass() const { return m_mass; }
     double impulse() const { return m_impulse; }
     Vec2d acceleration() const { return m_acceleration; }
     Vec2d velocity() const { return m_velocity; }
-    double angle() const { return m_angle; }
-    Vec2d facing() const { return m_dir_vector; }
+    double facing() const { return m_angle; }
+    Vec2d facingVec() const { return m_dirVector; }
 
-    Entity* owner() const { return m_owner; }
+    VecGraphPhysEnt* owner() const { return m_owner; }
 
+    void turn(double turnSpeed, double dt);
     void setMass(double mass) { m_mass = mass; }
     void setFrameImpulse(double power) { m_impulse = power; }
     void setAcceleration(Vec2d accel) { m_acceleration = accel; }
     void setVelocity(Vec2d vel) { m_velocity = vel; }
     void setAngle(double angle);
-    void setFacingAngle(Vec2d angle) { m_dir_vector = angle; }
-    void setFacingAngle(double angle);
+    void setAngle(Vec2d angle);
 
-    void setOwner(Entity* new_owner) { m_owner = new_owner; }
+    void setOwner(VecGraphPhysEnt* new_owner) { m_owner = new_owner; }
 
     void update(double dt);
 
@@ -41,7 +45,9 @@ private:
     Vec2d m_velocity;
 
     double m_angle; // between 0 and 360
-    Vec2d m_dir_vector; // vector representation of m_angle
+    Vec2d m_dirVector; // vector representation of m_angle
 
-    Entity* m_owner;
+    VecGraphPhysEnt* m_owner;
 };
+
+} // namespace utl

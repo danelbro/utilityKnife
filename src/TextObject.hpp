@@ -5,21 +5,21 @@
 #include "SDL_Interface.hpp"
 
 #include "Entity.hpp"
-#include "utility.hpp"
 #include "Vec2d.hpp"
 
-struct GameWorld;
+namespace utl {
+
+struct Box;
 
 class TextObject : public Entity
 {
 public:
-    TextObject(GameWorld& gw, utl::Renderer& rend, utl::Font& font)
-        : Entity{ "TEXT", gw, {}, {}, {}, 1.0 },
-        text{ }, m_texture{ nullptr }, m_font{ font }, m_size{ },
-        m_rend{ rend }
+    TextObject(const Box& screen, utl::Renderer& rend, utl::Font& font)
+        : Entity{"TEXT", screen, {}}, text{ }, m_texture{ nullptr },
+          m_font{ font }, m_size{ }, m_rend{ rend }, m_col{}
         {}
 
-    TextObject(GameWorld& gw, const Vec2d& pos, utl::Font& font,
+    TextObject(const Box& screen, const Vec2d& pos, utl::Font& font,
                const utl::Colour& color, utl::Renderer& rend);
     TextObject(const TextObject&) = delete;
     TextObject& operator=(const TextObject&) = delete;
@@ -44,5 +44,7 @@ private:
     utl::Font& m_font;
     Vec2d m_size;
     utl::Renderer& m_rend;
+    Colour m_col;
 };
 
+} // namespace utl

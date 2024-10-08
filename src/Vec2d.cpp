@@ -3,6 +3,8 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
+namespace utl {
+
 double Vec2d::magnitude() const
 {
     return std::sqrt(magnitude_squared());
@@ -120,3 +122,14 @@ Vec2d Vec2d::operator-(const Vec2d& otherVec) const
 {
     return Vec2d{ x - otherVec.x, y - otherVec.y };
 }
+
+
+Vec2d randomPos(std::mt19937& rng, int w, int h)
+{
+    std::uniform_real_distribution<double> xDist(0.0, static_cast<double>(w));
+    std::uniform_real_distribution<double> yDist(0.0, static_cast<double>(h));
+
+    return { xDist(rng), yDist(rng) };
+}
+
+} // namespace utl

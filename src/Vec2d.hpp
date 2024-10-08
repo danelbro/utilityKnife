@@ -1,5 +1,9 @@
 ﻿#pragma once
 
+#include <random>
+
+namespace utl {
+
 struct Vec2d {
     double magnitude() const;
     double magnitude_squared() const;
@@ -32,3 +36,7 @@ struct Vec2d {
     double x{ };
     double y{ };
 };
+
+Vec2d randomPos(std::mt19937& rng, int w, int h);
+
+} // namespace utl

@@ -42,30 +42,25 @@ class Application
 {
 public:
     virtual ~Application() { }
-    virtual void run() { m_stageMan.run(); }
+    virtual void run() { m_stageManager.run(); }
 
     virtual void trigger_stage_change(const std::string& new_stage) = 0;
 protected:
     Application(const std::string& title, int screenWidth, int screenHeight, uint32_t flags)
-    :  m_title{ title },
-       m_screenWidth{ screenWidth }, m_screenHeight{ screenHeight },
-       m_screen{ m_screenWidth, m_screenHeight },
-       m_windowFlags{ flags },
-       m_window{ createWindow(m_title.c_str(), m_screen.w, m_screen.h, m_windowFlags) },
-       m_windowID{ m_window.ID() },
-       m_renderer{ createRenderer(m_window, NULL) },
-       m_stageMan{ *this }
+    :  m_title{ title }, m_screenWidth{ screenWidth }, m_screenHeight{ screenHeight }, m_screenSpace{ m_screenWidth, m_screenHeight },
+       m_windowFlags{ flags }, m_window{ createWindow(m_title.c_str(), m_screenSpace.w, m_screenSpace.h, m_windowFlags) }, m_windowID{ m_window.ID() },
+       m_renderer{ createRenderer(m_window, NULL) }, m_stageManager{ *this }
     {}
 
     const std::string m_title;
     const int m_screenWidth;
     const int m_screenHeight;
-    const Box m_screen;
+    const Box m_screenSpace;
     const uint32_t m_windowFlags;
     Window m_window;
     const uint32_t m_windowID;
     Renderer m_renderer;
-    StageManager m_stageMan;
+    StageManager m_stageManager;
 };
 
 } // namespace utl
