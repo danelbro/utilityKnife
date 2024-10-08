@@ -9,11 +9,8 @@
 
 namespace utl {
 
-TextObject::TextObject(const Box& screen, const Vec2d& pos, utl::Font& font,
-    const Colour& color, utl::Renderer& rend)
-    : Entity{ "TEXT", screen, pos},
-      text{ }, m_texture{ nullptr }, m_font{ font }, m_size{ 0, 0 },
-      m_rend{ rend }, m_col{ color }
+TextObject::TextObject(const Box& screen, const Vec2d& pos, utl::Font& font, const Colour& color, utl::Renderer& rend)
+    : Entity{ "TEXT", screen, pos}, text{ }, m_texture{ nullptr }, m_font{ font }, m_size{ 0, 0 }, m_rend{ rend }, m_col{ color }
 {}
 
 void TextObject::free()
@@ -22,13 +19,11 @@ void TextObject::free()
     m_size = { 0, 0 };
 }
 
-void TextObject::loadFromRenderedText(const std::string& textureText,
-                                      const utl::Colour& text_colour)
+void TextObject::loadFromRenderedText(const std::string& textureText, const utl::Colour& text_colour)
 {
     free();
 
-    auto texPstruct{ utl::createTextTexture(m_font, textureText,
-        text_colour, m_rend) };
+    auto texPstruct{ utl::createTextTexture(m_font, textureText, text_colour, m_rend) };
 
     m_texture = std::move(texPstruct.texP);
     m_size.x = texPstruct.w;
@@ -49,11 +44,8 @@ void TextObject::updateText(std::string new_text)
 
 void TextObject::render(utl::Renderer& renderer)
 {
-    utl::Rect renderQuad{ static_cast<int>(m_pos.x),
-                          static_cast<int>(m_pos.y),
-                          static_cast<int>(m_size.x),
-                          static_cast<int>(m_size.y)
-    };
+    utl::Rect renderQuad{ static_cast<int>(m_pos.x), static_cast<int>(m_pos.y),
+                          static_cast<int>(m_size.x), static_cast<int>(m_size.y) };
     utl::Rect nullRect{ nullptr };
     utl::copyTexturePortion(renderer, m_texture, nullRect, renderQuad);
 }

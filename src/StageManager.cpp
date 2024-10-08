@@ -50,8 +50,9 @@ void StageManager::run()
         accumulator += frameTime.count();
 
         while (accumulator >= dt) {
-            if (!current_stage)
+            if (!current_stage) {
                 throw (std::runtime_error("no stage set!"));
+            }
 
             next = current_stage->handle_input(t, dt, keyState);
 
@@ -73,21 +74,20 @@ void StageManager::run()
             t += dt;
         }
 
-        if (next == "QUIT")
+        if (next == "QUIT") {
             break;
+        }
 
-        if (current_stage)
+        if (current_stage) {
             current_stage->render(t, dt);
+        }
     }
 }
 
 void StageManager::handle_stage_transition()
 {
-
     keyState.fill(false);
-
     m_app.trigger_stage_change(next);
-
     stages[current].reset(nullptr);
 }
 

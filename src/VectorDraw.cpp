@@ -11,7 +11,8 @@
 
 namespace utl {
 
-static int wrapCoord(int p, int dim) {
+static int wrapCoord(int p, int dim)
+{
     if (p < 0) {
         return dim + p;
     } else {
@@ -19,7 +20,8 @@ static int wrapCoord(int p, int dim) {
     }
 }
 
-void wrap(Vec2d &pos, const Box &screen) {
+void wrap(Vec2d &pos, const Box &screen)
+{
     if (pos.x < 0) {
         pos.x = screen.w + pos.x;
     } else if (pos.x > screen.w) {
@@ -33,7 +35,8 @@ void wrap(Vec2d &pos, const Box &screen) {
     }
 }
 
-void DrawWrapLine(utl::Renderer &rend, const Box &screen, double x1, double y1, double x2, double y2) {
+void DrawWrapLine(utl::Renderer &rend, const Box &screen, double x1, double y1, double x2, double y2)
+{
     double x{};
     double y{};
     double dy{y2 - y1};
@@ -76,7 +79,8 @@ void DrawWrapLine(utl::Renderer &rend, const Box &screen, double x1, double y1, 
 }
 
 // adatpted from https://alienryderflex.com/polygon/
-bool PointInPolygon(const Vec2d &point, const std::vector<Vec2d> &polygon) {
+bool PointInPolygon(const Vec2d &point, const std::vector<Vec2d> &polygon)
+{
     size_t i{ 0 }, j{ polygon.size() - 1 };
     bool oddNodes{false};
 
@@ -92,7 +96,8 @@ bool PointInPolygon(const Vec2d &point, const std::vector<Vec2d> &polygon) {
 }
 
 // adapted frpm https://alienryderflex.com/polygon_fill/
-void ScanFill(const GameWorld &gw, const std::vector<Vec2d> &poly, const Colour &col, Renderer &renderer) {
+void ScanFill(const GameWorld &gw, const std::vector<Vec2d> &poly, const Colour &col, Renderer &renderer)
+{
     Colour old{ getRendererDrawColour(renderer) };
     setRendererDrawColour(renderer, col);
 
@@ -129,7 +134,8 @@ void ScanFill(const GameWorld &gw, const std::vector<Vec2d> &poly, const Colour 
     setRendererDrawColour(renderer, old);
 }
 
-static void populateNormals(const std::vector<Vec2d> &shape, std::vector<Vec2d> &axes) {
+static void populateNormals(const std::vector<Vec2d> &shape, std::vector<Vec2d> &axes)
+{
     size_t i{ };
     auto size{ shape.size() };
     for (i = 0; i < size; ++i) {
@@ -137,7 +143,8 @@ static void populateNormals(const std::vector<Vec2d> &shape, std::vector<Vec2d> 
     }
 }
 
-bool areColliding_SAT(const std::vector<Vec2d> &shape1, const std::vector<Vec2d> &shape2) {
+bool areColliding_SAT(const std::vector<Vec2d> &shape1, const std::vector<Vec2d> &shape2)
+{
     auto shape1size = shape1.size();
     auto shape2size = shape2.size();
 
@@ -170,4 +177,5 @@ bool areColliding_SAT(const std::vector<Vec2d> &shape1, const std::vector<Vec2d>
     }
     return true;
 }
+
 } // namespace utl
