@@ -6,7 +6,6 @@ namespace utl {
 
 class VecGraphPhysEnt;
 
-
 /**
  * A component to be stored on a vector graphics physics entity - the component
  * stores state and runs physics calculations when update() is called.
@@ -14,8 +13,9 @@ class VecGraphPhysEnt;
 class VecGraphPhysComp {
 public:
     VecGraphPhysComp(double mass, VecGraphPhysEnt* new_owner)
-        : m_mass { mass }, m_impulse{ 0.0 }, m_acceleration{ 0.0, 0.0 }, m_velocity{ 0, 0 }, m_angle{ 0.0 }, m_dirVector{0, 0}, m_owner { new_owner }
-        {}
+        : m_mass{mass}, m_impulse{0.0}, m_acceleration{0.0, 0.0},
+          m_velocity{0, 0}, m_angle{0.0}, m_dirVector{0, 0}, m_owner{new_owner}
+    {}
 
     double mass() const { return m_mass; }
     double impulse() const { return m_impulse; }
@@ -44,10 +44,10 @@ private:
     Vec2d m_acceleration;
     Vec2d m_velocity;
 
-    double m_angle; // between 0 and 360
-    Vec2d m_dirVector; // vector representation of m_angle
+    double m_angle;     // between 0 and 360
+    Vec2d m_dirVector;  // vector representation of m_angle
 
     VecGraphPhysEnt* m_owner;
 };
 
-} // namespace utl
+}  // namespace utl

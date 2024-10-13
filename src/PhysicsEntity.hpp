@@ -1,12 +1,12 @@
 ﻿#pragma once
 
-#include <string>
-#include <vector>
-
 #include "Entity.hpp"
 #include "GameWorld.hpp"
 #include "PhysicsComponent.hpp"
 #include "SDL_Interface.hpp"
+
+#include <string>
+#include <vector>
 
 struct Vec2d;
 
@@ -16,8 +16,7 @@ namespace utl {
  * A VecGraphPhysEnt (vector graphics physics entity) is just that: a physics
  * entity drawn with vector graphics. Not intended to be directly used.
  */
-class VecGraphPhysEnt : public Entity
-{
+class VecGraphPhysEnt : public Entity {
 public:
     VecGraphPhysEnt(const VecGraphPhysEnt&) = default;
     VecGraphPhysEnt& operator=(const VecGraphPhysEnt&) = delete;
@@ -29,12 +28,12 @@ public:
      * render() draws the entity using the vector graphics functions
      * in VectorDraw.hpp
      */
-	void render(Renderer& renderer) override;
+    void render(Renderer& renderer) override;
 
     /**
      * shape() returns the shape of the entity - this shape doesn’t change
      */
-	const std::vector<Vec2d>& shape() const { return m_shape; }
+    const std::vector<Vec2d>& shape() const { return m_shape; }
 
     /**
      * collider() returns the current (rotated, translated) shape of the
@@ -54,14 +53,14 @@ public:
     void kill_it() { m_killMe = true; }
     void setVisible(bool vis) { m_isVisible = vis; }
 
-	VecGraphPhysComp physicsComponent;
+    VecGraphPhysComp physicsComponent;
 
 protected:
     VecGraphPhysEnt(const std::string& type, const GameWorld& gameWorld,
                     const Vec2d& pos, const std::vector<Vec2d>& shape,
                     const Colour& color, const double& scale,
                     const double& mass, bool fill, bool wrap);
-	void update_shapes();
+    void update_shapes();
 
     const GameWorld& m_gameWorld;
     utl::Colour m_color;
@@ -76,8 +75,8 @@ protected:
 };
 
 /**
-  * utility function: returns whether pe1 and pe2 are colliding
-  */
+ * utility function: returns whether pe1 and pe2 are colliding
+ */
 bool areColliding(const VecGraphPhysEnt& pe1, const VecGraphPhysEnt& pe2);
 
-} // namespace utl
+}  // namespace utl

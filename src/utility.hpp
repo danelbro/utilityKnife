@@ -9,4 +9,4 @@ extern std::ofstream errorLogger;
 
 std::mt19937 makeSeededRNG();
 
-} // namespace utl
+}  // namespace utl

@@ -9,8 +9,8 @@ namespace utl {
  * but with a fluid density for physics calculations
  */
 struct GameWorld {
-    Box screen{ };
-    double fluidDensity{ };
+    Box screen{};
+    double fluidDensity{};
 };
 
-} // namespace utl
+}  // namespace utl

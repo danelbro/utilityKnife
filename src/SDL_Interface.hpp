@@ -4,16 +4,15 @@
  * Interface wrapper functions and data for SDL3.
  */
 
+#include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <array>
 #include <cstdint>
 #include <memory>
 #include <stdexcept>
 
-#include <SDL3/SDL.h>
-#include <SDL3_ttf/SDL_ttf.h>
-
 #ifdef _DEBUG
-#include "utility.hpp"
+    #include "utility.hpp"
 #endif
 
 struct Box;
@@ -21,43 +20,47 @@ struct Box;
 namespace utl {
 
 struct Colour {
-    std::uint8_t r{ };
-    std::uint8_t g{ };
-    std::uint8_t b{ };
-    std::uint8_t a{ };
+    std::uint8_t r{};
+    std::uint8_t g{};
+    std::uint8_t b{};
+    std::uint8_t a{};
 
-    operator SDL_Color() const { return { r, g, b, a }; }
+    operator SDL_Color() const { return {r, g, b, a}; }
 };
 
 // Custom deleters for SDL types. Pass when constructing a unique_ptr
 // thanks to https://stackoverflow.com/a/24252225
-struct sdl_deleter
-{
-    void operator()(SDL_Window* w) const {
+struct sdl_deleter {
+    void operator()(SDL_Window* w) const
+    {
 #ifdef _DEBUG
         errorLogger << "destroying a window\n";
 #endif
         SDL_DestroyWindow(w);
     }
-    void operator()(SDL_Renderer* r) const {
+    void operator()(SDL_Renderer* r) const
+    {
 #ifdef _DEBUG
         errorLogger << "destroying a renderer\n";
 #endif
         SDL_DestroyRenderer(r);
     }
-    void operator()(SDL_Surface* s) const {
+    void operator()(SDL_Surface* s) const
+    {
 #ifdef _DEBUG
         errorLogger << "destroying a surface\n";
 #endif
         SDL_DestroySurface(s);
     }
-    void operator()(SDL_Texture* t) const {
+    void operator()(SDL_Texture* t) const
+    {
 #ifdef _DEBUG
         errorLogger << "destroying a texture\n";
 #endif
         SDL_DestroyTexture(t);
     }
-    void operator()(TTF_Font* f) {
+    void operator()(TTF_Font* f)
+    {
 #ifdef _DEBUG
         errorLogger << "closing a font\n";
 #endif
@@ -65,9 +68,8 @@ struct sdl_deleter
     }
 };
 
-    // wrapper around std::runtime_error to make SDL exception handling smoother
-class SdlException : public std::runtime_error
-{
+// wrapper around std::runtime_error to make SDL exception handling smoother
+class SdlException : public std::runtime_error {
 public:
     SdlException(const std::string& e);
 };
@@ -85,6 +87,7 @@ public:
 
     uint32_t ID() { return SDL_GetWindowID(m_winPtr.get()); }
     SDL_Window* get() { return m_winPtr.get(); }
+
 private:
     std::unique_ptr<SDL_Window, sdl_deleter> m_winPtr;
 };
@@ -95,6 +98,7 @@ public:
 
     SDL_Renderer* get() { return m_rendPtr.get(); }
     bool setVSync(int vsync);
+
 private:
     std::unique_ptr<SDL_Renderer, sdl_deleter> m_rendPtr;
 };
@@ -104,6 +108,7 @@ public:
     Surface(SDL_Surface*);
 
     SDL_Surface* get() { return m_surfPtr.get(); }
+
 private:
     std::unique_ptr<SDL_Surface, sdl_deleter> m_surfPtr;
 };
@@ -114,6 +119,7 @@ public:
 
     SDL_Texture* get() { return m_texPtr.get(); }
     void reset(SDL_Texture* new_ptr) { m_texPtr.reset(new_ptr); }
+
 private:
     std::unique_ptr<SDL_Texture, sdl_deleter> m_texPtr;
 };
@@ -123,6 +129,7 @@ public:
     Font(TTF_Font*);
 
     TTF_Font* get() { return m_fontPtr.get(); }
+
 private:
     std::unique_ptr<TTF_Font, sdl_deleter> m_fontPtr;
 };
@@ -133,6 +140,7 @@ public:
     Rect(int x, int y, int w, int h);
 
     SDL_FRect* get() { return m_rectPtr.get(); }
+
 private:
     std::unique_ptr<SDL_FRect> m_rectPtr;
 };
@@ -150,8 +158,7 @@ Colour getRendererDrawColour(Renderer&);
 void copyTexturePortion(Renderer&, Texture&, Rect& src, Rect& dst);
 void drawPoint(Renderer&, int x, int y);
 
-struct textureAndSize
-{
+struct textureAndSize {
     textureAndSize(Texture newTexP, int newW, int newH);
 
     Texture texP;
@@ -161,12 +168,14 @@ struct textureAndSize
 
 // Create an SDL_Texture* rendered from text.
 // Throw an SdlException if creation fails
-textureAndSize createTextTexture(Font& font, const std::string& text, const Colour& text_colour, Renderer& rend);
+textureAndSize createTextTexture(Font& font, const std::string& text,
+                                 const Colour& text_colour, Renderer& rend);
 
 // Create a TTF_Font. Throw an SdlException if creation fails
 Font createFont(const std::string& path, int font_size);
 
-enum KeyFlag {
+enum KeyFlag
+{
     K_LEFT,
     K_RIGHT,
     K_UP,
@@ -182,6 +191,7 @@ enum KeyFlag {
 
 // process SDL input into a more friendly form. Also deals with
 // window resizing
-void process_input(Box& screen, uint32_t windowID, std::array<bool, KeyFlag::K_TOTAL>& key_state);
+void process_input(Box& screen, uint32_t windowID,
+                   std::array<bool, KeyFlag::K_TOTAL>& key_state);
 
-} // namespace utl
+}  // namespace utl

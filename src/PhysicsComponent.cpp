@@ -1,10 +1,10 @@
 ﻿#include "PhysicsComponent.hpp"
 
-#include <cmath>
-#include <numbers>
-
 #include "PhysicsEntity.hpp"
 #include "VectorDraw.hpp"
+
+#include <cmath>
+#include <numbers>
 
 namespace utl {
 void VecGraphPhysComp::turn(double turnSpeed, double dt)
@@ -20,12 +20,13 @@ void VecGraphPhysComp::turn(double turnSpeed, double dt)
 
 void VecGraphPhysComp::update(double dt)
 {
-    m_dirVector = Vec2d{ std::sin((m_angle * std::numbers::pi) / 180.0), -std::cos((m_angle * std::numbers::pi) / 180.0) };
-    Vec2d totalForces{ m_dirVector * m_impulse };
+    m_dirVector = Vec2d{std::sin((m_angle * std::numbers::pi) / 180.0),
+                        -std::cos((m_angle * std::numbers::pi) / 180.0)};
+    Vec2d totalForces{m_dirVector * m_impulse};
     m_acceleration = (totalForces / m_mass) * dt;
     m_velocity += m_acceleration * dt;
     m_owner->pos() += m_velocity * dt;
-    if ( m_owner->drawWrapped() ) {
+    if (m_owner->drawWrapped()) {
         wrap(m_owner->pos(), m_owner->screen());
     }
     m_impulse = 0;
@@ -41,7 +42,7 @@ void VecGraphPhysComp::setAngle(double angle)
         m_angle = angle;
     }
 
-    m_dirVector = Vec2d{ angle };
+    m_dirVector = Vec2d{angle};
 }
 
 void VecGraphPhysComp::setAngle(Vec2d angle)
@@ -50,4 +51,4 @@ void VecGraphPhysComp::setAngle(Vec2d angle)
     setAngle(angle.angleDeg());
 }
 
-} // namespace utl
+}  // namespace utl

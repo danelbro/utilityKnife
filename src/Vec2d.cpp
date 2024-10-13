@@ -39,7 +39,7 @@ void Vec2d::normalizeInPlace()
         x /= mag;
         y /= mag;
     }
-};
+}
 
 Vec2d Vec2d::normalize() const
 {
@@ -47,8 +47,8 @@ Vec2d Vec2d::normalize() const
     if (mag == 0) {
         return *this;
     }
-    return Vec2d{ x / mag, y / mag };
-};
+    return Vec2d{x / mag, y / mag};
+}
 
 Vec2d Vec2d::update(double new_x, double new_y)
 {
@@ -68,7 +68,7 @@ Vec2d Vec2d::rotate_rad(double rad)
     double new_x = (x * std::cos(rad)) - (y * std::sin(rad));
     double new_y = (x * std::sin(rad)) + (y * std::cos(rad));
 
-    return Vec2d{ new_x, new_y };
+    return Vec2d{new_x, new_y};
 }
 
 void Vec2d::rotate_rad_ip(double rad)
@@ -89,7 +89,7 @@ void Vec2d::rotate_deg_ip(double deg)
 
 Vec2d Vec2d::operator*(const double& n) const
 {
-    return Vec2d{ x * n, y * n };
+    return Vec2d{x * n, y * n};
 }
 
 double Vec2d::operator*(const Vec2d& otherVec) const
@@ -99,12 +99,12 @@ double Vec2d::operator*(const Vec2d& otherVec) const
 
 Vec2d Vec2d::operator/(const double& n) const
 {
-    return Vec2d{ x / n, y / n };
+    return Vec2d{x / n, y / n};
 }
 
 Vec2d Vec2d::operator+(const Vec2d& otherVec) const
 {
-    return Vec2d{ x + otherVec.x, y + otherVec.y };
+    return Vec2d{x + otherVec.x, y + otherVec.y};
 }
 
 Vec2d Vec2d::operator+=(const Vec2d& otherVec)
@@ -115,21 +115,20 @@ Vec2d Vec2d::operator+=(const Vec2d& otherVec)
 
 Vec2d Vec2d::operator-() const
 {
-    return Vec2d{ *this * -1 };
+    return Vec2d{*this * -1};
 }
 
 Vec2d Vec2d::operator-(const Vec2d& otherVec) const
 {
-    return Vec2d{ x - otherVec.x, y - otherVec.y };
+    return Vec2d{x - otherVec.x, y - otherVec.y};
 }
-
 
 Vec2d randomPos(std::mt19937& rng, int w, int h)
 {
     std::uniform_real_distribution<double> xDist(0.0, static_cast<double>(w));
     std::uniform_real_distribution<double> yDist(0.0, static_cast<double>(h));
 
-    return { xDist(rng), yDist(rng) };
+    return {xDist(rng), yDist(rng)};
 }
 
-} // namespace utl
+}  // namespace utl

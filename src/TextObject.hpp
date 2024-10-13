@@ -1,24 +1,24 @@
 ﻿#pragma once
 
-#include <string>
-
-#include "SDL_Interface.hpp"
-
 #include "Entity.hpp"
+#include "SDL_Interface.hpp"
 #include "Vec2d.hpp"
+
+#include <string>
 
 namespace utl {
 
 struct Box;
 
-class TextObject : public Entity
-{
+class TextObject : public Entity {
 public:
     TextObject(const Box& screen, utl::Renderer& rend, utl::Font& font)
-        : Entity{"TEXT", screen, {}}, text{ }, m_texture{ nullptr }, m_font{ font }, m_size{ }, m_rend{ rend }, m_col{}
-        {}
+        : Entity{"TEXT", screen, {}}, text{}, m_texture{nullptr}, m_font{font},
+          m_size{}, m_rend{rend}, m_col{}
+    {}
 
-    TextObject(const Box& screen, const Vec2d& pos, utl::Font& font, const utl::Colour& color, utl::Renderer& rend);
+    TextObject(const Box& screen, const Vec2d& pos, utl::Font& font,
+               const utl::Colour& color, utl::Renderer& rend);
     TextObject(const TextObject&) = delete;
     TextObject& operator=(const TextObject&) = delete;
     TextObject(TextObject&&) = default;
@@ -27,7 +27,8 @@ public:
 
     const Vec2d size() { return m_size; }
 
-    void loadFromRenderedText(const std::string& textureText, const utl::Colour& text_colour);
+    void loadFromRenderedText(const std::string& textureText,
+                              const utl::Colour& text_colour);
     void recentre();
     void free();
     void render(utl::Renderer& renderer) override;
@@ -44,4 +45,4 @@ private:
     Colour m_col;
 };
 
-} // namespace utl
+}  // namespace utl

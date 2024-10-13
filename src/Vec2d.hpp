@@ -33,10 +33,10 @@ struct Vec2d {
     Vec2d rotate_deg(double deg);
     void rotate_deg_ip(double deg);
 
-    double x{ };
-    double y{ };
+    double x{};
+    double y{};
 };
 
 Vec2d randomPos(std::mt19937& rng, int w, int h);
 
-} // namespace utl
+}  // namespace utl

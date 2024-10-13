@@ -1,20 +1,24 @@
 ﻿#include "PhysicsEntity.hpp"
 
-#include <vector>
-
-#include "SDL_Interface.hpp"
 #include "Entity.hpp"
 #include "GameWorld.hpp"
 #include "PhysicsComponent.hpp"
+#include "SDL_Interface.hpp"
 #include "Vec2d.hpp"
 #include "VectorDraw.hpp"
 
+#include <vector>
+
 namespace utl {
 
-VecGraphPhysEnt::VecGraphPhysEnt(const std::string& type, const GameWorld& gameWorld, const Vec2d& pos, const std::vector<Vec2d>& shape,
-                                 const Colour& color, const double& scale, const double& mass, bool fill, bool wrap)
-    : Entity{ type, gameWorld.screen, pos }, physicsComponent{ mass, this }, m_gameWorld{ gameWorld }, m_color{ color }, m_scale { scale },
-      m_isVisible{ true }, m_killMe{ false }, m_fill{ fill }, m_wrap { wrap }, m_shape{ shape }, m_collider{}
+VecGraphPhysEnt::VecGraphPhysEnt(const std::string& type,
+                                 const GameWorld& gameWorld, const Vec2d& pos,
+                                 const std::vector<Vec2d>& shape,
+                                 const Colour& color, const double& scale,
+                                 const double& mass, bool fill, bool wrap)
+    : Entity{type, gameWorld.screen, pos}, physicsComponent{mass, this},
+      m_gameWorld{gameWorld}, m_color{color}, m_scale{scale}, m_isVisible{true},
+      m_killMe{false}, m_fill{fill}, m_wrap{wrap}, m_shape{shape}, m_collider{}
 {
     update_shapes();
 }
@@ -38,12 +42,14 @@ void VecGraphPhysEnt::render(Renderer& renderer)
         return;
     }
 
-    auto oldColor{ getRendererDrawColour(renderer) };
+    auto oldColor{getRendererDrawColour(renderer)};
     setRendererDrawColour(renderer, m_color);
 
-    const size_t& colliderSize{ m_collider.size() };
-    for (size_t i{ 0 }; i < colliderSize; ++i) {
-        DrawWrapLine(renderer, screenSpace, m_collider[i].x, m_collider[i].y, m_collider[(i + 1) % colliderSize].x, m_collider[(i + 1) % colliderSize].y);
+    const size_t& colliderSize{m_collider.size()};
+    for (size_t i{0}; i < colliderSize; ++i) {
+        DrawWrapLine(renderer, screenSpace, m_collider[i].x, m_collider[i].y,
+                     m_collider[(i + 1) % colliderSize].x,
+                     m_collider[(i + 1) % colliderSize].y);
     }
 
     if (m_fill) {
@@ -53,10 +59,10 @@ void VecGraphPhysEnt::render(Renderer& renderer)
     setRendererDrawColour(renderer, oldColor);
 }
 
-bool areColliding(const VecGraphPhysEnt &pe1, const VecGraphPhysEnt &pe2)
+bool areColliding(const VecGraphPhysEnt& pe1, const VecGraphPhysEnt& pe2)
 {
     // from VectorDraw.hpp
     return areColliding_SAT(pe1.collider(), pe2.collider());
 }
 
-} // namespace utl
+}  // namespace utl

@@ -1,31 +1,32 @@
 #include "SDL_Interface.hpp"
 
+#include "Box.hpp"
+#include "utility.hpp"
+
+#include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <cstdint>
 #include <stdexcept>
 #include <string>
 
-#include <SDL3/SDL.h>
-#include <SDL3_ttf/SDL_ttf.h>
-
-#include "Box.hpp"
-#include "utility.hpp"
-
 namespace utl {
 
 SdlException::SdlException(const std::string& message)
-    : std::runtime_error{ message }
+    : std::runtime_error{message}
 {}
 
 void init(uint32_t sdlFlags)
 {
     if (!SDL_Init(sdlFlags)) {
-        std::string sdlError{ SDL_GetError() };
-        throw SdlException(std::string{ "Cannot initialise SDL! SDL_Error: " + sdlError });
+        std::string sdlError{SDL_GetError()};
+        throw SdlException(
+            std::string{"Cannot initialise SDL! SDL_Error: " + sdlError});
     }
 
     if (!TTF_Init()) {
-        std::string ttfError{ SDL_GetError() };
-        throw SdlException(std::string{ "Cannot initialise SDL_TTF! TTF_Error: " + ttfError });
+        std::string ttfError{SDL_GetError()};
+        throw SdlException(
+            std::string{"Cannot initialise SDL_TTF! TTF_Error: " + ttfError});
     }
 }
 
@@ -35,25 +36,23 @@ void quit_sdl()
     SDL_Quit();
 }
 
-Window::Window(SDL_Window* new_win)
-    : m_winPtr{ new_win, sdl_deleter() }
-{}
+Window::Window(SDL_Window* new_win) : m_winPtr{new_win, sdl_deleter()} {}
 
 Window createWindow(const std::string& title, int w, int h, uint32_t flags)
 {
 #ifdef _DEBUG
     errorLogger << "creating a window\n";
 #endif
-    Window window{ SDL_CreateWindow(title.c_str(), w, h, flags) };
+    Window window{SDL_CreateWindow(title.c_str(), w, h, flags)};
 
     if (!window.get()) {
-        throw SdlException(std::string{ "Cannot create window! SDL_Error: ", SDL_GetError() });
+        throw SdlException(
+            std::string{"Cannot create window! SDL_Error: ", SDL_GetError()});
     }
     return window;
 }
 
-Renderer::Renderer(SDL_Renderer* new_rend)
-    : m_rendPtr{ new_rend, sdl_deleter() }
+Renderer::Renderer(SDL_Renderer* new_rend) : m_rendPtr{new_rend, sdl_deleter()}
 {}
 
 Renderer createRenderer(Window& window, const char* index)
@@ -61,19 +60,21 @@ Renderer createRenderer(Window& window, const char* index)
 #ifdef _DEBUG
     errorLogger << "creating a renderer\n";
 #endif
-    Renderer rend{ SDL_CreateRenderer(window.get(), index) };
+    Renderer rend{SDL_CreateRenderer(window.get(), index)};
 
     if (!rend.get()) {
-        throw SdlException(std::string{ "Cannot create renderer! SDL_Error: ", SDL_GetError() });
+        throw SdlException(
+            std::string{"Cannot create renderer! SDL_Error: ", SDL_GetError()});
     }
     return rend;
 }
 
 bool Renderer::setVSync(int vsync)
 {
-    bool isVSyncSet{ SDL_SetRenderVSync(m_rendPtr.get(), vsync) };
+    bool isVSyncSet{SDL_SetRenderVSync(m_rendPtr.get(), vsync)};
     if (!isVSyncSet) {
-        throw SdlException(std::string{ "Couldn't set vsync! SDL_Error: ", SDL_GetError() });
+        throw SdlException(
+            std::string{"Couldn't set vsync! SDL_Error: ", SDL_GetError()});
     }
     return isVSyncSet;
 }
@@ -100,7 +101,8 @@ Colour getRendererDrawColour(Renderer& rend)
     return col;
 }
 
-void copyTexturePortion(Renderer& rend, Texture& tex, Rect& srcRect, Rect& dstRect)
+void copyTexturePortion(Renderer& rend, Texture& tex, Rect& srcRect,
+                        Rect& dstRect)
 {
     SDL_RenderTexture(rend.get(), tex.get(), srcRect.get(), dstRect.get());
 }
@@ -110,71 +112,68 @@ void drawPoint(Renderer& rend, int x, int y)
     SDL_RenderPoint(rend.get(), x, y);
 }
 
-Surface::Surface(SDL_Surface* new_surf)
-    : m_surfPtr{ new_surf, sdl_deleter() }
-{}
+Surface::Surface(SDL_Surface* new_surf) : m_surfPtr{new_surf, sdl_deleter()} {}
 
-Texture::Texture(SDL_Texture* new_tex)
-    : m_texPtr{ new_tex, sdl_deleter() }
-{}
+Texture::Texture(SDL_Texture* new_tex) : m_texPtr{new_tex, sdl_deleter()} {}
 
 textureAndSize::textureAndSize(Texture newTexP, int newW, int newH)
-    : texP{ std::move(newTexP) }, w{ newW }, h{ newH }
+    : texP{std::move(newTexP)}, w{newW}, h{newH}
 {}
 
-textureAndSize createTextTexture(Font& font, const std::string& text, const Colour& text_colour, Renderer& rend)
+textureAndSize createTextTexture(Font& font, const std::string& text,
+                                 const Colour& text_colour, Renderer& rend)
 {
 #ifdef _DEBUG
     errorLogger << "creating a text texture\n";
 #endif
-    Surface textSurface{ TTF_RenderText_Blended(font.get(), text.c_str(), text.length(), text_colour) };
+    Surface textSurface{TTF_RenderText_Blended(font.get(), text.c_str(),
+                                               text.length(), text_colour)};
 
     if (!textSurface.get()) {
-        throw SdlException(std::string{ "Cannot create surface! SDL_Error: ", SDL_GetError() });
+        throw SdlException(
+            std::string{"Cannot create surface! SDL_Error: ", SDL_GetError()});
     }
 
     auto tp = SDL_CreateTextureFromSurface(rend.get(), textSurface.get());
 
     if (!tp) {
-        errorLogger << std::string{ SDL_GetError() } << '\n';
+        errorLogger << std::string{SDL_GetError()} << '\n';
     }
 
-    Texture textTexture{ SDL_CreateTextureFromSurface(rend.get(), textSurface.get()) };
+    Texture textTexture{
+        SDL_CreateTextureFromSurface(rend.get(), textSurface.get())};
 
     if (!textTexture.get()) {
         errorLogger << SDL_GetError() << '\n';
         throw SdlException("Could not create texture!");
     }
 
-    int w{ textSurface.get()->w };
-    int h{ textSurface.get()->h };
+    int w{textSurface.get()->w};
+    int h{textSurface.get()->h};
 
-    return textureAndSize{ std::move(textTexture), w, h };
+    return textureAndSize{std::move(textTexture), w, h};
 }
 
-Font::Font(TTF_Font* new_font)
-    : m_fontPtr{ new_font, sdl_deleter() }
-{}
+Font::Font(TTF_Font* new_font) : m_fontPtr{new_font, sdl_deleter()} {}
 
 Font createFont(const std::string& path, int font_size)
 {
 #ifdef _DEBUG
     errorLogger << "creating a font\n";
 #endif
-    Font font{ TTF_OpenFont(path.c_str(), font_size) };
+    Font font{TTF_OpenFont(path.c_str(), font_size)};
 
     if (!font.get()) {
-        throw SdlException(std::string{ "Failed to make font! TTF_Error: ", SDL_GetError() });
+        throw SdlException(
+            std::string{"Failed to make font! TTF_Error: ", SDL_GetError()});
     }
     return font;
 }
 
-Rect::Rect(SDL_FRect* new_rect)
-    : m_rectPtr{ new_rect }
-{}
+Rect::Rect(SDL_FRect* new_rect) : m_rectPtr{new_rect} {}
 
 Rect::Rect(int x, int y, int w, int h)
-    : m_rectPtr{ std::make_unique<SDL_FRect>() }
+    : m_rectPtr{std::make_unique<SDL_FRect>()}
 {
     m_rectPtr->x = x;
     m_rectPtr->y = y;
@@ -182,9 +181,10 @@ Rect::Rect(int x, int y, int w, int h)
     m_rectPtr->h = h;
 }
 
-void process_input(Box& screen, uint32_t windowID, std::array<bool, KeyFlag::K_TOTAL>& key_state)
+void process_input(Box& screen, uint32_t windowID,
+                   std::array<bool, KeyFlag::K_TOTAL>& key_state)
 {
-    SDL_Event ev{ };
+    SDL_Event ev{};
     key_state[KeyFlag::WINDOW_CHANGE] = false;
 
     while (SDL_PollEvent(&ev)) {
@@ -194,10 +194,10 @@ void process_input(Box& screen, uint32_t windowID, std::array<bool, KeyFlag::K_T
 
         else if (ev.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED) {
             if (ev.window.windowID == windowID) {
-                    screen.w = ev.window.data1;
-                    screen.h = ev.window.data2;
-                    key_state[KeyFlag::WINDOW_CHANGE] = true;
-                }
+                screen.w = ev.window.data1;
+                screen.h = ev.window.data2;
+                key_state[KeyFlag::WINDOW_CHANGE] = true;
+            }
         }
 
         else if (ev.type == SDL_EVENT_KEY_DOWN) {
@@ -229,8 +229,7 @@ void process_input(Box& screen, uint32_t windowID, std::array<bool, KeyFlag::K_T
             default:
                 break;
             }
-        }
-        else if (ev.type == SDL_EVENT_KEY_UP) {
+        } else if (ev.type == SDL_EVENT_KEY_UP) {
             switch (ev.key.key) {
             case SDLK_ESCAPE:
                 key_state[KeyFlag::K_ESCAPE] = false;
@@ -260,4 +259,4 @@ void process_input(Box& screen, uint32_t windowID, std::array<bool, KeyFlag::K_T
     }
 }
 
-} // namespace utl
+}  // namespace utl

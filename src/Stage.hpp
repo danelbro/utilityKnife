@@ -1,12 +1,11 @@
 ﻿#pragma once
 
+#include "Box.hpp"
+#include "SDL_Interface.hpp"
+
 #include <array>
 #include <cstdint>
 #include <string>
-
-#include "SDL_Interface.hpp"
-
-#include "Box.hpp"
 
 namespace utl {
 
@@ -27,7 +26,9 @@ public:
     Stage& operator=(const Stage&) = delete;
     virtual ~Stage() = default;
 
-    virtual std::string handle_input(double t, double dt, std::array<bool, KeyFlag::K_TOTAL>& key_state) = 0;
+    virtual std::string
+    handle_input(double t, double dt,
+                 std::array<bool, KeyFlag::K_TOTAL>& key_state) = 0;
     virtual std::string update(double t, double dt) = 0;
     virtual void render(double t, double dt) = 0;
 
@@ -35,10 +36,13 @@ public:
     uint32_t windowID() const { return m_windowID; }
     Renderer& renderer() { return m_rend; }
     std::string ID() const { return m_ID; }
+
 protected:
-    Stage(const Box& screen, uint32_t windowID, Renderer& renderer, const std::string& id)
-        : m_screen{ screen }, m_windowID{ windowID }, m_rend{ renderer }, m_ID{ id }
-        {}
+    Stage(const Box& screen, uint32_t windowID, Renderer& renderer,
+          const std::string& id)
+        : m_screen{screen}, m_windowID{windowID}, m_rend{renderer}, m_ID{id}
+    {}
+
 private:
     Box m_screen;
     uint32_t m_windowID;
@@ -46,4 +50,4 @@ private:
     std::string m_ID;
 };
 
-} // namespace utl
+}  // namespace utl

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <string>
-
 #include "Box.hpp"
 #include "SDL_Interface.hpp"
 #include "Vec2d.hpp"
+
+#include <string>
 
 namespace utl {
 
@@ -12,7 +12,7 @@ namespace utl {
  * The Entity is the base class for any kind of /thing/ in the game. It has a
  * type and a position, and holds a reference to the screen space - and not
  * much else.
-*/
+ */
 class Entity {
 public:
     virtual ~Entity() = default;
@@ -42,7 +42,7 @@ public:
 
 protected:
     Entity(const std::string& new_type, const Box& screen, const Vec2d& pos)
-        : screenSpace { screen }, m_type{ new_type }, m_pos{ pos }
+        : screenSpace{screen}, m_type{new_type}, m_pos{pos}
     {}
 
     const Box& screenSpace;
@@ -50,4 +50,4 @@ protected:
     Vec2d m_pos;
 };
 
-} // namespace utl
+}  // namespace utl
