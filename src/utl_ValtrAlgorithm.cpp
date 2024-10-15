@@ -26,9 +26,9 @@
 // algorithm found at the following page:
 // https://cglab.ca/~sander/misc/ConvexGeneration/convex.html
 
-#include "ValtrAlgorithm.hpp"
+#include "utl_ValtrAlgorithm.h"
 
-#include "Vec2d.hpp"
+#include "utl_Vec2d.h"
 
 #include <algorithm>
 #include <cstddef>

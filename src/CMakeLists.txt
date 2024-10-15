@@ -1,22 +1,23 @@
 add_library(${PROJECT_NAME} STATIC)
 target_sources(${PROJECT_NAME} PRIVATE
-    Application.hpp
-    Box.hpp
-    Entity.hpp
-    GameWorld.hpp
-    PhysicsComponent.hpp PhysicsComponent.cpp
-    PhysicsComponent.hpp PhysicsEntity.cpp
-    SDL_Interface.hpp SDL_Interface.cpp
-    Stage.hpp
-    StageManager.hpp StageManager.cpp
-    TextObject.hpp TextObject.cpp
-    utility.hpp utility.cpp
-    ValtrAlgorithm.hpp ValtrAlgorithm.cpp
-    Vec2d.hpp Vec2d.cpp
-    VectorDraw.hpp VectorDraw.cpp)
+    ../include/utl_Application.hpp
+    ../include/utl_Box.hpp
+    ../include/utl_Entity.hpp
+    ../include/utl_GameWorld.hpp
+    ../include/utl_PhysicsComponent.hpp utl_PhysicsComponent.cpp
+    ../include/utl_PhysicsComponent.hpp utl_PhysicsEntity.cpp
+    ../include/utl_SDLInterface.hpp utl_SDLInterface.cpp
+    ../include/utl_Stage.hpp
+    ../include/utl_StageManager.hpp utl_StageManager.cpp
+    ../include/utl_TextObject.hpp utl_TextObject.cpp
+    ../include/utl_utility.hpp utl_utility.cpp
+    ../include/utl_ValtrAlgorithm.hpp utl_ValtrAlgorithm.cpp
+    ../include/utl_Vec2d.hpp utl_Vec2d.cpp
+    ../include/utl_VectorDraw.hpp utl_VectorDraw.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE utility_extern)
-target_include_directories(${PROJECT_NAME} PUBLIC ./)
-set(is_CC "$<CXX_COMPILER_ID:Clang,AppleClang,GNU>")
+target_include_directories(${PROJECT_NAME} PUBLIC ../include)
+set(is_Clang "$<CXX_COMPILER_ID:Clang,AppleClang>")
+set(is_CC    "$<CXX_COMPILER_ID:Clang,AppleClang,GNU>")
 set(is_MS "$<CXX_COMPILER_ID:MSVC>")
 target_compile_options(${PROJECT_NAME} PRIVATE 
 	$<$<OR:${is_CC}>:-Wall>
@@ -25,4 +26,5 @@ target_compile_options(${PROJECT_NAME} PRIVATE
 	$<$<OR:${is_CC}>:-pedantic>
 	$<$<OR:${is_CC}>:-std=c++20>
 	$<$<OR:${is_CC}>:-Weffc++>
+    $<$<OR:${is_Clang}>:”-x c++”>
 	$<${is_MS}:/W4>)

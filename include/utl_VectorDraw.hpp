@@ -4,7 +4,7 @@
  * Drawing and related functions for vector graphics - wrapping, collision, etc.
  */
 
-#include "SDL_Interface.hpp"
+#include "utl_SDLInterface.hpp"
 
 #include <vector>
 

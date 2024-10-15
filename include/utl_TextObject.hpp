@@ -1,8 +1,8 @@
 ﻿#pragma once
 
-#include "Entity.hpp"
-#include "SDL_Interface.hpp"
-#include "Vec2d.hpp"
+#include "utl_Entity.hpp"
+#include "utl_SDLInterface.hpp"
+#include "utl_Vec2d.hpp"
 
 #include <string>
 

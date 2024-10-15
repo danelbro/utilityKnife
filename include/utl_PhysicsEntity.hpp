@@ -1,9 +1,9 @@
 ﻿#pragma once
 
-#include "Entity.hpp"
-#include "GameWorld.hpp"
-#include "PhysicsComponent.hpp"
-#include "SDL_Interface.hpp"
+#include "utl_Entity.hpp"
+#include "utl_GameWorld.hpp"
+#include "utl_PhysicsComponent.hpp"
+#include "utl_SDLInterface.hpp"
 
 #include <string>
 #include <vector>

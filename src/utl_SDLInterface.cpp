@@ -1,7 +1,7 @@
-#include "SDL_Interface.hpp"
+#include "utl_SDLInterface.h"
 
-#include "Box.hpp"
-#include "utility.hpp"
+#include "utl_Box.h"
+#include "utl_utility.h"
 
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>

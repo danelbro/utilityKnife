@@ -1,7 +1,7 @@
 ﻿#pragma once
 
-#include "SDL_Interface.hpp"
-#include "Stage.hpp"
+#include "utl_SDLInterface.hpp"
+#include "utl_Stage.hpp"
 
 #include <array>
 #include <cstdint>

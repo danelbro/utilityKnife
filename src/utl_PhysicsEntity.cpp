@@ -1,11 +1,11 @@
-﻿#include "PhysicsEntity.hpp"
+﻿#include "utl_PhysicsEntity.h"
 
-#include "Entity.hpp"
-#include "GameWorld.hpp"
-#include "PhysicsComponent.hpp"
-#include "SDL_Interface.hpp"
-#include "Vec2d.hpp"
-#include "VectorDraw.hpp"
+#include "utl_Entity.h"
+#include "utl_GameWorld.h"
+#include "utl_PhysicsComponent.h"
+#include "utl_SDLInterface.h"
+#include "utl_Vec2d.h"
+#include "utl_VectorDraw.h"
 
 #include <vector>
 

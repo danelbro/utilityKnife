@@ -12,7 +12,7 @@
 #include <stdexcept>
 
 #ifdef _DEBUG
-    #include "utility.hpp"
+    #include "utl_utility.hpp"
 #endif
 
 struct Box;

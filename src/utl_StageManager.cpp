@@ -1,7 +1,7 @@
-﻿#include "StageManager.hpp"
+﻿#include "utl_StageManager.h"
 
-#include "Application.hpp"
-#include "Stage.hpp"
+#include "utl_Application.h"
+#include "utl_Stage.h"
 
 #include <chrono>
 #include <stdexcept>
