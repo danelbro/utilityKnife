@@ -50,7 +50,7 @@ public:
     /**
      * sets a flag intended to indicate that the entity should be destroyed
      */
-    void kill_it() { m_killMe = true; }
+    virtual void kill_it();
     void setVisible(bool vis) { m_isVisible = vis; }
 
     VecGraphPhysComp physicsComponent;
