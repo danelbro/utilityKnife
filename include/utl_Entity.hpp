@@ -38,14 +38,19 @@ public:
 
     Vec2d& pos() { return m_pos; }
     std::string type() const { return m_type; }
-    const Box& screen() const { return screenSpace; }
+    const Box& screen() const { return m_screenSpace; }
+
+    void updateScreen(const Box& newScreenSpace)
+    {
+        m_screenSpace = newScreenSpace;
+    }
 
 protected:
-    Entity(const std::string& new_type, const Box& screen, const Vec2d& pos)
-        : screenSpace{screen}, m_type{new_type}, m_pos{pos}
+    Entity(const std::string& new_type, Box& screen, const Vec2d& pos)
+        : m_screenSpace{screen}, m_type{new_type}, m_pos{pos}
     {}
 
-    const Box& screenSpace;
+    Box& m_screenSpace;
     const std::string m_type;
     Vec2d m_pos;
 };

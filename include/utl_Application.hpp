@@ -14,8 +14,8 @@ namespace utl {
  * your derived app class, you are responsible for:
  *
  * - in your app’s constructor, adding at least one (derived) Stage to your
- * app’s StageManager by calling m_stageMan.add_stage(), and setting it as the
- * current stage by calling m_stageMan.set_current_stage(). Your derived stages
+ * app’s StageManager by calling m_stageManager.add_stage(), and setting it as the
+ * current stage by calling m_stageManager.set_current_stage(). Your derived stages
  * will contain all of your app’s logic and functionality.
  *
  * - setting the Renderer’s behaviour [currently, all you can do is
@@ -25,7 +25,7 @@ namespace utl {
  * when a Stage returns a non-current Stage ID string from its update() or
  * handle_input() functions, passing in the new Stage ID string. In response to
  * the new Stage ID, in this function you should add a stage of that type to the
- * StageManager by calling m_stageMan.add_stage(). A switch statement is
+ * StageManager by calling m_stageManager.add_stage(). A switch statement is
  * recommended! Make sure to handle StageID::QUIT - you can call add_stage with
  * a nullptr - and note that you can put any behaviour you want on stage
  * transitions here.

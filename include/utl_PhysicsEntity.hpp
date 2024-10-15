@@ -56,13 +56,13 @@ public:
     VecGraphPhysComp physicsComponent;
 
 protected:
-    VecGraphPhysEnt(const std::string& type, const GameWorld& gameWorld,
+    VecGraphPhysEnt(const std::string& type, GameWorld& gameWorld,
                     const Vec2d& pos, const std::vector<Vec2d>& shape,
                     const Colour& color, const double& scale,
                     const double& mass, bool fill, bool wrap);
     void update_shapes();
 
-    const GameWorld& m_gameWorld;
+    GameWorld& m_gameWorld;
     utl::Colour m_color;
     double m_scale;
     bool m_isVisible;

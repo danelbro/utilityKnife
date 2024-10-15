@@ -9,7 +9,7 @@
 
 namespace utl {
 
-TextObject::TextObject(const Box& screen, const Vec2d& pos, utl::Font& font,
+TextObject::TextObject(Box& screen, const Vec2d& pos, utl::Font& font,
                        const Colour& color, utl::Renderer& rend)
     : Entity{"TEXT", screen, pos}, text{}, m_texture{nullptr}, m_font{font},
       m_size{0, 0}, m_rend{rend}, m_col{color}
@@ -36,8 +36,8 @@ void TextObject::loadFromRenderedText(const std::string& textureText,
 
 void TextObject::recentre()
 {
-    m_pos.x = screenSpace.w / 2.0 - m_size.x / 2.0;
-    m_pos.y = screenSpace.h / 2.0 - m_size.y / 2.0;
+    m_pos.x = m_screenSpace.w / 2.0 - m_size.x / 2.0;
+    m_pos.y = m_screenSpace.h / 2.0 - m_size.y / 2.0;
 }
 
 void TextObject::updateText(std::string new_text)

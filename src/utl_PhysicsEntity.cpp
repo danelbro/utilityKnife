@@ -12,7 +12,7 @@
 namespace utl {
 
 VecGraphPhysEnt::VecGraphPhysEnt(const std::string& type,
-                                 const GameWorld& gameWorld, const Vec2d& pos,
+                                 GameWorld& gameWorld, const Vec2d& pos,
                                  const std::vector<Vec2d>& shape,
                                  const Colour& color, const double& scale,
                                  const double& mass, bool fill, bool wrap)
@@ -47,13 +47,13 @@ void VecGraphPhysEnt::render(Renderer& renderer)
 
     const size_t& colliderSize{m_collider.size()};
     for (size_t i{0}; i < colliderSize; ++i) {
-        DrawWrapLine(renderer, screenSpace, m_collider[i].x, m_collider[i].y,
+        DrawWrapLine(renderer, m_screenSpace, m_collider[i].x, m_collider[i].y,
                      m_collider[(i + 1) % colliderSize].x,
                      m_collider[(i + 1) % colliderSize].y);
     }
 
     if (m_fill) {
-        ScanFill(screenSpace, m_collider, m_color, renderer);
+        ScanFill(m_screenSpace, m_collider, m_color, renderer);
     }
 
     setRendererDrawColour(renderer, oldColor);

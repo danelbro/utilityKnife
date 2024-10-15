@@ -12,12 +12,12 @@ struct Box;
 
 class TextObject : public Entity {
 public:
-    TextObject(const Box& screen, utl::Renderer& rend, utl::Font& font)
+    TextObject(Box& screen, utl::Renderer& rend, utl::Font& font)
         : Entity{"TEXT", screen, {}}, text{}, m_texture{nullptr}, m_font{font},
           m_size{}, m_rend{rend}, m_col{}
     {}
 
-    TextObject(const Box& screen, const Vec2d& pos, utl::Font& font,
+    TextObject(Box& screen, const Vec2d& pos, utl::Font& font,
                const utl::Colour& color, utl::Renderer& rend);
     TextObject(const TextObject&) = delete;
     TextObject& operator=(const TextObject&) = delete;
