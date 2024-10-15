@@ -1,7 +1,7 @@
-﻿#include "utl_PhysicsComponent.h"
+﻿#include "utl_PhysicsComponent.hpp"
 
-#include "utl_PhysicsEntity.h"
-#include "utl_VectorDraw.h"
+#include "utl_PhysicsEntity.hpp"
+#include "utl_VectorDraw.hpp"
 
 #include <cmath>
 #include <numbers>

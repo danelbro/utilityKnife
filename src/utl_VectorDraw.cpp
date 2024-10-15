@@ -1,9 +1,9 @@
-﻿#include "utl_VectorDraw.h"
+﻿#include "utl_VectorDraw.hpp"
 
-#include "utl_Box.h"
-#include "utl_GameWorld.h"
-#include "utl_SDLInterface.h"
-#include "utl_Vec2d.h"
+#include "utl_Box.hpp"
+#include "utl_GameWorld.hpp"
+#include "utl_SDLInterface.hpp"
+#include "utl_Vec2d.hpp"
 
 #include <algorithm>
 #include <cmath>

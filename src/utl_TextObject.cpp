@@ -1,9 +1,9 @@
-﻿#include "utl_TextObject.h"
+﻿#include "utl_TextObject.hpp"
 
-#include "utl_Box.h"
-#include "utl_Entity.h"
-#include "utl_SDLInterface.h"
-#include "utl_Vec2d.h"
+#include "utl_Box.hpp"
+#include "utl_Entity.hpp"
+#include "utl_SDLInterface.hpp"
+#include "utl_Vec2d.hpp"
 
 #include <string>
 
