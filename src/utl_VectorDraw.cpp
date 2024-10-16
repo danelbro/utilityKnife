@@ -1,7 +1,6 @@
 ﻿#include "utl_VectorDraw.hpp"
 
 #include "utl_Box.hpp"
-#include "utl_GameWorld.hpp"
 #include "utl_SDLInterface.hpp"
 #include "utl_Vec2d.hpp"
 
@@ -87,7 +86,7 @@ void DrawWrapLine(utl::Renderer& rend, const Box& screen, double x1, double y1,
 }
 
 // adatpted from https://alienryderflex.com/polygon/
-bool PointInPolygon(const Vec2d& point, const std::vector<Vec2d>& polygon)
+bool isPointInPolygon(const Vec2d& point, const std::vector<Vec2d>& polygon)
 {
     size_t i{0}, j{polygon.size() - 1};
     bool oddNodes{false};
@@ -108,7 +107,7 @@ bool PointInPolygon(const Vec2d& point, const std::vector<Vec2d>& polygon)
 }
 
 // adapted frpm https://alienryderflex.com/polygon_fill/
-void ScanFill(const GameWorld& gw, const std::vector<Vec2d>& poly,
+void ScanFill(const Box& screen, const std::vector<Vec2d>& poly,
               const Colour& col, Renderer& renderer)
 {
     Colour old{getRendererDrawColour(renderer)};
@@ -145,7 +144,7 @@ void ScanFill(const GameWorld& gw, const std::vector<Vec2d>& poly,
         for (i = 0; i < nodesX.size(); i += 2) {
             for (pixel.x = nodesX[i]; pixel.x < nodesX.at(i + 1);
                  pixel.x += 1) {
-                DrawWrapLine(renderer, gw.screen, pixel.x, pixel.y,
+                DrawWrapLine(renderer, screen, pixel.x, pixel.y,
                              nodesX.at(i + 1), pixel.y);
             }
         }
