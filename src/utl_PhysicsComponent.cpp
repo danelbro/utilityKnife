@@ -25,9 +25,11 @@ void VecGraphPhysComp::update(double dt)
     Vec2d totalForces{m_dirVector * m_impulse};
     m_acceleration = (totalForces / m_mass) * dt;
     m_velocity += m_acceleration * dt;
-    m_owner->pos() += m_velocity * dt;
     if (m_owner->drawWrapped()) {
-        wrap(m_owner->pos(), m_owner->screen());
+        m_owner->set_pos(
+	    wrap(m_owner->pos() + m_velocity * dt, m_owner->screen()));
+    } else {
+        m_owner->set_pos(m_owner->pos() + m_velocity * dt);
     }
     m_impulse = 0;
 }

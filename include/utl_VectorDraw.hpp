@@ -4,16 +4,15 @@
  * Drawing and related functions for vector graphics - wrapping, collision, etc.
  */
 
+#include "utl_Box.hpp"
 #include "utl_SDLInterface.hpp"
+#include "utl_Vec2d.hpp"
 
 #include <vector>
 
 namespace utl {
 
-struct Box;
-struct Vec2d;
-
-void wrap(Vec2d& pos, const Box& bounds);
+Vec2d wrap(const Vec2d& pos, const Box& bounds);
 
 void DrawWrapLine(Renderer& rend, const Box& screen, double x1, double y1,
                   double x2, double y2);

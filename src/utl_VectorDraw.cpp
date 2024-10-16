@@ -20,19 +20,23 @@ static int wrapCoord(int p, int dim)
     }
 }
 
-void wrap(Vec2d& pos, const Box& screen)
+Vec2d wrap(const Vec2d& pos, const Box& screen)
 {
-    if (pos.x < 0) {
-        pos.x = screen.w + pos.x;
-    } else if (pos.x > screen.w) {
-        pos.x -= screen.w;
+    Vec2d newPos{pos};
+
+    if (newPos.x < 0) {
+        newPos.x = screen.w + newPos.x;
+    } else if (newPos.x > screen.w) {
+        newPos.x -= screen.w;
     }
 
-    if (pos.y < 0) {
-        pos.y = screen.h + pos.y;
-    } else if (pos.y > screen.h) {
-        pos.y -= screen.h;
+    if (newPos.y < 0) {
+        newPos.y = screen.h + newPos.y;
+    } else if (newPos.y > screen.h) {
+        newPos.y -= screen.h;
     }
+
+    return newPos;
 }
 
 void DrawWrapLine(utl::Renderer& rend, const Box& screen, double x1, double y1,

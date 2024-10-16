@@ -60,7 +60,7 @@ protected:
     const std::string m_title;
     const int m_screenWidth;
     const int m_screenHeight;
-    const Box m_screenSpace;
+    Box m_screenSpace;
     const uint32_t m_windowFlags;
     Window m_window;
     const uint32_t m_windowID;

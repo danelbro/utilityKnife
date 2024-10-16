@@ -30,7 +30,7 @@ public:
 
     // Only ask add_stage() to add (derived) Stages!
     template<typename T, typename... Args>
-    void add_stage(const std::string& key, const Box& screen, uint32_t windowID,
+    void add_stage(const std::string& key, Box& screen, uint32_t windowID,
                    utl::Renderer& renderer, const Args&... args)
     {
         stages[key] = std::make_unique<T>(screen, windowID, renderer, args...);

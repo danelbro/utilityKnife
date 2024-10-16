@@ -26,5 +26,5 @@ target_compile_options(${PROJECT_NAME} PRIVATE
 	$<$<OR:${is_CC}>:-pedantic>
 	$<$<OR:${is_CC}>:-std=c++20>
 	$<$<OR:${is_CC}>:-Weffc++>
-    $<$<OR:${is_Clang}>:”-x c++”>
+    	$<$<OR:${is_Clang}>:-x c++>
 	$<${is_MS}:/W4>)

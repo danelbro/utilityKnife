@@ -1,7 +1,7 @@
 ﻿#include "utl_Vec2d.hpp"
 
-#define _USE_MATH_DEFINES
 #include <cmath>
+#include <numbers>
 
 namespace utl {
 
@@ -18,12 +18,12 @@ double Vec2d::magnitude_squared() const
 double Vec2d::angle() const
 {
     Vec2d normVec = this->normalize();
-    return M_PI - std::atan2(normVec.x, normVec.y);
+    return std::numbers::pi - std::atan2(normVec.x, normVec.y);
 }
 
 double Vec2d::angleDeg() const
 {
-    return angle() * 180 / M_PI;
+    return angle() * 180 / std::numbers::pi;
 }
 
 double Vec2d::angleTo(const Vec2d& otherVec) const
@@ -79,12 +79,12 @@ void Vec2d::rotate_rad_ip(double rad)
 
 Vec2d Vec2d::rotate_deg(double deg)
 {
-    return rotate_rad(deg * (M_PI / 180.0));
+    return rotate_rad(deg * (std::numbers::pi / 180.0));
 }
 
 void Vec2d::rotate_deg_ip(double deg)
 {
-    rotate_rad_ip(deg * (M_PI / 180.0));
+    rotate_rad_ip(deg * (std::numbers::pi / 180.0));
 }
 
 Vec2d Vec2d::operator*(const double& n) const
