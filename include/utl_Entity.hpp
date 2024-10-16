@@ -36,10 +36,11 @@ public:
      */
     virtual void render(Renderer& renderer) = 0;
 
-    Vec2d& pos() { return m_pos; }
+    const Vec2d& pos() const { return m_pos; }
     std::string type() const { return m_type; }
     const Box& screen() const { return m_screenSpace; }
 
+    void set_pos(const Vec2d& newPos) { m_pos = newPos; }
     void updateScreen(const Box& newScreenSpace)
     {
         m_screenSpace = newScreenSpace;
