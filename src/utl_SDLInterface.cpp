@@ -109,7 +109,7 @@ void copyTexturePortion(Renderer& rend, Texture& tex, Rect& srcRect,
 
 void drawPoint(Renderer& rend, int x, int y)
 {
-    SDL_RenderPoint(rend.get(), x, y);
+    SDL_RenderPoint(rend.get(), static_cast<float>(x), static_cast<float>(y));
 }
 
 Surface::Surface(SDL_Surface* new_surf) : m_surfPtr{new_surf, sdl_deleter()} {}
@@ -161,7 +161,7 @@ Font createFont(const std::string& path, int font_size)
 #ifdef _DEBUG
     errorLogger << "creating a font\n";
 #endif
-    Font font{TTF_OpenFont(path.c_str(), font_size)};
+    Font font{TTF_OpenFont(path.c_str(), static_cast<float>(font_size))};
 
     if (!font.get()) {
         throw SdlException(
@@ -175,10 +175,10 @@ Rect::Rect(SDL_FRect* new_rect) : m_rectPtr{new_rect} {}
 Rect::Rect(int x, int y, int w, int h)
     : m_rectPtr{std::make_unique<SDL_FRect>()}
 {
-    m_rectPtr->x = x;
-    m_rectPtr->y = y;
-    m_rectPtr->w = w;
-    m_rectPtr->h = h;
+    m_rectPtr->x = static_cast<float>(x);
+    m_rectPtr->y = static_cast<float>(y);
+    m_rectPtr->w = static_cast<float>(w);
+    m_rectPtr->h = static_cast<float>(h);
 }
 
 void process_input(Box& screen, uint32_t windowID,
