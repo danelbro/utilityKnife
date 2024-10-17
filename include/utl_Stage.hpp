@@ -32,19 +32,19 @@ public:
     virtual std::string update(double t, double dt) = 0;
     virtual void render(double t, double dt) = 0;
 
-    Box screen() const { return m_screen; }
+    Box& screen() { return m_screen; }
     uint32_t windowID() const { return m_windowID; }
     Renderer& renderer() { return m_rend; }
     std::string ID() const { return m_ID; }
 
 protected:
-    Stage(const Box& screen, uint32_t windowID, Renderer& renderer,
+    Stage(Box& screen, uint32_t windowID, Renderer& renderer,
           const std::string& id)
         : m_screen{screen}, m_windowID{windowID}, m_rend{renderer}, m_ID{id}
     {}
 
 private:
-    Box m_screen;
+    Box& m_screen;
     uint32_t m_windowID;
     Renderer& m_rend;
     std::string m_ID;
