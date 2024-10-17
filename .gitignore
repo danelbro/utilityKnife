@@ -20,3 +20,5 @@ obj/
 /build/
 /out/
 CMakeSettings.json
+.clang-format
+
