@@ -14,9 +14,9 @@ namespace utl {
  * your derived app class, you are responsible for:
  *
  * - in your app’s constructor, adding at least one (derived) Stage to your
- * app’s StageManager by calling m_stageManager.add_stage(), and setting it as the
- * current stage by calling m_stageManager.set_current_stage(). Your derived stages
- * will contain all of your app’s logic and functionality.
+ * app’s StageManager by calling m_stageManager.add_stage(), and setting it as
+ * the current stage by calling m_stageManager.set_current_stage(). Your derived
+ * stages will contain all of your app’s logic and functionality.
  *
  * - setting the Renderer’s behaviour [currently, all you can do is
  *   m_renderer.setVSync()].

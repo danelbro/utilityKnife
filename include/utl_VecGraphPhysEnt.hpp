@@ -2,8 +2,8 @@
 
 #include "utl_Entity.hpp"
 #include "utl_GameWorld.hpp"
-#include "utl_VecGraphPhysComp.hpp"
 #include "utl_SDLInterface.hpp"
+#include "utl_VecGraphPhysComp.hpp"
 
 #include <string>
 #include <vector>

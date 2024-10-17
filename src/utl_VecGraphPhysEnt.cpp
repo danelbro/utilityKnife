@@ -2,17 +2,17 @@
 
 #include "utl_Entity.hpp"
 #include "utl_GameWorld.hpp"
-#include "utl_VecGraphPhysComp.hpp"
 #include "utl_SDLInterface.hpp"
 #include "utl_Vec2d.hpp"
+#include "utl_VecGraphPhysComp.hpp"
 #include "utl_VectorDraw.hpp"
 
 #include <vector>
 
 namespace utl {
 
-VecGraphPhysEnt::VecGraphPhysEnt(const std::string& type,
-                                 GameWorld& gameWorld, const Vec2d& pos,
+VecGraphPhysEnt::VecGraphPhysEnt(const std::string& type, GameWorld& gameWorld,
+                                 const Vec2d& pos,
                                  const std::vector<Vec2d>& shape,
                                  const Colour& color, const double& scale,
                                  const double& mass, bool wrap, bool fill)
