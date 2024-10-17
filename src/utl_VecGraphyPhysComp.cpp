@@ -1,6 +1,6 @@
-﻿#include "utl_PhysicsComponent.hpp"
+﻿#include "utl_VecGraphPhysComp.hpp"
 
-#include "utl_PhysicsEntity.hpp"
+#include "utl_VecGraphPhysEnt.hpp"
 #include "utl_VectorDraw.hpp"
 
 #include <cmath>

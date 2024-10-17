@@ -2,7 +2,7 @@
 
 #include "utl_Entity.hpp"
 #include "utl_GameWorld.hpp"
-#include "utl_PhysicsComponent.hpp"
+#include "utl_VecGraphPhysComp.hpp"
 #include "utl_SDLInterface.hpp"
 
 #include <string>
@@ -59,7 +59,7 @@ protected:
     VecGraphPhysEnt(const std::string& type, GameWorld& gameWorld,
                     const Vec2d& pos, const std::vector<Vec2d>& shape,
                     const Colour& color, const double& scale,
-                    const double& mass, bool fill, bool wrap);
+                    const double& mass, bool wrap, bool fill);
     void update_shapes();
 
     GameWorld& m_gameWorld;
@@ -67,8 +67,8 @@ protected:
     double m_scale;
     bool m_isVisible;
     bool m_killMe;
-    bool m_fill;
     bool m_wrap;
+    bool m_fill;
 
     std::vector<Vec2d> m_shape;
     std::vector<Vec2d> m_collider;
