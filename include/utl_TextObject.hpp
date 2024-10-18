@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "utl_Box.hpp"
 #include "utl_Entity.hpp"
 #include "utl_SDLInterface.hpp"
 #include "utl_Vec2d.hpp"
@@ -7,8 +8,6 @@
 #include <string>
 
 namespace utl {
-
-struct Box;
 
 class TextObject : public Entity {
 public:
