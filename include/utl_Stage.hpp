@@ -13,7 +13,7 @@ namespace utl {
  * The Stage is the base class for a level, screen, stage, etc. Your derived
  * stages will need to override handle_input() - which should return an ID
  * string for the next stage (which of course could be the ID of the same
- * stage ) - update() - which should probably at least call Entity::update()
+ * stage) - update() - which should probably at least call Entity::update()
  * on each of the entities that make up the level, and which should also
  * return an ID string for the next stage - and render() - which should
  * probably at least call Entity::render() on each of the entities. So
