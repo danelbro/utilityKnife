@@ -21,7 +21,7 @@ public:
     void update(double, double) override {}
     void render(Renderer&) override {}
 
-    void set_text(std::vector<std::string>) {}
+    void set_text(const std::vector<std::string>&) {}
     void set_pos(double, double) {}
 
 private:
