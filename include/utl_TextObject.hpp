@@ -24,7 +24,7 @@ public:
     TextObject& operator=(TextObject&&) = delete;
     ~TextObject() = default;
 
-    const Vec2d size() { return m_size; }
+    const Vec2d& size() const { return m_size; }
 
     void loadFromRenderedText(const std::string& textureText,
                               const utl::Colour& text_colour);
