@@ -13,16 +13,20 @@ static double calculate_height(const std::vector<TextObject>& scores,
                                double padding);
 
 ScoreBoard::ScoreBoard(Box& screen, const Vec2d& pos, double padding,
-                       Font& font, const Colour& color, Renderer& renderer)
+                       Font& font, const Colour& textColor,
+                       const Colour& newScoreColor, Renderer& renderer)
     : Entity{"SCOREBOARD", screen, pos}, m_padding{padding}, m_font{font},
-      m_col{color}, m_renderer{renderer}, m_scores{}, m_size{}
+      m_textCol{textColor}, m_newScoreCol{newScoreColor}, m_renderer{renderer},
+      m_scores{}, m_size{}
 {}
 
 ScoreBoard::ScoreBoard(Box& screen, const Vec2d& pos, double padding,
-                       Font& font, const Colour& color, Renderer& renderer,
+                       Font& font, const Colour& textColor,
+                       const Colour& newScoreColor, Renderer& renderer,
                        const std::vector<std::string>& scores)
     : Entity{"SCOREBOARD", screen, pos}, m_padding{padding}, m_font{font},
-      m_col{color}, m_renderer{renderer}, m_scores{}, m_size{}
+      m_textCol{textColor}, m_newScoreCol{newScoreColor}, m_renderer{renderer},
+      m_scores{}, m_size{}
 {
     m_scores.reserve(5);
     set_text(scores);
@@ -36,11 +40,18 @@ void ScoreBoard::render(Renderer& renderer)
     }
 }
 
-void ScoreBoard::set_text(const std::vector<std::string>& scores)
+void ScoreBoard::set_text(const std::vector<std::string>& scores,
+                          int newScorePos)
 {
-    for (const auto& score : scores) {
-        m_scores.emplace_back(m_screenSpace, m_pos, m_font, m_col, m_renderer);
-        m_scores.back().updateText(score);
+    for (size_t i{0}; i < scores.size(); i++) {
+        if (newScorePos == static_cast<int>(i)) {
+            m_scores.emplace_back(m_screenSpace, m_pos, m_font, m_newScoreCol,
+                                  m_renderer);
+        } else {
+            m_scores.emplace_back(m_screenSpace, m_pos, m_font, m_textCol,
+                                  m_renderer);
+        }
+        m_scores.back().updateText(scores[i]);
     }
     m_size.x = calculate_width(m_scores);
     m_size.y = calculate_height(m_scores, m_padding);
