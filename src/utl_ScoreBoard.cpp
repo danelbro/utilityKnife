@@ -65,7 +65,7 @@ void ScoreBoard::reposition_text()
         double x{}, y{};
         x = m_pos.x + (m_size.x / 2) - (m_scores[i].size().x / 2);
         y = runningHeight;
-        runningHeight += m_scores[i].size().y + m_padding * (i + 1);
+        runningHeight += m_scores[i].size().y + m_padding;
         m_scores[i].setPos({x, y});
     }
 }
