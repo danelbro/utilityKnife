@@ -14,14 +14,15 @@ namespace utl {
 class ScoreBoard : public Entity {
 public:
     ScoreBoard(Box& screen, const Vec2d& pos, double padding, Font& font,
-               const Colour& color, Renderer& renderer);
+               const Colour& mainTextColor, const Colour& newScoreColor,
+               Renderer& renderer);
     ScoreBoard(Box& screen, const Vec2d& pos, double padding, Font& font,
-               const Colour& color, Renderer& renderer,
-               const std::vector<std::string>& scores);
+               const Colour& color, const Colour& newScoreColor,
+               Renderer& renderer, const std::vector<std::string>& scores);
     void update(double, double) override {}
     void render(Renderer& renderer) override;
 
-    void set_text(const std::vector<std::string>&);
+    void set_text(const std::vector<std::string>& scores, int newScore = -1);
     void set_pos(double x, double y);
     void set_pos(const Vec2d& newPos);
     void change_padding(double padding);
@@ -33,7 +34,8 @@ private:
 
     double m_padding;
     Font& m_font;
-    Colour m_col;
+    Colour m_textCol;
+    Colour m_newScoreCol;
     Renderer& m_renderer;
     std::vector<TextObject> m_scores;
     Vec2d m_size;
