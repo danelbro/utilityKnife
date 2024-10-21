@@ -15,14 +15,14 @@ static double calculate_height(const std::vector<TextObject>& scores,
 ScoreBoard::ScoreBoard(Box& screen, const Vec2d& pos, double padding,
                        Font& font, const Colour& color, Renderer& renderer)
     : Entity{"SCOREBOARD", screen, pos}, m_padding{padding}, m_font{font},
-      m_col{color}, m_renderer{renderer}, m_scores{}
+      m_col{color}, m_renderer{renderer}, m_scores{}, m_size{}
 {}
 
 ScoreBoard::ScoreBoard(Box& screen, const Vec2d& pos, double padding,
                        Font& font, const Colour& color, Renderer& renderer,
                        const std::vector<std::string>& scores)
     : Entity{"SCOREBOARD", screen, pos}, m_padding{padding}, m_font{font},
-      m_col{color}, m_renderer{renderer}, m_scores{}
+      m_col{color}, m_renderer{renderer}, m_scores{}, m_size{}
 {
     m_scores.reserve(5);
     set_text(scores);
@@ -58,7 +58,8 @@ void ScoreBoard::set_pos(double x, double y)
     set_pos({x, y});
 }
 
-void ScoreBoard::reposition_text() {
+void ScoreBoard::reposition_text()
+{
     double runningHeight{m_pos.y};
     for (size_t i{0}; i < m_scores.size(); i++) {
         double x{}, y{};
