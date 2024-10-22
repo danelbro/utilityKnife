@@ -2,13 +2,10 @@
 
 #include "utl_Application.hpp"
 #include "utl_Stage.hpp"
+#include "utl_utility.hpp"
 
 #include <chrono>
 #include <stdexcept>
-
-#ifndef NDEBUG
-#include <utl_utility.hpp>
-#endif
 
 namespace utl {
 

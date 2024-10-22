@@ -1,10 +1,7 @@
 #include "utl_SDLInterface.hpp"
 
 #include "utl_Box.hpp"
-
-#ifndef NDEBUG
 #include "utl_utility.hpp"
-#endif
 
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
