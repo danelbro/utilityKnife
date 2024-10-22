@@ -8,12 +8,9 @@
 #include <SDL3_ttf/SDL_ttf.h>
 #include <array>
 #include <cstdint>
+#include <filesystem>
 #include <memory>
 #include <stdexcept>
-
-#ifdef _DEBUG
-#include "utl_utility.hpp"
-#endif
 
 struct Box;
 
@@ -31,41 +28,11 @@ struct Colour {
 // Custom deleters for SDL types. Pass when constructing a unique_ptr
 // thanks to https://stackoverflow.com/a/24252225
 struct sdl_deleter {
-    void operator()(SDL_Window* w) const
-    {
-#ifdef _DEBUG
-        errorLogger << "destroying a window\n";
-#endif
-        SDL_DestroyWindow(w);
-    }
-    void operator()(SDL_Renderer* r) const
-    {
-#ifdef _DEBUG
-        errorLogger << "destroying a renderer\n";
-#endif
-        SDL_DestroyRenderer(r);
-    }
-    void operator()(SDL_Surface* s) const
-    {
-#ifdef _DEBUG
-        errorLogger << "destroying a surface\n";
-#endif
-        SDL_DestroySurface(s);
-    }
-    void operator()(SDL_Texture* t) const
-    {
-#ifdef _DEBUG
-        errorLogger << "destroying a texture\n";
-#endif
-        SDL_DestroyTexture(t);
-    }
-    void operator()(TTF_Font* f)
-    {
-#ifdef _DEBUG
-        errorLogger << "closing a font\n";
-#endif
-        TTF_CloseFont(f);
-    }
+    void operator()(SDL_Window*) const;
+    void operator()(SDL_Renderer*) const;
+    void operator()(SDL_Surface*) const;
+    void operator()(SDL_Texture*) const;
+    void operator()(TTF_Font*) const;
 };
 
 // wrapper around std::runtime_error to make SDL exception handling smoother
@@ -172,7 +139,7 @@ textureAndSize createTextTexture(Font& font, const std::string& text,
                                  const Colour& text_colour, Renderer& rend);
 
 // Create a TTF_Font. Throw an SdlException if creation fails
-Font createFont(const std::string& path, int font_size);
+Font createFont(const std::filesystem::path& path, int font_size);
 
 enum KeyFlag
 {

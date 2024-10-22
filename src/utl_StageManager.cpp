@@ -6,11 +6,16 @@
 #include <chrono>
 #include <stdexcept>
 
+#ifndef NDEBUG
+#include <utl_utility.hpp>
+#endif
+
 namespace utl {
 
 StageManager::StageManager(Application& app) : current{""}, next{""}, m_app{app}
 {
     std::fill(keyState.begin(), keyState.end(), false);
+    LOG("Constructed StageManager\n");
 }
 
 void StageManager::set_current_stage(const std::string& new_current)

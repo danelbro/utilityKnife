@@ -1,10 +1,9 @@
 ﻿#include "utl_utility.hpp"
 
 #include <ctime>
+#include <random>
 
 namespace utl {
-
-std::ofstream errorLogger("exception.log");
 
 std::mt19937 makeSeededRNG()
 {

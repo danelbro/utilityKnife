@@ -1,11 +1,15 @@
 #include "utl_SDLInterface.hpp"
 
 #include "utl_Box.hpp"
+
+#ifndef NDEBUG
 #include "utl_utility.hpp"
+#endif
 
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <cstdint>
+#include <filesystem>
 #include <stdexcept>
 #include <string>
 
@@ -14,6 +18,36 @@ namespace utl {
 SdlException::SdlException(const std::string& message)
     : std::runtime_error{message}
 {}
+
+void sdl_deleter::operator()(SDL_Window* w) const
+{
+    LOG("destroying a window\n");
+    SDL_DestroyWindow(w);
+}
+
+void sdl_deleter::operator()(SDL_Renderer* r) const
+{
+    LOG("destroying a renderer\n");
+    SDL_DestroyRenderer(r);
+}
+
+void sdl_deleter::operator()(SDL_Surface* s) const
+{
+    LOG("destroying a surface\n");
+    SDL_DestroySurface(s);
+}
+
+void sdl_deleter::operator()(SDL_Texture* t) const
+{
+    LOG("destroying a texture\n");
+    SDL_DestroyTexture(t);
+}
+
+void sdl_deleter::operator()(TTF_Font* f) const
+{
+    LOG("closing a font\n");
+    TTF_CloseFont(f);
+}
 
 void init(uint32_t sdlFlags)
 {
@@ -40,9 +74,8 @@ Window::Window(SDL_Window* new_win) : m_winPtr{new_win, sdl_deleter()} {}
 
 Window createWindow(const std::string& title, int w, int h, uint32_t flags)
 {
-#ifdef _DEBUG
-    errorLogger << "creating a window\n";
-#endif
+    LOG("creating a window\n");
+
     Window window{SDL_CreateWindow(title.c_str(), w, h, flags)};
 
     if (!window.get()) {
@@ -57,9 +90,8 @@ Renderer::Renderer(SDL_Renderer* new_rend) : m_rendPtr{new_rend, sdl_deleter()}
 
 Renderer createRenderer(Window& window, const char* index)
 {
-#ifdef _DEBUG
-    errorLogger << "creating a renderer\n";
-#endif
+    LOG("creating a renderer\n");
+
     Renderer rend{SDL_CreateRenderer(window.get(), index)};
 
     if (!rend.get()) {
@@ -123,9 +155,7 @@ textureAndSize::textureAndSize(Texture newTexP, int newW, int newH)
 textureAndSize createTextTexture(Font& font, const std::string& text,
                                  const Colour& text_colour, Renderer& rend)
 {
-#ifdef _DEBUG
-    errorLogger << "creating a text texture\n";
-#endif
+    LOG("creating a texture\n");
     Surface textSurface{TTF_RenderText_Blended(font.get(), text.c_str(),
                                                text.length(), text_colour)};
 
@@ -137,14 +167,14 @@ textureAndSize createTextTexture(Font& font, const std::string& text,
     auto tp = SDL_CreateTextureFromSurface(rend.get(), textSurface.get());
 
     if (!tp) {
-        errorLogger << std::string{SDL_GetError()} << '\n';
+        ERRLOG(std::string{SDL_GetError()} << '\n');
     }
 
     Texture textTexture{
         SDL_CreateTextureFromSurface(rend.get(), textSurface.get())};
 
     if (!textTexture.get()) {
-        errorLogger << SDL_GetError() << '\n';
+        ERRLOG(SDL_GetError() << '\n');
         throw SdlException("Could not create texture!");
     }
 
@@ -156,13 +186,12 @@ textureAndSize createTextTexture(Font& font, const std::string& text,
 
 Font::Font(TTF_Font* new_font) : m_fontPtr{new_font, sdl_deleter()} {}
 
-Font createFont(const std::string& path, int font_size)
+Font createFont(const std::filesystem::path& path, int font_size)
 {
-#ifdef _DEBUG
-    errorLogger << "creating a font\n";
-#endif
-    Font font{TTF_OpenFont(path.c_str(), static_cast<float>(font_size))};
+    LOG("creating a font\n");
 
+    Font font{
+        TTF_OpenFont(path.string().c_str(), static_cast<float>(font_size))};
     if (!font.get()) {
         throw SdlException(
             std::string{"Failed to make font! TTF_Error: ", SDL_GetError()});
