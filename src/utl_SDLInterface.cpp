@@ -85,6 +85,24 @@ Window createWindow(const std::string& title, int w, int h, uint32_t flags)
 Renderer::Renderer(SDL_Renderer* new_rend) : m_rendPtr{new_rend, sdl_deleter()}
 {}
 
+WindowWithRenderer create_window_with_renderer(const std::string& title, int w,
+                                               int h, uint32_t flags)
+{
+    SDL_Window* sdlWindow{nullptr};
+    SDL_Renderer* sdlRenderer{nullptr};
+
+    if (!SDL_CreateWindowAndRenderer(title.c_str(), w, h, flags, &sdlWindow,
+                                     &sdlRenderer)) {
+        throw SdlException(std::string{
+            "Cannot create window/renderer! SDL_Error: ", SDL_GetError()});
+    }
+
+    Window window{sdlWindow};
+    Renderer renderer{sdlRenderer};
+
+    return {std::move(window), std::move(renderer)};
+}
+
 Renderer createRenderer(Window& window, const char* index)
 {
     LOG("creating a renderer\n");

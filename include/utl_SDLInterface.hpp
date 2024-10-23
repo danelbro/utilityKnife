@@ -112,8 +112,20 @@ private:
     std::unique_ptr<SDL_FRect> m_rectPtr;
 };
 
+struct WindowWithRenderer {
+    WindowWithRenderer(Window w, Renderer r)
+        : window{std::move(w)}, renderer{std::move(r)}
+    {}
+    Window window;
+    Renderer renderer;
+};
+
 // Create an SDL_Window*. Throw an SdlException if creation fails
 Window createWindow(const std::string& title, int w, int h, Uint32 flags);
+
+
+WindowWithRenderer create_window_with_renderer(const std::string& title, int w,
+                                               int h, uint32_t flags);
 
 // Create an SDL_Renderer*. Throw an SdlException if creation fails
 Renderer createRenderer(Window& window, const char* index);
