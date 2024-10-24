@@ -168,8 +168,8 @@ Renderer createRenderer(const Window& window, const char* index);
 
 void clearScreen(Renderer&);
 void presentRenderer(Renderer&);
-void setRendererDrawColour(const Renderer&, const Colour&);
-Colour getRendererDrawColour(Renderer&);
+void setRendererDrawColour(Renderer&, const Colour&);
+Colour getRendererDrawColour(const Renderer&);
 void copyTexturePortion(Renderer&, Texture&, Rect& src, Rect& dst);
 void drawPoint(Renderer&, int x, int y);
 

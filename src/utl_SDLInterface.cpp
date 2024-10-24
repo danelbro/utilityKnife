@@ -7,6 +7,7 @@
 #include <SDL3_ttf/SDL_ttf.h>
 #include <cstdint>
 #include <filesystem>
+#include <memory>
 #include <stdexcept>
 #include <string>
 
@@ -215,20 +216,10 @@ Font createFont(const std::filesystem::path& path, int font_size)
 Rect::Rect(SDL_FRect* new_rect) : m_rectPtr{new_rect} {}
 
 Rect::Rect(int x, int y, int w, int h)
-    : m_rectPtr{nullptr}
-{
-    SDL_Rect* newRect{};
-    newRect->x = x;
-    newRect->y = y;
-    newRect->w = w;
-    newRect->h = h;
-
-    SDL_FRect* newFRect{};
-
-    SDL_RectToFRect(newRect, newFRect);
-
-    m_rectPtr.reset(newFRect);
-}
+    : m_rectPtr{std::make_unique<SDL_FRect>(
+          static_cast<float>(x), static_cast<float>(y), static_cast<float>(w),
+          static_cast<float>(h))}
+{}
 
 void process_input(Box& screen, uint32_t windowID,
                    std::array<bool, KeyFlag::K_TOTAL>& key_state)
