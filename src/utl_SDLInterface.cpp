@@ -73,13 +73,13 @@ Window createWindow(const std::string& title, int w, int h, uint32_t flags)
 {
     LOG("creating a window\n");
 
-    Window window{SDL_CreateWindow(title.c_str(), w, h, flags)};
+    SDL_Window* sdlWindow{SDL_CreateWindow(title.c_str(), w, h, flags)};
 
-    if (!window.get()) {
+    if (!sdlWindow) {
         throw SdlException(
             std::string{"Cannot create window! SDL_Error: ", SDL_GetError()});
     }
-    return window;
+    return Window{sdlWindow};
 }
 
 Renderer::Renderer(SDL_Renderer* new_rend) : m_rendPtr{new_rend, sdl_deleter()}
@@ -88,6 +88,8 @@ Renderer::Renderer(SDL_Renderer* new_rend) : m_rendPtr{new_rend, sdl_deleter()}
 WindowWithRenderer create_window_with_renderer(const std::string& title, int w,
                                                int h, uint32_t flags)
 {
+    LOG("Creating a window + renderer\n");
+
     SDL_Window* sdlWindow{nullptr};
     SDL_Renderer* sdlRenderer{nullptr};
 
@@ -97,23 +99,20 @@ WindowWithRenderer create_window_with_renderer(const std::string& title, int w,
             "Cannot create window/renderer! SDL_Error: ", SDL_GetError()});
     }
 
-    Window window{sdlWindow};
-    Renderer renderer{sdlRenderer};
-
-    return {std::move(window), std::move(renderer)};
+    return {Window{sdlWindow}, Renderer{sdlRenderer}};
 }
 
-Renderer createRenderer(Window& window, const char* index)
+Renderer createRenderer(const Window& window, const char* index)
 {
     LOG("creating a renderer\n");
 
-    Renderer rend{SDL_CreateRenderer(window.get(), index)};
+    SDL_Renderer* sdlRenderer{SDL_CreateRenderer(window.get(), index)};
 
-    if (!rend.get()) {
+    if (!sdlRenderer) {
         throw SdlException(
             std::string{"Cannot create renderer! SDL_Error: ", SDL_GetError()});
     }
-    return rend;
+    return Renderer{sdlRenderer};
 }
 
 bool Renderer::setVSync(int vsync)
@@ -141,7 +140,7 @@ void setRendererDrawColour(Renderer& rend, const Colour& col)
     SDL_SetRenderDrawColor(rend.get(), col.r, col.g, col.b, col.a);
 }
 
-Colour getRendererDrawColour(Renderer& rend)
+Colour getRendererDrawColour(const Renderer& rend)
 {
     Colour col{};
     SDL_GetRenderDrawColor(rend.get(), &col.r, &col.g, &col.b, &col.a);
@@ -163,40 +162,38 @@ Surface::Surface(SDL_Surface* new_surf) : m_surfPtr{new_surf, sdl_deleter()} {}
 
 Texture::Texture(SDL_Texture* new_tex) : m_texPtr{new_tex, sdl_deleter()} {}
 
-textureAndSize::textureAndSize(Texture newTexP, int newW, int newH)
+textureAndSize::textureAndSize(Texture&& newTexP, int newW, int newH)
     : texP{std::move(newTexP)}, w{newW}, h{newH}
 {}
 
 textureAndSize createTextTexture(Font& font, const std::string& text,
                                  const Colour& text_colour, Renderer& rend)
 {
-    LOG("creating a texture\n");
-    Surface textSurface{TTF_RenderText_Blended(font.get(), text.c_str(),
-                                               text.length(), text_colour)};
+    LOG("creating a surface\n");
+    SDL_Surface* textSurface{TTF_RenderText_Blended(
+        font.get(), text.c_str(), text.length(), text_colour)};
 
-    if (!textSurface.get()) {
+    if (!textSurface) {
         throw SdlException(
             std::string{"Cannot create surface! SDL_Error: ", SDL_GetError()});
     }
 
-    auto tp = SDL_CreateTextureFromSurface(rend.get(), textSurface.get());
+    int w{textSurface->w};
+    int h{textSurface->h};
 
-    if (!tp) {
+    LOG("creating a texture from the surface\n");
+    SDL_Texture* textTexture{
+        SDL_CreateTextureFromSurface(rend.get(), textSurface)};
+
+    if (!textTexture) {
         ERRLOG(std::string{SDL_GetError()} << '\n');
-    }
-
-    Texture textTexture{
-        SDL_CreateTextureFromSurface(rend.get(), textSurface.get())};
-
-    if (!textTexture.get()) {
-        ERRLOG(SDL_GetError() << '\n');
         throw SdlException("Could not create texture!");
     }
 
-    int w{textSurface.get()->w};
-    int h{textSurface.get()->h};
+    LOG("destroying the surface\n");
+    SDL_DestroySurface(textSurface);
 
-    return textureAndSize{std::move(textTexture), w, h};
+    return textureAndSize{textTexture, w, h};
 }
 
 Font::Font(TTF_Font* new_font) : m_fontPtr{new_font, sdl_deleter()} {}
@@ -205,24 +202,32 @@ Font createFont(const std::filesystem::path& path, int font_size)
 {
     LOG("creating a font\n");
 
-    Font font{
+    TTF_Font* font{
         TTF_OpenFont(path.string().c_str(), static_cast<float>(font_size))};
-    if (!font.get()) {
+
+    if (!font) {
         throw SdlException(
             std::string{"Failed to make font! TTF_Error: ", SDL_GetError()});
     }
-    return font;
+    return Font{font};
 }
 
 Rect::Rect(SDL_FRect* new_rect) : m_rectPtr{new_rect} {}
 
 Rect::Rect(int x, int y, int w, int h)
-    : m_rectPtr{std::make_unique<SDL_FRect>()}
+    : m_rectPtr{nullptr}
 {
-    m_rectPtr->x = static_cast<float>(x);
-    m_rectPtr->y = static_cast<float>(y);
-    m_rectPtr->w = static_cast<float>(w);
-    m_rectPtr->h = static_cast<float>(h);
+    SDL_Rect* newRect{};
+    newRect->x = x;
+    newRect->y = y;
+    newRect->w = w;
+    newRect->h = h;
+
+    SDL_FRect* newFRect{};
+
+    SDL_RectToFRect(newRect, newFRect);
+
+    m_rectPtr.reset(newFRect);
 }
 
 void process_input(Box& screen, uint32_t windowID,

@@ -51,9 +51,11 @@ protected:
         : m_title{title}, m_screenWidth{screenWidth},
           m_screenHeight{screenHeight},
           m_screenSpace{m_screenWidth, m_screenHeight}, m_windowFlags{flags},
-          m_window{createWindow(m_title.c_str(), m_screenSpace.w,
-                                m_screenSpace.h, m_windowFlags)},
-          m_windowID{m_window.ID()}, m_renderer{createRenderer(m_window, NULL)},
+          m_windowRendStruct{utl::create_window_with_renderer(
+              m_title, m_screenWidth, m_screenHeight, m_windowFlags)},
+          m_window{std::move(m_windowRendStruct.window)},
+          m_windowID{m_window.ID()},
+          m_renderer{std::move(m_windowRendStruct.renderer)},
           m_stageManager{*this}
     {}
 
@@ -62,6 +64,7 @@ protected:
     const int m_screenHeight;
     Box m_screenSpace;
     const uint32_t m_windowFlags;
+    WindowWithRenderer m_windowRendStruct;
     Window m_window;
     const uint32_t m_windowID;
     Renderer m_renderer;

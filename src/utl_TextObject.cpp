@@ -29,7 +29,9 @@ void TextObject::loadFromRenderedText(const std::string& textureText,
     auto texPstruct{
         utl::createTextTexture(m_font, textureText, text_colour, m_rend)};
 
-    m_texture = std::move(texPstruct.texP);
+    m_texture.reset(texPstruct.texP.get());
+    texPstruct.texP.reset(nullptr);
+
     m_size.x = texPstruct.w;
     m_size.y = texPstruct.h;
 }

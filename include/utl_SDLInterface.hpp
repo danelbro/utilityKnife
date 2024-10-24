@@ -52,8 +52,14 @@ struct Window {
 public:
     Window(SDL_Window*);
 
-    uint32_t ID() { return SDL_GetWindowID(m_winPtr.get()); }
-    SDL_Window* get() { return m_winPtr.get(); }
+    Window(const Window&) = delete;
+    Window& operator=(const Window&) = delete;
+
+    Window(Window&&) = default;
+    Window& operator=(Window&&) = delete;
+
+    uint32_t ID() const { return SDL_GetWindowID(m_winPtr.get()); }
+    SDL_Window* get() const { return m_winPtr.get(); }
 
 private:
     std::unique_ptr<SDL_Window, sdl_deleter> m_winPtr;
@@ -63,7 +69,13 @@ struct Renderer {
 public:
     Renderer(SDL_Renderer*);
 
-    SDL_Renderer* get() { return m_rendPtr.get(); }
+    Renderer(const Renderer&) = delete;
+    Renderer& operator=(const Renderer&) = delete;
+
+    Renderer(Renderer&&) = default;
+    Renderer& operator=(Renderer&&) = delete;
+
+    SDL_Renderer* get() const { return m_rendPtr.get(); }
     bool setVSync(int vsync);
 
 private:
@@ -74,7 +86,13 @@ struct Surface {
 public:
     Surface(SDL_Surface*);
 
-    SDL_Surface* get() { return m_surfPtr.get(); }
+    Surface(const Surface&) = delete;
+    Surface& operator=(const Surface&) = delete;
+
+    Surface(Surface&&) = default;
+    Surface& operator=(Surface&&) = delete;
+
+    SDL_Surface* get() const { return m_surfPtr.get(); }
 
 private:
     std::unique_ptr<SDL_Surface, sdl_deleter> m_surfPtr;
@@ -84,7 +102,13 @@ struct Texture {
 public:
     Texture(SDL_Texture*);
 
-    SDL_Texture* get() { return m_texPtr.get(); }
+    Texture(const Texture&) = delete;
+    Texture& operator=(const Texture&) = delete;
+
+    Texture(Texture&&) = default;
+    Texture& operator=(Texture&&) = default;
+
+    SDL_Texture* get() const { return m_texPtr.get(); }
     void reset(SDL_Texture* new_ptr) { m_texPtr.reset(new_ptr); }
 
 private:
@@ -95,7 +119,13 @@ struct Font {
 public:
     Font(TTF_Font*);
 
-    TTF_Font* get() { return m_fontPtr.get(); }
+    Font(const Font&) = delete;
+    Font& operator=(const Font&) = delete;
+
+    Font(Font&&) = default;
+    Font& operator=(Font&&) = delete;
+
+    TTF_Font* get() const { return m_fontPtr.get(); }
 
 private:
     std::unique_ptr<TTF_Font, sdl_deleter> m_fontPtr;
@@ -106,14 +136,20 @@ public:
     Rect(SDL_FRect*);
     Rect(int x, int y, int w, int h);
 
-    SDL_FRect* get() { return m_rectPtr.get(); }
+    Rect(const Rect&) = delete;
+    Rect& operator=(const Rect&) = delete;
+
+    Rect(Rect&&) = default;
+    Rect& operator=(Rect&&) = delete;
+
+    SDL_FRect* get() const { return m_rectPtr.get(); }
 
 private:
     std::unique_ptr<SDL_FRect> m_rectPtr;
 };
 
 struct WindowWithRenderer {
-    WindowWithRenderer(Window w, Renderer r)
+    WindowWithRenderer(Window&& w, Renderer&& r)
         : window{std::move(w)}, renderer{std::move(r)}
     {}
     Window window;
@@ -128,17 +164,17 @@ WindowWithRenderer create_window_with_renderer(const std::string& title, int w,
                                                int h, uint32_t flags);
 
 // Create an SDL_Renderer*. Throw an SdlException if creation fails
-Renderer createRenderer(Window& window, const char* index);
+Renderer createRenderer(const Window& window, const char* index);
 
 void clearScreen(Renderer&);
 void presentRenderer(Renderer&);
-void setRendererDrawColour(Renderer&, const Colour&);
+void setRendererDrawColour(const Renderer&, const Colour&);
 Colour getRendererDrawColour(Renderer&);
 void copyTexturePortion(Renderer&, Texture&, Rect& src, Rect& dst);
 void drawPoint(Renderer&, int x, int y);
 
 struct textureAndSize {
-    textureAndSize(Texture newTexP, int newW, int newH);
+    textureAndSize(Texture&& newTexP, int newW, int newH);
 
     Texture texP;
     int w;
