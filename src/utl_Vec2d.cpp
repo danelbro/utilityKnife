@@ -5,6 +5,18 @@
 
 namespace utl {
 
+Vec2d::Vec2d(double angleDeg)
+    : x{convert_x_elem_from_rad(angleDeg / 180.0)},
+      y{convert_y_elem_from_rad(angleDeg / 180.0)}
+{}
+
+Vec2d& Vec2d::operator=(double angleDeg)
+{
+    x = convert_x_elem_from_rad(angleDeg / 180.0);
+    y = convert_y_elem_from_rad(angleDeg / 180.0);
+    return *this;
+}
+
 double Vec2d::magnitude() const
 {
     return std::sqrt(magnitude_squared());
@@ -121,6 +133,27 @@ Vec2d Vec2d::operator-() const
 Vec2d Vec2d::operator-(const Vec2d& otherVec) const
 {
     return Vec2d{x - otherVec.x, y - otherVec.y};
+}
+
+double Vec2d::convert_x_elem_from_rad(double rad)
+{
+    return std::sin(rad * std::numbers::pi);
+}
+
+double Vec2d::convert_y_elem_from_rad(double rad)
+{
+    return -std::cos(rad * std::numbers::pi);
+}
+
+Vec2d Vec2d::convert_from_degrees(double deg)
+{
+    return {convert_x_elem_from_rad(deg / 180.0),
+            convert_y_elem_from_rad(deg / 180.0)};
+}
+
+Vec2d Vec2d::convert_from_rad(double rad)
+{
+    return {convert_x_elem_from_rad(rad), convert_y_elem_from_rad(rad)};
 }
 
 Vec2d randomPos(std::mt19937& rng, int w, int h)
