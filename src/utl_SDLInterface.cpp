@@ -46,8 +46,15 @@ void sdl_deleter::operator()(TTF_Font* f) const
     TTF_CloseFont(f);
 }
 
-bool init_SDL(uint32_t sdlFlags)
+bool init_SDL(const std::string& title, const std::string& version, 
+              const std::string& identifier, uint32_t sdlFlags)
 {
+    if (!SDL_SetAppMetadata(title.c_str(), version.c_str(), identifier.c_str())) {
+        std::string sdlError{SDL_GetError()};
+        throw SdlException(
+            std::string{"Cannot set SDL App metadata! SDL_Error: " + sdlError});
+    }
+
     if (!SDL_Init(sdlFlags)) {
         std::string sdlError{SDL_GetError()};
         throw SdlException(
@@ -191,7 +198,7 @@ textureAndSize createTextTexture(Font& font, const std::string& text,
         SDL_CreateTextureFromSurface(rend.get(), textSurface)};
 
     if (!textTexture) {
-        ERRLOG("%s\n", SDL_GetError());
+        ERRLOGF("%s\n", SDL_GetError());
         throw SdlException("Could not create texture!");
     }
 

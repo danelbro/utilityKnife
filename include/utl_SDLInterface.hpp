@@ -15,11 +15,13 @@
 #ifndef NDEBUG
 #define LOG(message) SDL_Log(message)
 #define LOGF(message, fmt) SDL_Log(message, fmt)
-#define ERRLOG(message, fmt) SDL_LogError(SDL_LOG_CATEGORY_ERROR, message, fmt)
+#define ERRLOG(message) SDL_LogError(SDL_LOG_CATEGORY_ERROR, message)
+#define ERRLOGF(message, fmt) SDL_LogError(SDL_LOG_CATEGORY_ERROR, message, fmt)
 #else
 #define LOG(message)
 #define LOGF(message, fmt)
-#define ERRLOG(message, fmt)
+#define ERRLOG(message)
+#define ERRLOGF(message, fmt)
 #endif
 
 struct Box;
@@ -54,7 +56,8 @@ public:
 /// Initialise SDL with sdlFlags.
 /// Returns true if initlisation succeeds, throws SdlException if initialisation
 /// fails
-bool init_SDL(uint32_t sdlFlags);
+bool init_SDL(const std::string& title, const std::string& version, 
+              const std::string& identifier, uint32_t sdlFlags);
 
 // Run SDL and TTF quit functions
 void quit_sdl();
