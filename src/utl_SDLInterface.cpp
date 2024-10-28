@@ -46,10 +46,11 @@ void sdl_deleter::operator()(TTF_Font* f) const
     TTF_CloseFont(f);
 }
 
-bool init_SDL(const std::string& title, const std::string& version, 
+bool init_SDL(const std::string& title, const std::string& version,
               const std::string& identifier, uint32_t sdlFlags)
 {
-    if (!SDL_SetAppMetadata(title.c_str(), version.c_str(), identifier.c_str())) {
+    if (!SDL_SetAppMetadata(title.c_str(), version.c_str(),
+                            identifier.c_str())) {
         std::string sdlError{SDL_GetError()};
         throw SdlException(
             std::string{"Cannot set SDL App metadata! SDL_Error: " + sdlError});
@@ -228,8 +229,8 @@ Rect::Rect(SDL_FRect* new_rect) : m_rectPtr{new_rect} {}
 
 Rect::Rect(int x, int y, int w, int h)
     : m_rectPtr{std::make_unique<SDL_FRect>(
-        static_cast<float>(x), static_cast<float>(y), static_cast<float>(w),
-        static_cast<float>(h))}
+          static_cast<float>(x), static_cast<float>(y), static_cast<float>(w),
+          static_cast<float>(h))}
 {}
 
 void process_input(Box& screen, uint32_t windowID,

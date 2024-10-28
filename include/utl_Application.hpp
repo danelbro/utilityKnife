@@ -47,8 +47,8 @@ public:
 
 protected:
     Application(const std::string& title, const std::string& version,
-                const std::string& identifier, int screenWidth, 
-		int screenHeight, uint32_t flags, uint32_t windowFlags);
+                const std::string& identifier, int screenWidth,
+                int screenHeight, uint32_t flags, uint32_t windowFlags);
 
     bool isSDLInitialised;
     const std::string m_title;

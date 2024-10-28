@@ -56,7 +56,7 @@ public:
 /// Initialise SDL with sdlFlags.
 /// Returns true if initlisation succeeds, throws SdlException if initialisation
 /// fails
-bool init_SDL(const std::string& title, const std::string& version, 
+bool init_SDL(const std::string& title, const std::string& version,
               const std::string& identifier, uint32_t sdlFlags);
 
 // Run SDL and TTF quit functions

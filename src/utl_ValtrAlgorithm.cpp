@@ -30,9 +30,9 @@
 
 #include "utl_Vec2d.hpp"
 
+#include "utl_random.hpp"
 #include <algorithm>
 #include <cstddef>
-#include "utl_random.hpp"
 #include <vector>
 
 namespace utl {
