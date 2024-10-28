@@ -67,9 +67,9 @@ bool init_SDL(uint32_t sdlFlags)
 
 void quit_sdl()
 {
-    LOG("Quitting SDL\n");
     TTF_Quit();
     SDL_Quit();
+    LOG("Quit SDL\n");
 }
 
 Window::Window(SDL_Window* new_win) : m_winPtr{new_win, sdl_deleter()} {}
