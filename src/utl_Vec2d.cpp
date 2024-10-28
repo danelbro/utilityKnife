@@ -1,4 +1,5 @@
 ﻿#include "utl_Vec2d.hpp"
+#include "utl_random.hpp"
 
 #include <cmath>
 #include <numbers>
@@ -156,7 +157,7 @@ Vec2d Vec2d::convert_from_rad(double rad)
     return {convert_x_elem_from_rad(rad), convert_y_elem_from_rad(rad)};
 }
 
-Vec2d randomPos(std::mt19937& rng, int w, int h)
+    Vec2d randomPos(utl::RNG& rng, int w, int h)
 {
     std::uniform_real_distribution<double> xDist(0.0, static_cast<double>(w));
     std::uniform_real_distribution<double> yDist(0.0, static_cast<double>(h));

@@ -32,13 +32,13 @@
 
 #include <algorithm>
 #include <cstddef>
-#include <random>
+#include "utl_random.hpp"
 #include <vector>
 
 namespace utl {
 
 std::vector<Vec2d> genRandConvexPolygon(int m, const double& radius,
-                                        std::mt19937& rng)
+                                        utl::RNG& rng)
 {
     size_t n = static_cast<size_t>(m);
     std::uniform_real_distribution<double> dist(-radius, radius);

@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include <random>
+#include "utl_random.hpp"
 
 namespace utl {
 
@@ -52,6 +52,6 @@ struct Vec2d {
     double y{};
 };
 
-Vec2d randomPos(std::mt19937& rng, int w, int h);
+Vec2d randomPos(RNG& rng, int w, int h);
 
 }  // namespace utl
