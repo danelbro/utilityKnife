@@ -1,6 +1,6 @@
 add_library(${PROJECT_NAME} STATIC)
 target_sources(${PROJECT_NAME} PRIVATE
-    "../include/utl_Application.hpp"
+    "../include/utl_Application.hpp" “utl_Application.cpp”
     "../include/utl_Box.hpp"
     "../include/utl_Entity.hpp"
     "../include/utl_GameWorld.hpp"
@@ -11,7 +11,7 @@ target_sources(${PROJECT_NAME} PRIVATE
     "../include/utl_Stage.hpp"
     "../include/utl_StageManager.hpp" "utl_StageManager.cpp"
     "../include/utl_TextObject.hpp" "utl_TextObject.cpp"
-    "../include/utl_utility.hpp" "utl_utility.cpp"
+    "../include/utl_random.hpp" "utl_random.cpp"
     "../include/utl_ValtrAlgorithm.hpp" "utl_ValtrAlgorithm.cpp"
     "../include/utl_Vec2d.hpp" "utl_Vec2d.cpp"
     "../include/utl_VectorDraw.hpp" "utl_VectorDraw.cpp")

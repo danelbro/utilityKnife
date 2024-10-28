@@ -12,6 +12,15 @@
 #include <memory>
 #include <stdexcept>
 
+#ifndef NDEBUG
+#define LOG(message) SDL_Log(message)
+#define LOGF(message, fmt) SDL_Log(message, fmt)
+#define ERRLOG(message, fmt) SDL_LogError(SDL_LOG_CATEGORY_ERROR, message, fmt)
+#else
+#define LOG(message)
+#define ERRLOG(message, fmt)
+#endif
+
 struct Box;
 
 namespace utl {
@@ -41,9 +50,10 @@ public:
     SdlException(const std::string& e);
 };
 
-// Initialise SDL with sdlFlags.
-// Throw SdlException if initialisation fails
-void init(uint32_t sdlFlags);
+/// Initialise SDL with sdlFlags.
+/// Returns true if initlisation succeeds, throws SdlException if initialisation
+/// fails
+bool init_SDL(uint32_t sdlFlags);
 
 // Run SDL and TTF quit functions
 void quit_sdl();
@@ -158,7 +168,6 @@ struct WindowWithRenderer {
 
 // Create an SDL_Window*. Throw an SdlException if creation fails
 Window createWindow(const std::string& title, int w, int h, Uint32 flags);
-
 
 WindowWithRenderer create_window_with_renderer(const std::string& title, int w,
                                                int h, uint32_t flags);

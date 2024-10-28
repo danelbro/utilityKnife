@@ -1,7 +1,6 @@
 #include "utl_SDLInterface.hpp"
 
 #include "utl_Box.hpp"
-#include "utl_utility.hpp"
 
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
@@ -47,7 +46,7 @@ void sdl_deleter::operator()(TTF_Font* f) const
     TTF_CloseFont(f);
 }
 
-void init(uint32_t sdlFlags)
+bool init_SDL(uint32_t sdlFlags)
 {
     if (!SDL_Init(sdlFlags)) {
         std::string sdlError{SDL_GetError()};
@@ -60,10 +59,15 @@ void init(uint32_t sdlFlags)
         throw SdlException(
             std::string{"Cannot initialise SDL_TTF! TTF_Error: " + ttfError});
     }
+
+    LOG("Initialised SDL\n");
+
+    return true;
 }
 
 void quit_sdl()
 {
+    LOG("Quitting SDL\n");
     TTF_Quit();
     SDL_Quit();
 }
@@ -187,7 +191,7 @@ textureAndSize createTextTexture(Font& font, const std::string& text,
         SDL_CreateTextureFromSurface(rend.get(), textSurface)};
 
     if (!textTexture) {
-        ERRLOG(std::string{SDL_GetError()} << '\n');
+        ERRLOG("%s\n", SDL_GetError());
         throw SdlException("Could not create texture!");
     }
 
@@ -296,7 +300,7 @@ void process_input(Box& screen, uint32_t windowID,
                 break;
             }
         }
-    }
+   }
 }
 
 }  // namespace utl
