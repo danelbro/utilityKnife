@@ -18,6 +18,7 @@
 #define ERRLOG(message, fmt) SDL_LogError(SDL_LOG_CATEGORY_ERROR, message, fmt)
 #else
 #define LOG(message)
+#define LOGF(message, fmt)
 #define ERRLOG(message, fmt)
 #endif
 
