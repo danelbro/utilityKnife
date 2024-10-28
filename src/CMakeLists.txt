@@ -1,6 +1,6 @@
 add_library(${PROJECT_NAME} STATIC)
 target_sources(${PROJECT_NAME} PRIVATE
-    "../include/utl_Application.hpp" “utl_Application.cpp”
+    "../include/utl_Application.hpp" "utl_Application.cpp"
     "../include/utl_Box.hpp"
     "../include/utl_Entity.hpp"
     "../include/utl_GameWorld.hpp"
