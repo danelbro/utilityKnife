@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstddef>
 #include <vector>
 
 namespace utl {
@@ -46,6 +47,12 @@ void DrawWrapLine(utl::Renderer& rend, const Box& screen, double x1, double y1,
     double dy{y2 - y1};
     double dx{x2 - x1};
 
+    int xwrap{screen.w};
+    int ywrap{screen.h};
+
+    std::vector<Vec2d> points{};
+    points.reserve(0xFFF);
+
     if (dx == 0) {
         if (y1 > y2) {
             y = y2;
@@ -53,8 +60,8 @@ void DrawWrapLine(utl::Renderer& rend, const Box& screen, double x1, double y1,
             y1 = y;
         }
         for (y = y1; y <= y2; ++y) {
-            drawPoint(rend, wrapCoord(static_cast<int>(x1), screen.w),
-                      wrapCoord(static_cast<int>(y), screen.h));
+            points.emplace_back(wrapCoord(static_cast<int>(x1), xwrap),
+                                wrapCoord(static_cast<int>(y), ywrap));
         }
     } else {
         double m{dy / dx};
@@ -67,8 +74,8 @@ void DrawWrapLine(utl::Renderer& rend, const Box& screen, double x1, double y1,
             }
             for (x = x1; x <= x2; ++x) {
                 y = (m * x) + c;
-                drawPoint(rend, wrapCoord(static_cast<int>(x), screen.w),
-                          wrapCoord(static_cast<int>(y), screen.h));
+                points.emplace_back(wrapCoord(static_cast<int>(x), xwrap),
+                                    wrapCoord(static_cast<int>(y), ywrap));
             }
         } else {
             if (y1 > y2) {
@@ -78,10 +85,14 @@ void DrawWrapLine(utl::Renderer& rend, const Box& screen, double x1, double y1,
             }
             for (y = y1; y <= y2; ++y) {
                 x = (y - c) / m;
-                drawPoint(rend, wrapCoord(static_cast<int>(x), screen.w),
-                          wrapCoord(static_cast<int>(y), screen.h));
+                points.emplace_back(wrapCoord(static_cast<int>(x), xwrap),
+                                    wrapCoord(static_cast<int>(y), ywrap));
             }
         }
+    }
+
+    for (const auto& point : points) {
+        drawPoint(rend, point.x, point.y);
     }
 }
 
@@ -112,36 +123,39 @@ void ScanFill(const Box& screen, const std::vector<Vec2d>& poly,
 {
     Colour old{getRendererDrawColour(renderer)};
     setRendererDrawColour(renderer, col);
+    size_t polySize = poly.size();
 
     std::vector<double> ys{};
-    for (auto p : poly) {
-        ys.push_back(p.y);
+    ys.reserve(polySize);
+    for (const auto& p : poly) {
+        ys.emplace_back(p.y);
     }
-    std::sort(ys.begin(), ys.end());
-    double y_min{ys.front()};
-    double y_max{ys.back()};
+
+    const double& y_min{*std::ranges::min_element(ys)};
+    const double& y_max{*std::ranges::max_element(ys)};
 
     Vec2d pixel{};
-
     for (pixel.y = y_min; pixel.y < y_max; pixel.y++) {
-        size_t i{}, j{};
+        size_t i{};
+        size_t j{polySize - 1};
         std::vector<double> nodesX;
+        nodesX.reserve(polySize);
 
-        j = poly.size() - 1;
-        for (i = 0; i < poly.size(); i++) {
+        for (i = 0; i < polySize; i++) {
             if ((poly[i].y < pixel.y && poly[j].y >= pixel.y)
                 || (poly[j].y < pixel.y && poly[i].y >= pixel.y)) {
-                nodesX.push_back(poly[i].x
-                                 + (pixel.y - poly[i].y)
-                                       / (poly[j].y - poly[i].y)
-                                       * (poly[j].x - poly[i].x));
+                nodesX.emplace_back(poly[i].x
+                                    + (pixel.y - poly[i].y)
+                                          / (poly[j].y - poly[i].y)
+                                          * (poly[j].x - poly[i].x));
             }
             j = i;
         }
 
-        std::sort(nodesX.begin(), nodesX.end());
+        std::ranges::sort(nodesX);
 
-        for (i = 0; i < nodesX.size(); i += 2) {
+        size_t nodesXSize{nodesX.size()};
+        for (i = 0; i < nodesXSize; i += 2) {
             for (pixel.x = nodesX[i]; pixel.x < nodesX.at(i + 1);
                  pixel.x += 1) {
                 DrawWrapLine(renderer, screen, pixel.x, pixel.y,
