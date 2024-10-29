@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <memory>
 #include <unordered_map>
+#include <utility>
 
 namespace utl {
 
@@ -32,9 +33,10 @@ public:
     // Only ask add_stage() to add (derived) Stages!
     template<typename T, typename... Args>
     void add_stage(const std::string& key, Box& screen, uint32_t windowID,
-                   utl::Renderer& renderer, const Args&... args)
+                   utl::Renderer& renderer, Args&&... args)
     {
-        stages[key] = std::make_unique<T>(screen, windowID, renderer, args...);
+        stages[key] = std::make_unique<T>(screen, windowID, renderer,
+                                          std::forward<Args>(args)...);
     }
 
     void set_current_stage(const std::string& new_current);
