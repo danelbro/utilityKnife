@@ -48,8 +48,8 @@ std::vector<Vec2d> genRandConvexPolygon(int m, const double& radius,
     yPool.reserve(n);
 
     for (size_t i{0}; i < n; ++i) {
-        xPool.emplace_back(dist(rng));
-        yPool.emplace_back(dist(rng));
+        xPool.emplace_back(dist(rng.rng()));
+        yPool.emplace_back(dist(rng.rng()));
     }
 
     std::sort(xPool.begin(), xPool.end());
@@ -67,7 +67,7 @@ std::vector<Vec2d> genRandConvexPolygon(int m, const double& radius,
     for (size_t i{1}; i < n - 1; ++i) {
         double x = xPool[i];
 
-        if (coinFlip(rng)) {
+        if (coinFlip(rng.rng())) {
             xVec.emplace_back(x - lastTop);
             lastTop = x;
         } else {
@@ -84,7 +84,7 @@ std::vector<Vec2d> genRandConvexPolygon(int m, const double& radius,
     for (size_t i{1}; i < n - 1; ++i) {
         double y = yPool[i];
 
-        if (coinFlip(rng)) {
+        if (coinFlip(rng.rng())) {
             yVec.emplace_back(y - lastLeft);
             lastLeft = y;
         } else {
@@ -96,7 +96,7 @@ std::vector<Vec2d> genRandConvexPolygon(int m, const double& radius,
     yVec.emplace_back(maxY - lastLeft);
     yVec.emplace_back(lastRight - maxY);
 
-    std::shuffle(yVec.begin(), yVec.end(), rng);
+    std::shuffle(yVec.begin(), yVec.end(), rng.rng());
     std::vector<Vec2d> vec{};
     vec.reserve(n);
 
