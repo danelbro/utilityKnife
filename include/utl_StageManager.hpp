@@ -22,6 +22,7 @@ struct Box;
 class StageManager {
 public:
     StageManager(Application& app);
+    ~StageManager();
 
     const std::string& get_current() const { return current; }
     Stage* get_current_stage() { return stages[current].get(); }

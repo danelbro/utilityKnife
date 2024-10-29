@@ -15,6 +15,11 @@ StageManager::StageManager(Application& app) : current{""}, next{""}, m_app{app}
     LOG("Constructed StageManager\n");
 }
 
+StageManager::~StageManager()
+{
+    LOG("Destroyed StageManager\n");
+}
+
 void StageManager::set_current_stage(const std::string& new_current)
 {
     current = new_current;
