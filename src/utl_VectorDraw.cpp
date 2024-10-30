@@ -11,29 +11,27 @@
 
 namespace utl {
 
-static int wrapCoord(int p, int dim)
+static int wrapCoordinate(int coordinate, int wrapSize)
 {
-    if (p < 0) {
-        return dim + p;
-    } else {
-        return p % dim;
-    }
+    return coordinate < 0 ? coordinate + wrapSize : coordinate % wrapSize;
 }
 
 Vec2d wrap(const Vec2d& pos, const Box& screen)
 {
     Vec2d newPos{pos};
+    int xwrap{screen.w};
+    int ywrap{screen.h};
 
     if (newPos.x < 0) {
-        newPos.x = screen.w + newPos.x;
-    } else if (newPos.x > screen.w) {
-        newPos.x -= screen.w;
+        newPos.x += xwrap;
+    } else if (newPos.x > xwrap) {
+        newPos.x = static_cast<int>(newPos.x) % xwrap;
     }
 
     if (newPos.y < 0) {
-        newPos.y = screen.h + newPos.y;
-    } else if (newPos.y > screen.h) {
-        newPos.y -= screen.h;
+        newPos.y += ywrap;
+    } else if (newPos.y > ywrap) {
+        newPos.y = static_cast<int>(newPos.y) % ywrap;
     }
 
     return newPos;
@@ -60,8 +58,8 @@ void DrawWrapLine(utl::Renderer& rend, const Box& screen, double x1, double y1,
             y1 = y;
         }
         for (y = y1; y <= y2; ++y) {
-            points.emplace_back(wrapCoord(static_cast<int>(x1), xwrap),
-                                wrapCoord(static_cast<int>(y), ywrap));
+            points.emplace_back(wrapCoordinate(static_cast<int>(x1), xwrap),
+                                wrapCoordinate(static_cast<int>(y), ywrap));
         }
     } else {
         double m{dy / dx};
@@ -74,8 +72,8 @@ void DrawWrapLine(utl::Renderer& rend, const Box& screen, double x1, double y1,
             }
             for (x = x1; x <= x2; ++x) {
                 y = (m * x) + c;
-                points.emplace_back(wrapCoord(static_cast<int>(x), xwrap),
-                                    wrapCoord(static_cast<int>(y), ywrap));
+                points.emplace_back(wrapCoordinate(static_cast<int>(x), xwrap),
+                                    wrapCoordinate(static_cast<int>(y), ywrap));
             }
         } else {
             if (y1 > y2) {
@@ -85,36 +83,38 @@ void DrawWrapLine(utl::Renderer& rend, const Box& screen, double x1, double y1,
             }
             for (y = y1; y <= y2; ++y) {
                 x = (y - c) / m;
-                points.emplace_back(wrapCoord(static_cast<int>(x), xwrap),
-                                    wrapCoord(static_cast<int>(y), ywrap));
+                points.emplace_back(wrapCoordinate(static_cast<int>(x), xwrap),
+                                    wrapCoordinate(static_cast<int>(y), ywrap));
             }
         }
     }
 
     for (const auto& point : points) {
-        drawPoint(rend, point.x, point.y);
+        drawPoint(rend, static_cast<int>(point.x), static_cast<int>(point.y));
     }
 }
 
 // adatpted from https://alienryderflex.com/polygon/
 bool isPointInPolygon(const Vec2d& point, const std::vector<Vec2d>& polygon)
 {
-    size_t i{0}, j{polygon.size() - 1};
     bool oddNodes{false};
 
-    for (i = 0; i < polygon.size(); i++) {
-        if ((polygon[i].y < point.y && polygon[j].y >= point.y)
-            || (polygon[j].y < point.y && polygon[i].y >= point.y)) {
-            if (polygon[i].x
-                    + (point.y - polygon[i].y) / (polygon[j].y - polygon[i].y)
-                          * (polygon[j].x - polygon[i].x)
-                < point.x) {
-                oddNodes = !oddNodes;
+    for (size_t i = 0, j{polygon.size() + 1}; i < polygon.size(); i++) {
+        for (size_t i{0}, j{polygon.size() - 1}; i < polygon.size(); i++) {
+            if ((polygon[i].y < point.y && polygon[j].y >= point.y)
+                || (polygon[j].y < point.y && polygon[i].y) >= point.y) {
+                if (polygon[i].x
+                        + (point.y - polygon[i].y)
+                              / (polygon[j].y - polygon[i].y)
+                              * (polygon[j].x - polygon[i].x)
+                    < point.x) {
+                    oddNodes = !oddNodes;
+                }
             }
+            j = i;
         }
-        j = i;
+        return oddNodes;
     }
-    return oddNodes;
 }
 
 // adapted frpm https://alienryderflex.com/polygon_fill/
