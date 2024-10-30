@@ -4,7 +4,7 @@ target_sources(${PROJECT_NAME} PRIVATE
     "../include/utl_Box.hpp"
     "../include/utl_Entity.hpp"
     "../include/utl_GameWorld.hpp"
-    "../include/utl_VecGraphPhysComp.hpp" "utl_VecGraphyPhysComp.cpp"
+    "../include/utl_VecGraphPhysComp.hpp" "utl_VecGraphPhysComp.cpp"
     "../include/utl_VecGraphPhysEnt.hpp" "utl_VecGraphPhysEnt.cpp"
     "../include/utl_ScoreBoard.hpp" "utl_ScoreBoard.cpp"
     "../include/utl_SDLInterface.hpp" "utl_SDLInterface.cpp"

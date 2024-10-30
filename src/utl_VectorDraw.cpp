@@ -117,6 +117,7 @@ bool isPointInPolygon(const Vec2d& point, const std::vector<Vec2d>& polygon)
     return oddNodes;
 }
 
+
 // adapted frpm https://alienryderflex.com/polygon_fill/
 void ScanFill(const Box& screen, const std::vector<Vec2d>& poly,
               const Colour& col, Renderer& renderer)

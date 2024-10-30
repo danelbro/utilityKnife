@@ -18,7 +18,8 @@ VecGraphPhysEnt::VecGraphPhysEnt(const std::string& type, GameWorld& gameWorld,
                                  const double& mass, bool wrap, bool fill)
     : Entity{type, gameWorld.screen, pos}, physicsComponent{mass, this},
       m_gameWorld{gameWorld}, m_color{color}, m_scale{scale}, m_isVisible{true},
-      m_killMe{false}, m_wrap{wrap}, m_fill{fill}, m_shape{shape}, m_collider{}
+      m_killMe{false}, m_wrap{wrap}, m_fill{fill}, m_shape{shape}, m_rotatedShape{}, 
+      m_collider{}
 {
     update_shapes();
 }
