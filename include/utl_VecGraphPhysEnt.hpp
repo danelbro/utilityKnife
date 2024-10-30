@@ -35,13 +35,9 @@ public:
      */
     const std::vector<Vec2d>& shape() const { return m_shape; }
 
-    /// transShape returns the shape of the entity scaled and rotated, but not
-    /// translated - updated every frame.
-    const std::vector<Vec2d>& rotatedShape() const { return m_rotatedShape; }
-
     /**
-     * collider() returns the current (rotated, scaled and translated) shape of
-     * the entity - this is updated every frame
+     * collider() returns the current (rotated, translated) shape of the
+     * entity - this is updated every frame
      */
     const std::vector<Vec2d>& collider() const { return m_collider; }
 
@@ -75,7 +71,6 @@ protected:
     bool m_fill;
 
     std::vector<Vec2d> m_shape;
-    std::vector<Vec2d> m_rotatedShape;
     std::vector<Vec2d> m_collider;
 };
 

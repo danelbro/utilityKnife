@@ -25,15 +25,12 @@ VecGraphPhysEnt::VecGraphPhysEnt(const std::string& type, GameWorld& gameWorld,
 
 void VecGraphPhysEnt::update_shapes()
 {
-    m_rotatedShape.clear();
     m_collider.clear();
-    m_rotatedShape.reserve(m_shape.size());
     m_collider.reserve(m_shape.size());
 
     for (auto p : m_shape) {
         p = p.rotate_deg(physicsComponent.facing());
         p = p * m_scale;
-        m_rotatedShape.emplace_back(p);
         p += m_pos;
         m_collider.emplace_back(p);
     }
