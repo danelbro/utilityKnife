@@ -28,11 +28,14 @@ VecGraphPhysEnt::VecGraphPhysEnt(const std::string& type, GameWorld& gameWorld,
 void VecGraphPhysEnt::update_shapes()
 {
     m_collider.clear();
+    m_rotatedShape.clear();
     m_collider.reserve(m_shape.size());
+    m_rotatedShape.reserve(m_shape.size());
 
     for (auto p : m_shape) {
         p = p.rotate_deg(physicsComponent.facing());
         p = p * m_scale;
+        m_rotatedShape.emplace_back(p);
         p += m_pos;
         m_collider.emplace_back(p);
     }
@@ -47,12 +50,21 @@ void VecGraphPhysEnt::render(Renderer& renderer)
     auto oldColor{getRendererDrawColour(renderer)};
     setRendererDrawColour(renderer, m_color);
 
+    #ifndef NDEBUG
+    if (m_killMe && m_type == "ASTEROID")
+        setRendererDrawColour(renderer, {0xFF, 0x00, 0x00, 0xFF});  // red
+    #endif  // !NDEBUG
+
     const size_t& colliderSize{m_collider.size()};
     for (size_t i{0}; i < colliderSize; ++i) {
         DrawWrapLine(renderer, m_screenSpace, m_collider[i].x, m_collider[i].y,
                      m_collider[(i + 1) % colliderSize].x,
                      m_collider[(i + 1) % colliderSize].y);
     }
+    #ifndef NDEBUG
+    drawPoint(renderer, m_pos.x, m_pos.y);
+    #endif  // !NDEBUG
+
 
     if (m_fill) {
         ScanFill(m_screenSpace, m_collider, m_color, renderer);
@@ -89,7 +101,7 @@ static Vec2d syncPointToColliderWorldSpace(const VecGraphPhysEnt& pe1,
     double yMin{pe2ColliderYs.front()};
     double yMax{pe2ColliderYs.back()};
 
-    if (xMin >= 0 && xMax <= screenXMax && yMin >= 0 && yMin <= screenYMax)
+    if (xMin >= 0 && xMax <= screenXMax && yMin >= 0 && yMax <= screenYMax)
         return pos;
 
     if (xMin < 0) {
@@ -103,7 +115,7 @@ static Vec2d syncPointToColliderWorldSpace(const VecGraphPhysEnt& pe1,
     }
 
     if (yMin < 0) {
-        if (pos.y > (screenYMax + yMax)) {
+        if (pos.y > (screenYMax + yMin)) {
             pos.y -= screenYMax;
         }
     } else if (yMax > screenYMax) {
@@ -120,9 +132,7 @@ static std::vector<Vec2d> syncColliderWorldSpace(const VecGraphPhysEnt& pe1,
 {
     Vec2d pos{syncPointToColliderWorldSpace(pe1, pe2)};
     std::vector<Vec2d> pe1ColliderSynced{};
-    for (auto p : pe1.shape()) {
-        p = p.rotate_deg(pe1.physicsComponent.facing());
-        p = p * pe1.scale();
+    for (auto p : pe1.rotatedShape()) {
         p += pos;
         pe1ColliderSynced.emplace_back(p);
     }
