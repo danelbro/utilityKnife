@@ -61,69 +61,7 @@ void VecGraphPhysEnt::render(Renderer& renderer)
     setRendererDrawColour(renderer, oldColor);
 }
 
-static std::vector<Vec2d> syncColliderWorldSpace(const VecGraphPhysEnt& pe1,
-                                                 const VecGraphPhysEnt& pe2)
-{
-    // we're going to sync pe1 to pe2
-    auto size{pe2.collider().size()};
-    std::vector<double> pe2ColliderXs{};
-    std::vector<double> pe2ColliderYs{};
-    double screenXMax{static_cast<double>(pe2.screen().w)};
-    double screenYMax{static_cast<double>(pe2.screen().h)};
-    Vec2d pos{pe1.pos()};
-
-    pe2ColliderXs.reserve(size);
-    pe2ColliderYs.reserve(size);
-
-    for (const auto& point : pe2.collider()) {
-        pe2ColliderXs.emplace_back(point.x);
-        pe2ColliderYs.emplace_back(point.y);
-    }
-
-    std::ranges::sort(pe2ColliderXs);
-    std::ranges::sort(pe2ColliderYs);
-
-    double xMin{*pe2ColliderXs.begin()};
-    double xMax{*pe2ColliderXs.end()};
-
-    double yMin{*pe2ColliderYs.begin()};
-    double yMax{*pe2ColliderYs.end()};
-
-    if (xMin >= 0 && xMax <= screenXMax && yMin >= 0 && yMin <= screenYMax)
-        return pe1.collider();
-
-    if (xMin < 0) {
-        if (pos.x > screenXMax + xMin) {
-            pos.x -= screenXMax;
-        }
-    } else if (xMax > screenXMax) {
-        if (pos.x < xMax - screenXMax) {
-            pos.x += screenXMax;
-        }
-    }
-
-    if (yMin < 0) {
-        if (pos.y > screenYMax + yMax) {
-            pos.y -= screenYMax;
-        }
-    } else if (yMax > screenYMax) {
-        if (pos.y < yMax - screenYMax) {
-            pos.y += screenYMax;
-        }
-    }
-
-    std::vector<Vec2d> pe1ColliderSynced{};
-    for (auto p : pe1.shape()) {
-        p = p.rotate_deg(pe1.physicsComponent.facing());
-        p = p * pe1.scale();
-        p += pos;
-        pe1ColliderSynced.emplace_back(p);
-    }
-
-    return pe1ColliderSynced;
-}
-
-Vec2d syncPointToColliderWorldSpace(const VecGraphPhysEnt& pe1,
+static Vec2d syncPointToColliderWorldSpace(const VecGraphPhysEnt& pe1,
                                     const VecGraphPhysEnt& pe2)
 {
     // we're going to sync pe1 to pe2
@@ -145,37 +83,53 @@ Vec2d syncPointToColliderWorldSpace(const VecGraphPhysEnt& pe1,
     std::ranges::sort(pe2ColliderXs);
     std::ranges::sort(pe2ColliderYs);
 
-    double xMin{*pe2ColliderXs.begin()};
-    double xMax{*pe2ColliderXs.end()};
+    double xMin{pe2ColliderXs.front()};
+    double xMax{pe2ColliderXs.back()};
 
-    double yMin{*pe2ColliderYs.begin()};
-    double yMax{*pe2ColliderYs.end()};
+    double yMin{pe2ColliderYs.front()};
+    double yMax{pe2ColliderYs.back()};
 
     if (xMin >= 0 && xMax <= screenXMax && yMin >= 0 && yMin <= screenYMax)
         return pos;
 
     if (xMin < 0) {
-        if (pos.x > screenXMax + xMin) {
+        if (pos.x > (screenXMax + xMin)) {
             pos.x -= screenXMax;
         }
     } else if (xMax > screenXMax) {
-        if (pos.x < xMax - screenXMax) {
+        if (pos.x < (xMax - screenXMax)) {
             pos.x += screenXMax;
         }
     }
 
     if (yMin < 0) {
-        if (pos.y > screenYMax + yMax) {
+        if (pos.y > (screenYMax + yMax)) {
             pos.y -= screenYMax;
         }
     } else if (yMax > screenYMax) {
-        if (pos.y < yMax - screenYMax) {
+        if (pos.y < (yMax - screenYMax)) {
             pos.y += screenYMax;
         }
     }
 
     return pos;
 }
+
+static std::vector<Vec2d> syncColliderWorldSpace(const VecGraphPhysEnt& pe1,
+                                                 const VecGraphPhysEnt& pe2)
+{
+    Vec2d pos{syncPointToColliderWorldSpace(pe1, pe2)};
+    std::vector<Vec2d> pe1ColliderSynced{};
+    for (auto p : pe1.shape()) {
+        p = p.rotate_deg(pe1.physicsComponent.facing());
+        p = p * pe1.scale();
+        p += pos;
+        pe1ColliderSynced.emplace_back(p);
+    }
+
+    return pe1ColliderSynced;
+}
+
 
 bool isPointInPolygonSyncFirst(const VecGraphPhysEnt& pe1,
                                const VecGraphPhysEnt& pe2)

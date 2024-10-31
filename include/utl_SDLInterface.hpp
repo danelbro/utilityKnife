@@ -184,7 +184,7 @@ void presentRenderer(Renderer&);
 void setRendererDrawColour(Renderer&, const Colour&);
 Colour getRendererDrawColour(const Renderer&);
 void copyTexturePortion(Renderer&, Texture&, Rect& src, Rect& dst);
-void drawPoint(Renderer&, int x, int y);
+void drawPoint(Renderer&, double x, double y);
 
 struct textureAndSize {
     textureAndSize(Texture&& newTexP, int newW, int newH);

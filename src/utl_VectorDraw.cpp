@@ -11,32 +11,20 @@
 
 namespace utl {
 
-static int wrapCoord(int p, int dim)
+static double wrapCoord(double coordinate, double upperBound)
 {
-    if (p < 0) {
-        return dim + p;
+    if (coordinate < 0) {
+        return coordinate + upperBound;
+    } else if (coordinate > upperBound) {
+        return coordinate - upperBound;
     } else {
-        return p % dim;
+        return coordinate;
     }
 }
 
 Vec2d wrap(const Vec2d& pos, const Box& screen)
 {
-    Vec2d newPos{pos};
-
-    if (newPos.x < 0) {
-        newPos.x = screen.w + newPos.x;
-    } else if (newPos.x > screen.w) {
-        newPos.x -= screen.w;
-    }
-
-    if (newPos.y < 0) {
-        newPos.y = screen.h + newPos.y;
-    } else if (newPos.y > screen.h) {
-        newPos.y -= screen.h;
-    }
-
-    return newPos;
+    return Vec2d{wrapCoord(pos.x, screen.w), wrapCoord(pos.y, screen.h)};
 }
 
 void DrawWrapLine(utl::Renderer& rend, const Box& screen, double x1, double y1,
@@ -46,6 +34,7 @@ void DrawWrapLine(utl::Renderer& rend, const Box& screen, double x1, double y1,
     double y{};
     double dy{y2 - y1};
     double dx{x2 - x1};
+    double tiny{1.0};  // eventually the lines are drawn onto discrete pixels
 
     int xwrap{screen.w};
     int ywrap{screen.h};
@@ -53,15 +42,14 @@ void DrawWrapLine(utl::Renderer& rend, const Box& screen, double x1, double y1,
     std::vector<Vec2d> points{};
     points.reserve(0xFFF);
 
-    if (dx == 0) {
+    if (std::abs(dx) < tiny) {
         if (y1 > y2) {
             y = y2;
             y2 = y1;
             y1 = y;
         }
         for (y = y1; y <= y2; ++y) {
-            points.emplace_back(wrapCoord(static_cast<int>(x1), xwrap),
-                                wrapCoord(static_cast<int>(y), ywrap));
+            points.emplace_back(wrapCoord(x1, xwrap), wrapCoord(y, ywrap));
         }
     } else {
         double m{dy / dx};
@@ -74,8 +62,7 @@ void DrawWrapLine(utl::Renderer& rend, const Box& screen, double x1, double y1,
             }
             for (x = x1; x <= x2; ++x) {
                 y = (m * x) + c;
-                points.emplace_back(wrapCoord(static_cast<int>(x), xwrap),
-                                    wrapCoord(static_cast<int>(y), ywrap));
+                points.emplace_back(wrapCoord(x, xwrap), wrapCoord(y, ywrap));
             }
         } else {
             if (y1 > y2) {
@@ -85,8 +72,7 @@ void DrawWrapLine(utl::Renderer& rend, const Box& screen, double x1, double y1,
             }
             for (y = y1; y <= y2; ++y) {
                 x = (y - c) / m;
-                points.emplace_back(wrapCoord(static_cast<int>(x), xwrap),
-                                    wrapCoord(static_cast<int>(y), ywrap));
+                points.emplace_back(wrapCoord(x, xwrap), wrapCoord(y, ywrap));
             }
         }
     }
@@ -116,7 +102,6 @@ bool isPointInPolygon(const Vec2d& point, const std::vector<Vec2d>& polygon)
     }
     return oddNodes;
 }
-
 
 // adapted frpm https://alienryderflex.com/polygon_fill/
 void ScanFill(const Box& screen, const std::vector<Vec2d>& poly,
