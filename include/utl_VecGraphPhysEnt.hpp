@@ -35,6 +35,8 @@ public:
      */
     const std::vector<Vec2d>& shape() const { return m_shape; }
 
+    const std::vector<Vec2d>& rotatedShape() const { return m_rotatedShape; }
+
     /**
      * collider() returns the current (rotated, translated) shape of the
      * entity - this is updated every frame
@@ -71,12 +73,15 @@ protected:
     bool m_fill;
 
     std::vector<Vec2d> m_shape;
+    std::vector<Vec2d> m_rotatedShape;
     std::vector<Vec2d> m_collider;
 };
 
 /**
  * utility function: returns whether pe1 and pe2 are colliding
  */
+bool isPointInPolygonSyncFirst(const VecGraphPhysEnt& pe1,
+                               const VecGraphPhysEnt& pe2);
 bool areColliding(const VecGraphPhysEnt& pe1, const VecGraphPhysEnt& pe2);
 
 }  // namespace utl
