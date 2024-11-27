@@ -233,6 +233,11 @@ Rect::Rect(int x, int y, int w, int h)
           static_cast<float>(h))}
 {}
 
+void Rect::draw(Renderer& renderer)
+{
+    SDL_RenderFillRect(renderer.get(), m_rectPtr.get());
+}
+
 void process_input(Box& screen, uint32_t windowID,
                    std::array<bool, KeyFlag::K_TOTAL>& key_state)
 {

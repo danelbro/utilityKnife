@@ -156,6 +156,8 @@ public:
     Rect(Rect&&) = default;
     Rect& operator=(Rect&&) = delete;
 
+    draw(Renderer& renderer);
+
     SDL_FRect* get() const { return m_rectPtr.get(); }
 
 private:
