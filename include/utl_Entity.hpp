@@ -41,6 +41,7 @@ public:
     const Box& screen() const { return m_screenSpace; }
 
     void set_pos(const Vec2d& newPos) { m_pos = newPos; }
+    void changeScreen(Box& newScreen) { m_screenSpace = newScreen; }
     void updateScreen(const Box& newScreenSpace)
     {
         m_screenSpace = newScreenSpace;

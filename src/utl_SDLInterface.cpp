@@ -225,12 +225,14 @@ Font createFont(const std::filesystem::path& path, int font_size)
     return Font{font};
 }
 
+Rect::Rect() : m_rectPtr{nullptr} {}
+
 Rect::Rect(SDL_FRect* new_rect) : m_rectPtr{new_rect} {}
 
 Rect::Rect(int x, int y, int w, int h)
     : m_rectPtr{std::make_unique<SDL_FRect>(
-          static_cast<float>(x), static_cast<float>(y), static_cast<float>(w),
-          static_cast<float>(h))}
+        static_cast<float>(x), static_cast<float>(y), static_cast<float>(w),
+        static_cast<float>(h))}
 {}
 
 void Rect::draw(Renderer& renderer)

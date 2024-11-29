@@ -147,6 +147,7 @@ private:
 
 struct Rect {
 public:
+    Rect();
     Rect(SDL_FRect*);
     Rect(int x, int y, int w, int h);
 
@@ -154,9 +155,9 @@ public:
     Rect& operator=(const Rect&) = delete;
 
     Rect(Rect&&) = default;
-    Rect& operator=(Rect&&) = delete;
+    Rect& operator=(Rect&&) = default;
 
-    draw(Renderer& renderer);
+    void draw(Renderer& renderer);
 
     SDL_FRect* get() const { return m_rectPtr.get(); }
 
