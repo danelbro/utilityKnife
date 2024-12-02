@@ -235,6 +235,15 @@ Rect::Rect(int x, int y, int w, int h)
         static_cast<float>(h))}
 {}
 
+Rect::Rect(float x, float y, float w, float h)
+    : m_rectPtr{std::make_unique<SDL_FRect>(x, y, w, h)}
+{}
+
+void Rect::reset(float x, float y, float w, float h)
+{
+    m_rectPtr.reset(std::make_unique<SDL_FRect>(x, y, w, h).get());
+}
+
 void Rect::draw(Renderer& renderer)
 {
     SDL_RenderFillRect(renderer.get(), m_rectPtr.get());

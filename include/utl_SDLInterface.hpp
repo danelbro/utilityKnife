@@ -150,6 +150,7 @@ public:
     Rect();
     Rect(SDL_FRect*);
     Rect(int x, int y, int w, int h);
+    Rect(float x, float y, float w, float h);
 
     Rect(const Rect&) = delete;
     Rect& operator=(const Rect&) = delete;
@@ -157,6 +158,7 @@ public:
     Rect(Rect&&) = default;
     Rect& operator=(Rect&&) = default;
 
+    void reset(float x, float y, float w, float h);
     void draw(Renderer& renderer);
 
     SDL_FRect* get() const { return m_rectPtr.get(); }
