@@ -163,6 +163,11 @@ public:
 
     SDL_FRect* get() const { return m_rectPtr.get(); }
 
+    const float& x() const { return m_rectPtr.get()->x; }
+    const float& y() const { return m_rectPtr.get()->y; }
+    const float& w() const { return m_rectPtr.get()->w; }
+    const float& h() const { return m_rectPtr.get()->h; }
+
 private:
     std::unique_ptr<SDL_FRect> m_rectPtr;
 };
