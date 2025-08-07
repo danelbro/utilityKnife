@@ -241,7 +241,7 @@ Rect::Rect(float x, float y, float w, float h)
 
 void Rect::reset(float x, float y, float w, float h)
 {
-    m_rectPtr.reset(std::make_unique<SDL_FRect>(x, y, w, h).get());
+    m_rectPtr = std::make_unique<SDL_FRect>(x, y, w, h);
 }
 
 void Rect::draw(Renderer& renderer)
