@@ -168,7 +168,7 @@ void copyTexturePortion(Renderer& rend, Texture& tex, Rect& srcRect,
 
 void drawPoint(Renderer& rend, double x, double y)
 {
-    SDL_RenderPoint(rend.get(), x, y);
+    SDL_RenderPoint(rend.get(), static_cast<float>(x), static_cast<float>(y));
 }
 
 Surface::Surface(SDL_Surface* new_surf) : m_surfPtr{new_surf, sdl_deleter()} {}
