@@ -1,5 +1,6 @@
 #include "utl_SDLInterface.hpp"
 
+#include "SDL3/SDL_keycode.h"
 #include "utl_Box.hpp"
 
 #include <SDL3/SDL.h>
@@ -294,6 +295,15 @@ void process_input(Box& screen, uint32_t windowID,
             case SDLK_LSHIFT:
                 key_state[KeyFlag::K_LSHIFT] = true;
                 break;
+            case SDLK_LCTRL:
+                key_state[KeyFlag::K_LCTRL] = true;
+                break;
+            case SDLK_X:
+                key_state[KeyFlag::K_X] = true;
+                break;
+            case SDLK_Z:
+                key_state[KeyFlag::K_Z] = true;
+                break;
             default:
                 break;
             }
@@ -319,6 +329,15 @@ void process_input(Box& screen, uint32_t windowID,
                 break;
             case SDLK_LSHIFT:
                 key_state[KeyFlag::K_LSHIFT] = false;
+                break;
+            case SDLK_LCTRL:
+                key_state[KeyFlag::K_LCTRL] = false;
+                break;
+            case SDLK_X:
+                key_state[KeyFlag::K_X] = false;
+                break;
+            case SDLK_Z:
+                key_state[KeyFlag::K_Z] = false;
                 break;
             default:
                 break;

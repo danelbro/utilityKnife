@@ -222,6 +222,9 @@ enum KeyFlag
     K_ENTER,
     K_LSHIFT,
     K_ESCAPE,
+    K_LCTRL,
+    K_X,
+    K_Z,
     QUIT,
     WINDOW_CHANGE,
     K_TOTAL
