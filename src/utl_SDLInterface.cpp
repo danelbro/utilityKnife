@@ -298,11 +298,14 @@ void process_input(Box& screen, uint32_t windowID,
             case SDLK_LCTRL:
                 key_state[KeyFlag::K_LCTRL] = true;
                 break;
+            case SDLK_Z:
+                key_state[KeyFlag::K_Z] = true;
+                break;
             case SDLK_X:
                 key_state[KeyFlag::K_X] = true;
                 break;
-            case SDLK_Z:
-                key_state[KeyFlag::K_Z] = true;
+            case SDLK_C:
+                key_state[KeyFlag::K_C] = true;
                 break;
             default:
                 break;
@@ -333,11 +336,14 @@ void process_input(Box& screen, uint32_t windowID,
             case SDLK_LCTRL:
                 key_state[KeyFlag::K_LCTRL] = false;
                 break;
+            case SDLK_Z:
+                key_state[KeyFlag::K_Z] = false;
+                break;
             case SDLK_X:
                 key_state[KeyFlag::K_X] = false;
                 break;
-            case SDLK_Z:
-                key_state[KeyFlag::K_Z] = false;
+            case SDLK_C:
+                key_state[KeyFlag::K_C] = false;
                 break;
             default:
                 break;

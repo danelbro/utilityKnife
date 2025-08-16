@@ -223,8 +223,9 @@ enum KeyFlag
     K_LSHIFT,
     K_ESCAPE,
     K_LCTRL,
-    K_X,
     K_Z,
+    K_X,
+    K_C,
     QUIT,
     WINDOW_CHANGE,
     K_TOTAL
