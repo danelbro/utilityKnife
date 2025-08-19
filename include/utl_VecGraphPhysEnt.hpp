@@ -3,6 +3,7 @@
 #include "utl_Entity.hpp"
 #include "utl_GameWorld.hpp"
 #include "utl_SDLInterface.hpp"
+#include "utl_Vec2d.hpp"
 #include "utl_VecGraphPhysComp.hpp"
 
 #include <string>
@@ -48,6 +49,7 @@ public:
     double scale() const { return m_scale; }
     const Colour& color() const { return m_color; }
     bool drawWrapped() const { return m_wrap; }
+    const Vec2d& size() const override { return m_size; };
 
     /**
      * sets a flag intended to indicate that the entity should be destroyed
@@ -75,6 +77,8 @@ protected:
     std::vector<Vec2d> m_shape;
     std::vector<Vec2d> m_rotatedShape;
     std::vector<Vec2d> m_collider;
+
+    utl::Vec2d m_size = 0;  // todo
 };
 
 /**

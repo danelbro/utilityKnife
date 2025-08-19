@@ -37,6 +37,7 @@ public:
     virtual void render(Renderer& renderer) = 0;
 
     const Vec2d& pos() const { return m_pos; }
+    virtual const Vec2d& size() const = 0;
     std::string type() const { return m_type; }
     const Box& screen() const { return m_screenSpace; }
 
