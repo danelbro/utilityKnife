@@ -24,9 +24,9 @@
 #define ERRLOGF(message, fmt)
 #endif
 
-struct Box;
-
 namespace utl {
+
+struct Box;
 
 struct Colour {
     std::uint8_t r{};
