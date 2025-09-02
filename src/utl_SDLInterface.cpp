@@ -1,6 +1,7 @@
 #include "utl_SDLInterface.hpp"
 
 #include "SDL3/SDL_keycode.h"
+#include "SDL3/SDL_render.h"
 #include "utl_Box.hpp"
 
 #include <SDL3/SDL.h>
@@ -139,6 +140,17 @@ bool Renderer::setVSync(int vsync)
     return isVSyncSet;
 }
 
+bool Renderer::setDrawingBlendMode(unsigned blendMode)
+{
+    bool isBlendModeSet{SDL_SetRenderDrawBlendMode(get(), blendMode)};
+
+    if (!isBlendModeSet) {
+        throw SdlException(std::string{"Couldn't set blend mode! SDL_Error: ",
+                                       SDL_GetError()});
+    }
+    return isBlendModeSet;
+}
+
 void clearScreen(Renderer& rend)
 {
     SDL_RenderClear(rend.get());
@@ -232,8 +244,8 @@ Rect::Rect(SDL_FRect* new_rect) : m_rectPtr{new_rect} {}
 
 Rect::Rect(int x, int y, int w, int h)
     : m_rectPtr{std::make_unique<SDL_FRect>(
-        static_cast<float>(x), static_cast<float>(y), static_cast<float>(w),
-        static_cast<float>(h))}
+          static_cast<float>(x), static_cast<float>(y), static_cast<float>(w),
+          static_cast<float>(h))}
 {}
 
 Rect::Rect(float x, float y, float w, float h)

@@ -91,6 +91,7 @@ public:
 
     SDL_Renderer* get() const { return m_rendPtr.get(); }
     bool setVSync(int vsync);
+    bool setDrawingBlendMode(unsigned blendMode);
 
 private:
     std::unique_ptr<SDL_Renderer, sdl_deleter> m_rendPtr;
