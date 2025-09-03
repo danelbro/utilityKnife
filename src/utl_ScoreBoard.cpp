@@ -45,13 +45,12 @@ void ScoreBoard::set_text(const std::vector<std::string>& scores,
 {
     for (size_t i{0}; i < scores.size(); i++) {
         if (newScorePos == static_cast<int>(i)) {
-            m_scores.emplace_back(m_screenSpace, m_renderer, m_font, m_pos,
-                                  m_newScoreCol);
+            m_scores.emplace_back(m_screenSpace, m_renderer, m_font, scores[i],
+                                  m_pos, m_newScoreCol);
         } else {
-            m_scores.emplace_back(m_screenSpace, m_renderer, m_font, m_pos,
-                                  m_textCol);
+            m_scores.emplace_back(m_screenSpace, m_renderer, m_font, scores[i],
+                                  m_pos, m_textCol);
         }
-        m_scores.back().updateText(scores[i]);
     }
     m_size.x = calculate_width(m_scores);
     m_size.y = calculate_height(m_scores, m_padding);

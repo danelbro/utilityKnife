@@ -22,9 +22,9 @@ namespace utl {
  */
 class Stage {
 public:
+    virtual ~Stage() = default;
     Stage(const Stage&) = default;
     Stage& operator=(const Stage&) = delete;
-    virtual ~Stage() = default;
 
     virtual std::string
     handle_input(double t, double dt,

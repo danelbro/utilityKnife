@@ -27,7 +27,7 @@ public:
     void set_pos(const Vec2d& newPos);
     void change_padding(double padding);
 
-    const Vec2d& size() const override { return m_size; }
+    Vec2d size() const override { return m_size; }
 
 private:
     void reposition_text();

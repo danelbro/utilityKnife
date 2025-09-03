@@ -16,8 +16,10 @@ namespace utl {
 class Entity {
 public:
     virtual ~Entity() = default;
-    Entity(const Entity&) = default;
+    Entity(const Entity&) = delete;
     Entity& operator=(const Entity&) = delete;
+    Entity(Entity&&) = default;
+    Entity& operator=(Entity&&) = delete;
 
     /**
      * update() is called each frame. It should update the Entity’s state in
@@ -26,7 +28,8 @@ public:
      * It’s recommended to derive from one of the provided derived classes
      * instead of Entity as they will handle the relevant updates.
      */
-    virtual void update(double t, double dt) = 0;
+    virtual void update([[maybe_unused]] double t, [[maybe_unused]] double dt) {
+    };
 
     /**
      * render() is called each frame. It should draw the Entity to the screen.
@@ -34,19 +37,19 @@ public:
      * It’s recommended to derive from one of the provided derived classes
      * instead of Entity as they will handle drawing.
      */
-    virtual void render(Renderer& renderer) = 0;
+    virtual void render([[maybe_unused]] Renderer& renderer) {};
+    virtual Vec2d size() const { return {}; };
 
-    const Vec2d& pos() const { return m_pos; }
-    virtual const Vec2d& size() const = 0;
-    std::string type() const { return m_type; }
     const Box& screen() const { return m_screenSpace; }
+    std::string type() const { return m_type; }
+    const Vec2d& pos() const { return m_pos; }
 
-    void set_pos(const Vec2d& newPos) { m_pos = newPos; }
     void changeScreen(Box& newScreen) { m_screenSpace = newScreen; }
     void updateScreen(const Box& newScreenSpace)
     {
         m_screenSpace = newScreenSpace;
     }
+    void set_pos(const Vec2d& newPos) { m_pos = newPos; }
 
 protected:
     Entity(const std::string& new_type, Box& screen, const Vec2d& pos)

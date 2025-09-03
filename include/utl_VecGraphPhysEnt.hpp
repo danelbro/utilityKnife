@@ -19,9 +19,11 @@ namespace utl {
  */
 class VecGraphPhysEnt : public Entity {
 public:
-    VecGraphPhysEnt(const VecGraphPhysEnt&) = default;
-    VecGraphPhysEnt& operator=(const VecGraphPhysEnt&) = delete;
     virtual ~VecGraphPhysEnt() = default;
+    VecGraphPhysEnt(const VecGraphPhysEnt&) = delete;
+    VecGraphPhysEnt& operator=(const VecGraphPhysEnt&) = delete;
+    VecGraphPhysEnt(VecGraphPhysEnt&&) = default;
+    VecGraphPhysEnt& operator=(VecGraphPhysEnt&&) = delete;
 
     void update(double, double) override { update_shapes(); }
 
@@ -49,7 +51,7 @@ public:
     double scale() const { return m_scale; }
     const Colour& color() const { return m_color; }
     bool drawWrapped() const { return m_wrap; }
-    const Vec2d& size() const override { return m_size; };
+    Vec2d size() const override { return m_size; };
 
     /**
      * sets a flag intended to indicate that the entity should be destroyed

@@ -23,13 +23,13 @@ public:
                const std::string& newText, const Vec2d& pos,
                const utl::Colour& color);
 
+    ~TextObject() = default;
     TextObject(const TextObject&) = delete;
     TextObject& operator=(const TextObject&) = delete;
     TextObject(TextObject&&) = default;
     TextObject& operator=(TextObject&&) = delete;
-    ~TextObject() = default;
 
-    const Vec2d& size() const override { return m_size; }
+    Vec2d size() const override { return m_size; }
 
     void loadFromRenderedText(const std::string& textureText,
                               const utl::Colour& text_colour);
