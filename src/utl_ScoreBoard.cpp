@@ -103,7 +103,7 @@ static double calculate_height(const std::vector<utl::TextObject>& scores,
     for (const auto& score : scores) {
         height += score.size().y;
     }
-    height += padding * (scores.size() - 1);
+    height += padding * (static_cast<double>(scores.size()) - 1.0);
 
     return height;
 }
