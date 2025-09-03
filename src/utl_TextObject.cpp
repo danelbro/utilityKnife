@@ -9,11 +9,28 @@
 
 namespace utl {
 
-TextObject::TextObject(Box& screen, const Vec2d& pos, utl::Font& font,
-                       const Colour& color, utl::Renderer& rend)
+TextObject::TextObject(Box& screen, utl::Renderer& rend, utl::Font& font,
+                       const std::string& newText, const utl::Colour& col)
+    : Entity{"TEXT", screen, {}}, text{newText}, m_texture{nullptr},
+      m_font{font}, m_size{0, 0}, m_rend{rend}, m_col{col}
+{
+    loadFromRenderedText(text, m_col);
+}
+
+TextObject::TextObject(Box& screen, utl::Renderer& rend, utl::Font& font,
+                       const Vec2d& pos, const utl::Colour& color)
     : Entity{"TEXT", screen, pos}, text{}, m_texture{nullptr}, m_font{font},
       m_size{0, 0}, m_rend{rend}, m_col{color}
 {}
+
+TextObject::TextObject(Box& screen, utl::Renderer& rend, utl::Font& font,
+                       const std::string& newText, const Vec2d& pos,
+                       const utl::Colour& color)
+    : Entity{"TEXT", screen, pos}, text{newText}, m_texture{nullptr},
+      m_font{font}, m_size{0, 0}, m_rend{rend}, m_col{color}
+{
+    loadFromRenderedText(text, m_col);
+}
 
 void TextObject::free()
 {
@@ -39,6 +56,16 @@ void TextObject::recentre()
 {
     m_pos.x = m_screenSpace.w / 2.0 - m_size.x / 2.0;
     m_pos.y = m_screenSpace.h / 2.0 - m_size.y / 2.0;
+}
+
+void TextObject::recentreToEntityX(const Entity& entity)
+{
+    m_pos.x = (entity.pos().x + (entity.size().x / 2)) - (m_size.x / 2);
+}
+
+void TextObject::recentreToEntityY(const Entity& entity)
+{
+    m_pos.y = (entity.pos().y + (entity.size().y / 2)) - (m_size.y / 2);
 }
 
 void TextObject::updateText(std::string new_text)

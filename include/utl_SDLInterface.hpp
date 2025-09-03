@@ -24,9 +24,9 @@
 #define ERRLOGF(message, fmt)
 #endif
 
-struct Box;
-
 namespace utl {
+
+struct Box;
 
 struct Colour {
     std::uint8_t r{};
@@ -91,6 +91,7 @@ public:
 
     SDL_Renderer* get() const { return m_rendPtr.get(); }
     bool setVSync(int vsync);
+    bool setDrawingBlendMode(unsigned blendMode);
 
 private:
     std::unique_ptr<SDL_Renderer, sdl_deleter> m_rendPtr;
@@ -222,6 +223,10 @@ enum KeyFlag
     K_ENTER,
     K_LSHIFT,
     K_ESCAPE,
+    K_LCTRL,
+    K_Z,
+    K_X,
+    K_C,
     QUIT,
     WINDOW_CHANGE,
     K_TOTAL
