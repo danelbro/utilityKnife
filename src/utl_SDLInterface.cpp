@@ -192,7 +192,7 @@ textureAndSize::textureAndSize(Texture&& newTexP, int newW, int newH)
     : texP{std::move(newTexP)}, w{newW}, h{newH}
 {}
 
-textureAndSize createTextTexture(Font& font, const std::string& text,
+textureAndSize createTextTexture(const Font& font, const std::string& text,
                                  const Colour& text_colour, Renderer& rend)
 {
     LOG("creating a surface\n");

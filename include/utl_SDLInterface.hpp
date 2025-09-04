@@ -207,7 +207,7 @@ struct textureAndSize {
 
 // Create an SDL_Texture* rendered from text.
 // Throw an SdlException if creation fails
-textureAndSize createTextTexture(Font& font, const std::string& text,
+textureAndSize createTextTexture(const Font& font, const std::string& text,
                                  const Colour& text_colour, Renderer& rend);
 
 // Create a TTF_Font. Throw an SdlException if creation fails

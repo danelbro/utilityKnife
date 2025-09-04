@@ -32,7 +32,7 @@ public:
     virtual std::string update(double t, double dt) = 0;
     virtual void render(double t, double dt) = 0;
 
-    Box& screen() { return m_screen; }
+    const Box& screen() const { return m_screen; }
     uint32_t windowID() const { return m_windowID; }
     Renderer& renderer() { return m_rend; }
     std::string ID() const { return m_ID; }

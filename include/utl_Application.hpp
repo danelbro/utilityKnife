@@ -41,8 +41,12 @@ namespace utl {
 class Application {
 public:
     virtual ~Application();
-    virtual void run();
+    Application(const Application&) = delete;
+    Application(Application&&) = delete;
+    Application& operator=(const Application&) = delete;
+    Application& operator=(Application&&) = delete;
 
+    virtual void run();
     virtual void trigger_stage_change(const std::string& new_stage) = 0;
 
 protected:
@@ -50,6 +54,7 @@ protected:
                 const std::string& identifier, int screenWidth,
                 int screenHeight, uint32_t flags, uint32_t windowFlags);
 
+protected:
     bool isSDLInitialised;
     const std::string m_title;
     const int m_screenWidth;

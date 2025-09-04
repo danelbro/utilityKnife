@@ -1,12 +1,13 @@
 #pragma once
 
-#include "utl_Box.hpp"
 #include "utl_SDLInterface.hpp"
 #include "utl_Vec2d.hpp"
 
 #include <string>
 
 namespace utl {
+
+class Stage;
 
 /**
  * The Entity is the base class for any kind of /thing/ in the game. It has a
@@ -28,8 +29,7 @@ public:
      * It’s recommended to derive from one of the provided derived classes
      * instead of Entity as they will handle the relevant updates.
      */
-    virtual void update([[maybe_unused]] double t, [[maybe_unused]] double dt) {
-    };
+    virtual void update(double t, double dt) = 0;
 
     /**
      * render() is called each frame. It should draw the Entity to the screen.
@@ -37,28 +37,18 @@ public:
      * It’s recommended to derive from one of the provided derived classes
      * instead of Entity as they will handle drawing.
      */
-    virtual void render([[maybe_unused]] Renderer& renderer) {};
-    virtual Vec2d size() const { return {}; };
+    virtual void render(Renderer& renderer) = 0;
 
-    const Box& screen() const { return m_screenSpace; }
-    std::string type() const { return m_type; }
-    const Vec2d& pos() const { return m_pos; }
+    virtual const std::string& type() const = 0;
+    virtual const Vec2d& pos() const = 0;
+    virtual const Vec2d& size() const = 0;
+    virtual const Stage& stage() const = 0;
 
-    void changeScreen(Box& newScreen) { m_screenSpace = newScreen; }
-    void updateScreen(const Box& newScreenSpace)
-    {
-        m_screenSpace = newScreenSpace;
-    }
-    void set_pos(const Vec2d& newPos) { m_pos = newPos; }
+    virtual void set_pos(double x, double y) = 0;
+    virtual void set_pos(const Vec2d& new_pos) = 0;
 
 protected:
-    Entity(const std::string& new_type, Box& screen, const Vec2d& pos)
-        : m_screenSpace{screen}, m_type{new_type}, m_pos{pos}
-    {}
-
-    Box& m_screenSpace;
-    const std::string m_type;
-    Vec2d m_pos;
+    Entity() {}
 };
 
 }  // namespace utl

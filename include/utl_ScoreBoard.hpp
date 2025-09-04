@@ -1,6 +1,5 @@
 #pragma once
 
-#include "utl_Box.hpp"
 #include "utl_Entity.hpp"
 #include "utl_SDLInterface.hpp"
 #include "utl_TextObject.hpp"
@@ -11,34 +10,51 @@
 
 namespace utl {
 
+class Stage;
+
 class ScoreBoard : public Entity {
 public:
-    ScoreBoard(Box& screen, const Vec2d& pos, double padding, Font& font,
+    ScoreBoard();
+    ScoreBoard(const Vec2d& pos, double padding, Font& font,
                const Colour& mainTextColor, const Colour& newScoreColor,
-               Renderer& renderer);
-    ScoreBoard(Box& screen, const Vec2d& pos, double padding, Font& font,
+               Renderer& renderer, Stage& stage);
+    ScoreBoard(const Vec2d& pos, double padding, Font& font,
                const Colour& color, const Colour& newScoreColor,
-               Renderer& renderer, const std::vector<std::string>& scores);
+               Renderer& renderer, Stage& stage,
+               const std::vector<std::string>& scores);
+
     void update(double, double) override {}
     void render(Renderer& renderer) override;
 
-    void set_text(const std::vector<std::string>& scores, int newScore = -1);
-    void set_pos(double x, double y);
-    void set_pos(const Vec2d& newPos);
-    void change_padding(double padding);
+    const std::string& type() const override { return m_type; }
+    const Vec2d& pos() const override { return m_pos; }
+    const Vec2d& size() const override { return m_size; }
+    const Stage& stage() const override { return *m_stage; }
 
-    Vec2d size() const override { return m_size; }
+    void set_pos(double x, double y) override;
+    void set_pos(const Vec2d& newPos) override;
+
+    void change_padding(double padding);
+    void change_font(Font& font);
+    void change_renderer(Renderer& renderer);
+    void set_text(const std::vector<std::string>& scores, int newScore = -1);
+
+public:
+    Colour textColor;
+    Colour newScoreColor;
 
 private:
     void reposition_text();
 
-    double m_padding;
-    Font& m_font;
-    Colour m_textCol;
-    Colour m_newScoreCol;
-    Renderer& m_renderer;
-    std::vector<TextObject> m_scores;
+private:
+    const std::string m_type;
     Vec2d m_size;
+    Vec2d m_pos;
+    double m_padding;
+    const Font* m_font;
+    Renderer* m_renderer;
+    const Stage* m_stage;
+    std::vector<TextObject> m_scores;
 };
 
 }  // namespace utl

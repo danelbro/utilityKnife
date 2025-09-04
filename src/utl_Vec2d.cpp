@@ -11,7 +11,7 @@ Vec2d::Vec2d(double angleDeg)
       y{convert_y_elem_from_rad(angleDeg / 180.0)}
 {}
 
-Vec2d& Vec2d::operator=(double angleDeg)
+Vec2d& Vec2d::operator=(const double& angleDeg)
 {
     x = convert_x_elem_from_rad(angleDeg / 180.0);
     y = convert_y_elem_from_rad(angleDeg / 180.0);
@@ -76,7 +76,7 @@ Vec2d Vec2d::update(Vec2d new_vec)
     return update(new_vec.x, new_vec.y);
 }
 
-Vec2d Vec2d::rotate_rad(double rad)
+Vec2d Vec2d::rotate_rad(double rad) const
 {
     double new_x = (x * std::cos(rad)) - (y * std::sin(rad));
     double new_y = (x * std::sin(rad)) + (y * std::cos(rad));
@@ -90,7 +90,7 @@ void Vec2d::rotate_rad_ip(double rad)
     y = (x * std::sin(rad)) + (y * std::cos(rad));
 }
 
-Vec2d Vec2d::rotate_deg(double deg)
+Vec2d Vec2d::rotate_deg(double deg) const
 {
     return rotate_rad(deg * (std::numbers::pi / 180.0));
 }
@@ -98,6 +98,12 @@ Vec2d Vec2d::rotate_deg(double deg)
 void Vec2d::rotate_deg_ip(double deg)
 {
     rotate_rad_ip(deg * (std::numbers::pi / 180.0));
+}
+
+Vec2d& Vec2d::operator*=(const double& n)
+{
+    *this = (*this * n);
+    return *this;
 }
 
 Vec2d Vec2d::operator*(const double& n) const
@@ -120,7 +126,7 @@ Vec2d Vec2d::operator+(const Vec2d& otherVec) const
     return Vec2d{x + otherVec.x, y + otherVec.y};
 }
 
-Vec2d Vec2d::operator+=(const Vec2d& otherVec)
+Vec2d& Vec2d::operator+=(const Vec2d& otherVec)
 {
     *this = *this + otherVec;
     return *this;

@@ -1,6 +1,7 @@
 #include "utl_ScoreBoard.hpp"
 
 #include "utl_SDLInterface.hpp"
+#include "utl_Stage.hpp"
 #include "utl_TextObject.hpp"
 #include <cstddef>
 #include <string>
@@ -12,21 +13,27 @@ static double calculate_width(const std::vector<TextObject>& scores);
 static double calculate_height(const std::vector<TextObject>& scores,
                                double padding);
 
-ScoreBoard::ScoreBoard(Box& screen, const Vec2d& pos, double padding,
-                       Font& font, const Colour& textColor,
-                       const Colour& newScoreColor, Renderer& renderer)
-    : Entity{"SCOREBOARD", screen, pos}, m_padding{padding}, m_font{font},
-      m_textCol{textColor}, m_newScoreCol{newScoreColor}, m_renderer{renderer},
-      m_scores{}, m_size{}
+ScoreBoard::ScoreBoard()
+    : Entity{}, textColor{}, newScoreColor{}, m_type{"SCOREBOARD"}, m_size{},
+      m_pos{}, m_padding{}, m_font{nullptr}, m_renderer{nullptr},
+      m_stage{nullptr}, m_scores{}
 {}
 
-ScoreBoard::ScoreBoard(Box& screen, const Vec2d& pos, double padding,
-                       Font& font, const Colour& textColor,
-                       const Colour& newScoreColor, Renderer& renderer,
+ScoreBoard::ScoreBoard(const Vec2d& pos, double padding, Font& font,
+                       const Colour& textColor, const Colour& newScoreColor,
+                       Renderer& renderer, Stage& stage)
+    : Entity{}, textColor{textColor}, newScoreColor{newScoreColor},
+      m_type{"SCOREBOARD"}, m_size{}, m_pos{pos}, m_padding{padding},
+      m_font{&font}, m_renderer{&renderer}, m_stage{&stage}, m_scores{}
+{}
+
+ScoreBoard::ScoreBoard(const Vec2d& pos, double padding, Font& font,
+                       const Colour& textColor, const Colour& newScoreColor,
+                       Renderer& renderer, Stage& stage,
                        const std::vector<std::string>& scores)
-    : Entity{"SCOREBOARD", screen, pos}, m_padding{padding}, m_font{font},
-      m_textCol{textColor}, m_newScoreCol{newScoreColor}, m_renderer{renderer},
-      m_scores{}, m_size{}
+    : Entity{}, textColor{textColor}, newScoreColor{newScoreColor},
+      m_type{"SCOREBOARD"}, m_size{}, m_pos{pos}, m_padding{padding},
+      m_font{&font}, m_renderer{&renderer}, m_stage{&stage}, m_scores{}
 {
     m_scores.reserve(5);
     set_text(scores);
@@ -45,11 +52,11 @@ void ScoreBoard::set_text(const std::vector<std::string>& scores,
 {
     for (size_t i{0}; i < scores.size(); i++) {
         if (newScorePos == static_cast<int>(i)) {
-            m_scores.emplace_back(m_screenSpace, m_renderer, m_font, scores[i],
-                                  m_pos, m_newScoreCol);
+            m_scores.emplace_back(m_font, m_stage, newScoreColor, m_pos,
+                                  scores[i], *m_renderer);
         } else {
-            m_scores.emplace_back(m_screenSpace, m_renderer, m_font, scores[i],
-                                  m_pos, m_textCol);
+            m_scores.emplace_back(m_font, m_stage, textColor, m_pos, scores[i],
+                                  *m_renderer);
         }
     }
     m_size.x = calculate_width(m_scores);
@@ -82,11 +89,11 @@ void ScoreBoard::reposition_text()
         x = m_pos.x + (m_size.x / 2) - (m_scores[i].size().x / 2);
         y = runningHeight;
         runningHeight += m_scores[i].size().y + m_padding;
-        m_scores[i].setPos({x, y});
+        m_scores[i].set_pos(x, y);
     }
 }
 
-static double calculate_width(const std::vector<utl::TextObject>& scores)
+static double calculate_width(const std::vector<TextObject>& scores)
 {
     double width{0.0};
     for (const auto& score : scores) {
@@ -97,7 +104,7 @@ static double calculate_width(const std::vector<utl::TextObject>& scores)
     return width;
 }
 
-static double calculate_height(const std::vector<utl::TextObject>& scores,
+static double calculate_height(const std::vector<TextObject>& scores,
                                double padding)
 {
     if (scores.empty()) {
