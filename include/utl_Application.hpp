@@ -38,34 +38,37 @@ namespace utl {
  *   particularly if you’re on Windows).
  *
  */
+
+struct AppConfig {
+    std::string title;
+    std::string version;
+    std::string identifier;
+    Box screenSpace;
+    uint32_t flags;
+    uint32_t windowFlags;
+};
+
 class Application {
 public:
     virtual ~Application();
     Application(const Application&) = delete;
-    Application(Application&&) = delete;
     Application& operator=(const Application&) = delete;
+    Application(Application&&) = delete;
     Application& operator=(Application&&) = delete;
 
     virtual void run();
     virtual void trigger_stage_change(const std::string& new_stage) = 0;
 
-protected:
-    Application(const std::string& title, const std::string& version,
-                const std::string& identifier, int screenWidth,
-                int screenHeight, uint32_t flags, uint32_t windowFlags);
+    virtual const std::string& title() const = 0;
+    virtual Box& screen() = 0;
+    virtual uint32_t flags() = 0;
+    virtual uint32_t windowFlags() = 0;
+    virtual Window& window() = 0;
+    virtual Renderer& renderer() = 0;
+    virtual StageManager& stageManager() = 0;
 
 protected:
-    bool isSDLInitialised;
-    const std::string m_title;
-    const int m_screenWidth;
-    const int m_screenHeight;
-    Box m_screenSpace;
-    const uint32_t m_windowFlags;
-    WindowWithRenderer m_windowRendStruct;
-    Window m_window;
-    const uint32_t m_windowID;
-    Renderer m_renderer;
-    StageManager m_stageManager;
+    Application();
 };
 
 }  // namespace utl

@@ -1,18 +1,16 @@
 ﻿#pragma once
 
 #include "utl_SDLInterface.hpp"
-#include "utl_Stage.hpp"
 
 #include <array>
-#include <cstdint>
 #include <memory>
 #include <unordered_map>
-#include <utility>
 
 namespace utl {
 
 class Application;
 struct Box;
+class Stage;
 
 /**
  * The StageManager holds a collection of, and handles transitions between,
@@ -23,7 +21,6 @@ struct Box;
 class StageManager {
 public:
     StageManager(Application& app);
-    ~StageManager();
 
     const std::string& get_current() const { return current; }
     Stage* get_current_stage() { return stages[current].get(); }
@@ -31,12 +28,11 @@ public:
     const std::string& get_next() const { return next; }
 
     // Only ask add_stage() to add (derived) Stages!
-    template<typename T, typename... Args>
-    void add_stage(const std::string& key, Box& screen, uint32_t windowID,
-                   utl::Renderer& renderer, Args&&... args)
+    template<typename DerivedStage, typename... Args>
+    void add_stage(const std::string& key, Args&&... args)
     {
-        stages[key] = std::make_unique<T>(screen, windowID, renderer,
-                                          std::forward<Args>(args)...);
+        stages[key] =
+            std::make_unique<DerivedStage>(m_app, std::forward<Args>(args)...);
     }
 
     void set_current_stage(const std::string& new_current);

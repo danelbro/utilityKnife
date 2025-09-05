@@ -128,7 +128,7 @@ private:
 
 struct Font {
 public:
-    Font(TTF_Font*);
+    Font(TTF_Font*, const std::filesystem::path& path);
     ~Font() = default;
     Font(const Font&);
     Font& operator=(const Font&);
@@ -139,6 +139,7 @@ public:
 
 private:
     std::unique_ptr<TTF_Font, sdl_deleter> m_fontPtr;
+    std::filesystem::path m_path;
 };
 
 struct Rect {

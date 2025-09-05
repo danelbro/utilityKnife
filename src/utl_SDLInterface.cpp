@@ -1,15 +1,20 @@
 #include "utl_SDLInterface.hpp"
 
+#include "SDL3/SDL_pixels.h"
+#include "SDL3/SDL_properties.h"
+#include "SDL3/SDL_rect.h"
+#include "SDL3/SDL_render.h"
+#include "SDL3/SDL_video.h"
 #include "utl_Box.hpp"
 
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
-#include <cstddef>
 #include <cstdint>
 #include <filesystem>
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 namespace utl {
 
@@ -238,7 +243,79 @@ void drawPoint(Renderer& rend, double x, double y)
 
 Surface::Surface(SDL_Surface* new_surf) : m_surfPtr{new_surf, sdl_deleter()} {}
 
+Surface::Surface(const Surface& other) : m_surfPtr{nullptr, sdl_deleter()}
+{
+    SDL_Surface* surf{nullptr};
+    surf = SDL_CreateSurfaceFrom(other.get()->w, other.get()->h,
+                                 other.get()->format, other.get()->pixels,
+                                 other.get()->pitch);
+    if (!surf)
+        throw SdlException(
+            std::string{"Cannot copy surface! SDL_Error: ", SDL_GetError()});
+
+    m_surfPtr.reset(surf);
+}
+
+Surface& Surface::operator=(const Surface& other)
+{
+    Surface temp{other};
+    m_surfPtr.swap(temp.m_surfPtr);
+
+    return *this;
+}
+
 Texture::Texture(SDL_Texture* new_tex) : m_texPtr{new_tex, sdl_deleter()} {}
+
+Texture::Texture(const Texture& other) : m_texPtr{nullptr, sdl_deleter()}
+{
+    SDL_Renderer* renderer{nullptr};
+    renderer = SDL_GetRendererFromTexture(other.get());
+    if (!renderer)
+        throw SdlException(std::string{
+            "Failed to get renderer while copying texture! SDL_Error: ",
+            SDL_GetError()});
+
+    SDL_Window* window{nullptr};
+    window = SDL_GetRenderWindow(renderer);
+    if (!window)
+        throw SdlException(std::string{
+            "Failed to get window while copying texture! SDL_Error: ",
+            SDL_GetError()});
+
+    SDL_PixelFormat format{SDL_GetWindowPixelFormat(window)};
+    if (!format)
+        throw SdlException(std::string{"Failed to get window pixel format "
+                                       "while copying texture! SDL_Error: ",
+                                       SDL_GetError()});
+
+    auto accessnum{SDL_GetNumberProperty(SDL_GetTextureProperties(other.get()),
+                                         "SDL_PROP_TEXTURE_ACCESS_NUMBER",
+                                         SDL_TEXTUREACCESS_STATIC)};
+    float w{};
+    float h{};
+    if (!SDL_GetTextureSize(other.get(), &w, &h))
+        throw SdlException(std::string{
+            "Failed to get texture size while copying texture! SDL_Error: ",
+            SDL_GetError()});
+
+    SDL_Texture* tex{nullptr};
+    tex = SDL_CreateTexture(renderer, format, SDL_TextureAccess(accessnum),
+                            static_cast<int>(w), static_cast<int>(h));
+
+    if (!tex)
+        throw SdlException(
+            std::string{"Cannot copy texture! SDL_Error: ", SDL_GetError()});
+
+    m_texPtr.reset(tex);
+}
+
+Texture& Texture::operator=(const Texture& other)
+{
+    Texture temp{other};
+    m_texPtr.swap(temp.m_texPtr);
+
+    return *this;
+}
 
 textureAndSize::textureAndSize(Texture&& newTexP, int newW, int newH)
     : texP{std::move(newTexP)}, w{newW}, h{newH}
@@ -274,7 +351,30 @@ textureAndSize createTextTexture(const Font& font, const std::string& text,
     return textureAndSize{textTexture, w, h};
 }
 
-Font::Font(TTF_Font* new_font) : m_fontPtr{new_font, sdl_deleter()} {}
+Font::Font(TTF_Font* new_font, const std::filesystem::path& path)
+    : m_fontPtr{new_font, sdl_deleter()}, m_path{path}
+{}
+
+Font::Font(const Font& other) : m_fontPtr{nullptr, sdl_deleter()}
+
+{
+    TTF_Font* font{nullptr};
+    font = TTF_OpenFont(other.m_path.string().c_str(),
+                        TTF_GetFontSize(other.get()));
+    if (!font)
+        throw SdlException(
+            std::string{"Failed to copy Font! TTF_Error: ", SDL_GetError()});
+
+    m_fontPtr.reset(font);
+}
+
+Font& Font::operator=(const Font& other)
+{
+    Font temp{other};
+    m_fontPtr.swap(temp.m_fontPtr);
+    std::swap(this->m_path, temp.m_path);
+    return *this;
+}
 
 Font createFont(const std::filesystem::path& path, int font_size)
 {
@@ -287,7 +387,7 @@ Font createFont(const std::filesystem::path& path, int font_size)
         throw SdlException(
             std::string{"Failed to make font! TTF_Error: ", SDL_GetError()});
     }
-    return Font{font};
+    return Font{font, path};
 }
 
 Rect::Rect() : m_rectPtr{nullptr} {}
@@ -303,6 +403,19 @@ Rect::Rect(int x, int y, int w, int h)
 Rect::Rect(float x, float y, float w, float h)
     : m_rectPtr{std::make_unique<SDL_FRect>(x, y, w, h)}
 {}
+
+Rect::Rect(const Rect& other)
+    : m_rectPtr{std::make_unique<SDL_FRect>(other.get()->x, other.get()->y,
+                                            other.get()->w, other.get()->y)}
+
+{}
+
+Rect& Rect::operator=(const Rect& other)
+{
+    Rect temp{other};
+    m_rectPtr.swap(temp.m_rectPtr);
+    return *this;
+}
 
 void Rect::reset(float x, float y, float w, float h)
 {

@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include "utl_Application.hpp"
 #include "utl_Box.hpp"
 #include "utl_SDLInterface.hpp"
 
@@ -24,7 +25,9 @@ class Stage {
 public:
     virtual ~Stage() = default;
     Stage(const Stage&) = default;
-    Stage& operator=(const Stage&) = delete;
+    Stage& operator=(const Stage&) = default;
+    Stage(Stage&&) = default;
+    Stage& operator=(Stage&&) = default;
 
     virtual std::string
     handle_input(double t, double dt,
@@ -32,22 +35,15 @@ public:
     virtual std::string update(double t, double dt) = 0;
     virtual void render(double t, double dt) = 0;
 
-    const Box& screen() const { return m_screen; }
-    uint32_t windowID() const { return m_windowID; }
-    Renderer& renderer() { return m_rend; }
-    std::string ID() const { return m_ID; }
+    virtual Box& modifiable_screen() = 0;
+    virtual const Box& screen() const = 0;
+    virtual uint32_t windowID() = 0;
+    virtual Renderer& renderer() = 0;
+    virtual const std::string& ID() const = 0;
+    virtual const Application& app() const = 0;
 
 protected:
-    Stage(Box& screen, uint32_t windowID, Renderer& renderer,
-          const std::string& id)
-        : m_screen{screen}, m_windowID{windowID}, m_rend{renderer}, m_ID{id}
-    {}
-
-private:
-    Box& m_screen;
-    uint32_t m_windowID;
-    Renderer& m_rend;
-    std::string m_ID;
+    Stage();
 };
 
 }  // namespace utl

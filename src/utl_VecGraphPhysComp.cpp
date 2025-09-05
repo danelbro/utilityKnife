@@ -1,6 +1,7 @@
 ﻿#include "utl_VecGraphPhysComp.hpp"
 
 #include "utl_VecGraphPhysEnt.hpp"
+#include "utl_Stage.hpp"
 #include "utl_VectorDraw.hpp"
 
 namespace utl {
@@ -17,7 +18,7 @@ void VecGraphPhysComp::update(double dt)
 
     if (m_owner->drawWrapped()) {
         m_owner->set_pos(
-            wrap(m_owner->pos() + m_velocity * dt, m_owner->screen()));
+            wrap(m_owner->pos() + m_velocity * dt, m_owner->stage().screen()));
     } else {
         m_owner->set_pos(m_owner->pos() + m_velocity * dt);
     }
