@@ -65,12 +65,11 @@ void quit_sdl();
 struct Window {
 public:
     Window(SDL_Window*);
-
-    Window(const Window&) = delete;
-    Window& operator=(const Window&) = delete;
-
+    ~Window() = default;
+    Window(const Window&);
+    Window& operator=(const Window&);
     Window(Window&&) = default;
-    Window& operator=(Window&&) = delete;
+    Window& operator=(Window&&) = default;
 
     uint32_t ID() const { return SDL_GetWindowID(m_winPtr.get()); }
     SDL_Window* get() const { return m_winPtr.get(); }
@@ -82,10 +81,9 @@ private:
 struct Renderer {
 public:
     Renderer(SDL_Renderer*);
-
-    Renderer(const Renderer&) = delete;
-    Renderer& operator=(const Renderer&) = delete;
-
+    ~Renderer() = default;
+    Renderer(const Renderer&);
+    Renderer& operator=(const Renderer&);
     Renderer(Renderer&&) = default;
     Renderer& operator=(Renderer&&) = delete;
 
@@ -100,12 +98,11 @@ private:
 struct Surface {
 public:
     Surface(SDL_Surface*);
-
-    Surface(const Surface&) = delete;
-    Surface& operator=(const Surface&) = delete;
-
+    ~Surface() = default;
+    Surface(const Surface&);
+    Surface& operator=(const Surface&);
     Surface(Surface&&) = default;
-    Surface& operator=(Surface&&) = delete;
+    Surface& operator=(Surface&&) = default;
 
     SDL_Surface* get() const { return m_surfPtr.get(); }
 
@@ -116,10 +113,9 @@ private:
 struct Texture {
 public:
     Texture(SDL_Texture*);
-
-    Texture(const Texture&) = delete;
-    Texture& operator=(const Texture&) = delete;
-
+    ~Texture() = default;
+    Texture(const Texture&);
+    Texture& operator=(const Texture&);
     Texture(Texture&&) = default;
     Texture& operator=(Texture&&) = default;
 
@@ -133,12 +129,11 @@ private:
 struct Font {
 public:
     Font(TTF_Font*);
-
-    Font(const Font&) = delete;
-    Font& operator=(const Font&) = delete;
-
+    ~Font() = default;
+    Font(const Font&);
+    Font& operator=(const Font&);
     Font(Font&&) = default;
-    Font& operator=(Font&&) = delete;
+    Font& operator=(Font&&) = default;
 
     TTF_Font* get() const { return m_fontPtr.get(); }
 
@@ -152,10 +147,9 @@ public:
     Rect(SDL_FRect*);
     Rect(int x, int y, int w, int h);
     Rect(float x, float y, float w, float h);
-
-    Rect(const Rect&) = delete;
-    Rect& operator=(const Rect&) = delete;
-
+    ~Rect() = default;
+    Rect(const Rect&);
+    Rect& operator=(const Rect&);
     Rect(Rect&&) = default;
     Rect& operator=(Rect&&) = default;
 

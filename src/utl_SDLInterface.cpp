@@ -1,11 +1,10 @@
 #include "utl_SDLInterface.hpp"
 
-#include "SDL3/SDL_keycode.h"
-#include "SDL3/SDL_render.h"
 #include "utl_Box.hpp"
 
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
+#include <cstddef>
 #include <cstdint>
 #include <filesystem>
 #include <memory>
@@ -84,6 +83,31 @@ void quit_sdl()
 
 Window::Window(SDL_Window* new_win) : m_winPtr{new_win, sdl_deleter()} {}
 
+Window::Window(const Window& other) : m_winPtr{nullptr, sdl_deleter()}
+{
+    auto title{SDL_GetWindowTitle(other.get())};
+    int w{};
+    int h{};
+    SDL_GetWindowSize(other.get(), &w, &h);
+    auto flags{SDL_GetWindowFlags(other.get())};
+
+    SDL_Window* window{SDL_CreateWindow(title, w, h, flags)};
+
+    if (!window)
+        throw SdlException(
+            std::string{"Cannot copy window! SDL_Error: ", SDL_GetError()});
+
+    m_winPtr.reset(window);
+}
+
+Window& Window::operator=(const Window& other)
+{
+    Window temp{other};
+    m_winPtr.swap(temp.m_winPtr);
+
+    return *this;
+}
+
 Window createWindow(const std::string& title, int w, int h, uint32_t flags)
 {
     LOG("creating a window\n");
@@ -99,6 +123,34 @@ Window createWindow(const std::string& title, int w, int h, uint32_t flags)
 
 Renderer::Renderer(SDL_Renderer* new_rend) : m_rendPtr{new_rend, sdl_deleter()}
 {}
+
+Renderer::Renderer(const Renderer& other) : m_rendPtr{nullptr, sdl_deleter()}
+{
+    SDL_Window* window{nullptr};
+    SDL_Renderer* renderer{nullptr};
+    window = SDL_GetRenderWindow(other.get());
+    const char* index{SDL_GetRendererName(other.get())};
+
+    renderer = SDL_CreateRenderer(window, index);
+
+    int vsync{};
+    SDL_GetRenderVSync(other.get(), &vsync);
+    SDL_SetRenderVSync(renderer, vsync);
+
+    unsigned drawBlendMode{};
+    SDL_GetRenderDrawBlendMode(other.get(), &drawBlendMode);
+    SDL_SetRenderDrawBlendMode(renderer, drawBlendMode);
+
+    m_rendPtr.reset(renderer);
+}
+
+Renderer& Renderer::operator=(const Renderer& other)
+{
+    Renderer temp{other};
+    m_rendPtr.swap(temp.m_rendPtr);
+
+    return *this;
+}
 
 WindowWithRenderer create_window_with_renderer(const std::string& title, int w,
                                                int h, uint32_t flags)
