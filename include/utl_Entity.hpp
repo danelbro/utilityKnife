@@ -17,10 +17,6 @@ class Stage;
 class Entity {
 public:
     virtual ~Entity() = default;
-    Entity(const Entity&) = delete;
-    Entity& operator=(const Entity&) = delete;
-    Entity(Entity&&) = default;
-    Entity& operator=(Entity&&) = delete;
 
     /**
      * update() is called each frame. It should update the Entity’s state in
@@ -49,6 +45,10 @@ public:
 
 protected:
     Entity() {}
+    Entity(const Entity&) = default;
+    Entity& operator=(const Entity&) = default;
+    Entity(Entity&&) = default;
+    Entity& operator=(Entity&&) = default;
 };
 
 }  // namespace utl
