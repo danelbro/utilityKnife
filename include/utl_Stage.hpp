@@ -24,10 +24,6 @@ namespace utl {
 class Stage {
 public:
     virtual ~Stage() = default;
-    Stage(const Stage&) = default;
-    Stage& operator=(const Stage&) = default;
-    Stage(Stage&&) = default;
-    Stage& operator=(Stage&&) = default;
 
     virtual std::string
     handle_input(double t, double dt,
@@ -44,6 +40,10 @@ public:
 
 protected:
     Stage();
+    Stage(const Stage&) = default;
+    Stage& operator=(const Stage&) = default;
+    Stage(Stage&&) = default;
+    Stage& operator=(Stage&&) = default;
 };
 
 }  // namespace utl

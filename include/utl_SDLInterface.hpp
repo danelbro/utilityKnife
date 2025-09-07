@@ -142,19 +142,25 @@ private:
     std::filesystem::path m_path;
 };
 
+struct RectDimensions {
+    int x;
+    int y;
+    int w;
+    int h;
+};
+
 struct Rect {
 public:
     Rect();
     Rect(SDL_FRect*);
-    Rect(int x, int y, int w, int h);
-    Rect(float x, float y, float w, float h);
+    Rect(const RectDimensions& rect);
     ~Rect() = default;
     Rect(const Rect&);
     Rect& operator=(const Rect&);
     Rect(Rect&&) = default;
     Rect& operator=(Rect&&) = default;
 
-    void reset(float x, float y, float w, float h);
+    void reset(const RectDimensions& rect);
     void draw(Renderer& renderer);
 
     SDL_FRect* get() const { return m_rectPtr.get(); }

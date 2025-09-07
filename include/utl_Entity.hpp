@@ -7,6 +7,11 @@
 
 namespace utl {
 
+struct Size {
+    double w;
+    double h;
+};
+
 class Stage;
 
 /**
@@ -37,10 +42,9 @@ public:
 
     virtual const std::string& type() const = 0;
     virtual const Vec2d& pos() const = 0;
-    virtual const Vec2d& size() const = 0;
+    virtual const Size& size() const = 0;
     virtual const Stage& stage() const = 0;
 
-    virtual void set_pos(double x, double y) = 0;
     virtual void set_pos(const Vec2d& new_pos) = 0;
 
 protected:

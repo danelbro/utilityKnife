@@ -50,7 +50,7 @@ struct AppConfig {
 
 class Application {
 public:
-    virtual ~Application();
+    virtual ~Application() = default;
     Application(const Application&) = delete;
     Application& operator=(const Application&) = delete;
     Application(Application&&) = delete;
@@ -60,6 +60,8 @@ public:
     virtual void trigger_stage_change(const std::string& new_stage) = 0;
 
     virtual const std::string& title() const = 0;
+    virtual const std::string& version() const = 0;
+    virtual const std::string& identifier() const = 0;
     virtual Box& screen() = 0;
     virtual uint32_t flags() = 0;
     virtual uint32_t windowFlags() = 0;

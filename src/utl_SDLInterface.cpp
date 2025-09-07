@@ -1,10 +1,4 @@
 #include "utl_SDLInterface.hpp"
-
-#include "SDL3/SDL_pixels.h"
-#include "SDL3/SDL_properties.h"
-#include "SDL3/SDL_rect.h"
-#include "SDL3/SDL_render.h"
-#include "SDL3/SDL_video.h"
 #include "utl_Box.hpp"
 
 #include <SDL3/SDL.h>
@@ -394,14 +388,10 @@ Rect::Rect() : m_rectPtr{nullptr} {}
 
 Rect::Rect(SDL_FRect* new_rect) : m_rectPtr{new_rect} {}
 
-Rect::Rect(int x, int y, int w, int h)
+Rect::Rect(const RectDimensions& rect)
     : m_rectPtr{std::make_unique<SDL_FRect>(
-          static_cast<float>(x), static_cast<float>(y), static_cast<float>(w),
-          static_cast<float>(h))}
-{}
-
-Rect::Rect(float x, float y, float w, float h)
-    : m_rectPtr{std::make_unique<SDL_FRect>(x, y, w, h)}
+          static_cast<float>(rect.x), static_cast<float>(rect.y),
+          static_cast<float>(rect.w), static_cast<float>(rect.h))}
 {}
 
 Rect::Rect(const Rect& other)
@@ -417,9 +407,11 @@ Rect& Rect::operator=(const Rect& other)
     return *this;
 }
 
-void Rect::reset(float x, float y, float w, float h)
+void Rect::reset(const RectDimensions& rect)
 {
-    m_rectPtr = std::make_unique<SDL_FRect>(x, y, w, h);
+    m_rectPtr = std::make_unique<SDL_FRect>(
+        static_cast<float>(rect.x), static_cast<float>(rect.y),
+        static_cast<float>(rect.w), static_cast<float>(rect.h));
 }
 
 void Rect::draw(Renderer& renderer)

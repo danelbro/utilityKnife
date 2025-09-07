@@ -36,9 +36,8 @@ public:
     void render(Renderer& renderer) override;
     const std::string& type() const override { return m_type; }
     const Vec2d& pos() const override { return m_pos; }
-    const Vec2d& size() const override { return m_size; };
+    const Size& size() const override { return m_size; };
     const Stage& stage() const override { return *m_stage; }
-    void set_pos(double x, double y) override;
     void set_pos(const Vec2d& new_pos) override;
 
     const std::vector<Vec2d>& rotatedShape() const { return m_rotatedShape; }
@@ -75,7 +74,7 @@ protected:
     Vec2d m_pos;
     const Stage* m_stage;
 
-    utl::Colour m_color;
+    Colour m_color;
     double m_scale;
     bool m_isVisible;
     bool m_killMe;
@@ -85,7 +84,7 @@ protected:
     std::vector<Vec2d> m_rotatedShape;
     std::vector<Vec2d> m_collider;
 
-    utl::Vec2d m_size = 0;  // todo
+    Size m_size = {0,0};  // todo
 };
 
 /**

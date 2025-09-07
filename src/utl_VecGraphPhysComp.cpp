@@ -1,10 +1,16 @@
 ﻿#include "utl_VecGraphPhysComp.hpp"
 
-#include "utl_VecGraphPhysEnt.hpp"
 #include "utl_Stage.hpp"
+#include "utl_VecGraphPhysEnt.hpp"
 #include "utl_VectorDraw.hpp"
 
 namespace utl {
+VecGraphPhysComp::VecGraphPhysComp(double mass, VecGraphPhysEnt* new_owner)
+    : m_mass{mass}, m_impulse{0.0}, m_acceleration{0.0, 0.0},
+      m_velocity{0.0, 0.0}, m_facingAngle{0.0}, m_facingVector{0, 0},
+      m_velocityVector{0.0, 0.0}, m_velocityAngle{0.0}, m_owner{new_owner}
+{}
+
 void VecGraphPhysComp::turn(double turnSpeed, double dt)
 {
     set_facing_angle(m_facingAngle + turnSpeed * dt);

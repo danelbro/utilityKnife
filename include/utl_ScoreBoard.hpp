@@ -14,24 +14,19 @@ class Stage;
 
 class ScoreBoard : public Entity {
 public:
-    ScoreBoard();
-    ScoreBoard(const Vec2d& pos, double padding, Font& font,
-               const Colour& mainTextColor, const Colour& newScoreColor,
-               Renderer& renderer, Stage& stage);
-    ScoreBoard(const Vec2d& pos, double padding, Font& font,
-               const Colour& color, const Colour& newScoreColor,
-               Renderer& renderer, Stage& stage,
-               const std::vector<std::string>& scores);
+    ScoreBoard(Stage& stage, Font& font, const Vec2d& pos = {0.0, 0.0},
+               double padding = 0.0, const Colour& color = {0, 0, 0, 0},
+               const Colour& newScoreColor = {0, 0, 0, 0},
+               const std::vector<std::string>& scores = {});
 
     void update(double, double) override {}
     void render(Renderer& renderer) override;
 
     const std::string& type() const override { return m_type; }
     const Vec2d& pos() const override { return m_pos; }
-    const Vec2d& size() const override { return m_size; }
-    const Stage& stage() const override { return *m_stage; }
+    const Size& size() const override { return m_size; }
+    const Stage& stage() const override { return m_stage; }
 
-    void set_pos(double x, double y) override;
     void set_pos(const Vec2d& newPos) override;
 
     void change_padding(double padding);
@@ -48,12 +43,11 @@ private:
 
 private:
     const std::string m_type;
-    Vec2d m_size;
+    Size m_size;
     Vec2d m_pos;
     double m_padding;
-    const Font* m_font;
-    Renderer* m_renderer;
-    const Stage* m_stage;
+    Font& m_font;
+    Stage& m_stage;
     std::vector<TextObject> m_scores;
 };
 

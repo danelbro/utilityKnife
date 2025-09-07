@@ -10,37 +10,12 @@
 
 namespace utl {
 
-TextObject::TextObject()
-    : Entity{}, colour{}, m_type{"TEXT"}, m_size{}, m_pos{}, m_font{nullptr},
-      m_stage{nullptr}, text{}, m_texture{nullptr}
-{}
-
-TextObject::TextObject(const Font* font, const Stage* stage)
-    : Entity{}, colour{}, m_type{"TEXT"}, m_size{}, m_pos{}, m_font{font},
-      m_stage{stage}, text{}, m_texture{nullptr}
-{}
-
-TextObject::TextObject(const Font* font, const Stage* stage, const Colour& col,
-                       const Vec2d& pos)
-    : Entity{}, colour{col}, m_type{"TEXT"}, m_size{0, 0}, m_pos{pos},
-      m_font{font}, m_stage{stage}, text{}, m_texture{nullptr}
-{}
-
-TextObject::TextObject(const Font* font, const Stage* stage, const Colour& col,
-                       const std::string& newText, Renderer& renderer)
-    : Entity{}, colour{col}, m_type{"TEXT"}, m_size{0, 0}, m_pos{},
-      m_font{font}, m_stage{stage}, text{newText}, m_texture{nullptr}
-{
-    loadFromRenderedText(renderer, text, colour);
-}
-
-TextObject::TextObject(const Font* font, const Stage* stage,
-                       const Colour& color, const Vec2d& pos,
-                       const std::string& newText, Renderer& renderer)
+TextObject::TextObject(Font& font, Stage& stage, const Colour& color,
+                       const Vec2d& pos, const std::string& newText)
     : Entity{}, colour{color}, m_type{"TEXT"}, m_size{0, 0}, m_pos{pos},
-      m_font{font}, m_stage{stage}, text{newText}, m_texture{nullptr}
+      m_stage{stage}, m_font{font}, text{newText}, m_texture{nullptr}
 {
-    loadFromRenderedText(renderer, text, colour);
+    loadTexture();
 }
 
 void TextObject::free()
@@ -49,29 +24,29 @@ void TextObject::free()
     m_size = {0, 0};
 }
 
-void TextObject::loadFromRenderedText(Renderer& renderer,
-                                      const std::string& textureText,
-                                      const Colour& text_colour)
+void TextObject::updateText(const std::string& new_text)
+{
+    text = new_text;
+    loadTexture();
+}
+
+void TextObject::loadTexture()
 {
     free();
-
     auto texPstruct{
-        createTextTexture(*m_font, textureText, text_colour, renderer)};
-
+        createTextTexture(m_font, text, colour, m_stage.renderer())};
     m_texture = std::move(texPstruct.texP);
-
-    m_size.x = texPstruct.w;
-    m_size.y = texPstruct.h;
+    m_size = {texPstruct.w, texPstruct.h};
 }
 
 static void recentreX_(TextObject& to, double least, double width)
 {
-    to.set_pos({least + width / 2.0 - to.size().x / 2.0, to.pos().y});
+    to.set_pos({least + width / 2.0 - to.size().h / 2.0, to.pos().y});
 }
 
 static void recentreY_(TextObject& to, double least, double height)
 {
-    to.set_pos({to.pos().x, least + height / 2.0 - to.size().y / 2.0});
+    to.set_pos({to.pos().x, least + height / 2.0 - to.size().h / 2.0});
 }
 
 void TextObject::recentre(const Box& screen)
@@ -82,7 +57,8 @@ void TextObject::recentre(const Box& screen)
 
 void TextObject::recentre(const Entity& entity)
 {
-    recentreX_(*this, entity.pos().x, entity.size().x);
+    recentreX_(*this, entity.pos().x, entity.size().w);
+    recentreY_(*this, entity.pos().y, entity.size().h);
 }
 
 void TextObject::recentreX(const Box& screen)
@@ -92,7 +68,7 @@ void TextObject::recentreX(const Box& screen)
 
 void TextObject::recentreX(const Entity& entity)
 {
-    recentreX_(*this, entity.pos().x, entity.size().x);
+    recentreX_(*this, entity.pos().x, entity.size().w);
 }
 
 void TextObject::recentreY(const Box& screen)
@@ -102,19 +78,13 @@ void TextObject::recentreY(const Box& screen)
 
 void TextObject::recentreY(const Entity& entity)
 {
-    recentreY_(*this, entity.pos().y, entity.size().y);
-}
-
-void TextObject::updateText(std::string new_text, Renderer& renderer)
-{
-    text = new_text;
-    loadFromRenderedText(renderer, text, colour);
+    recentreY_(*this, entity.pos().y, entity.size().h);
 }
 
 void TextObject::render(Renderer& renderer)
 {
-    Rect renderQuad{static_cast<int>(m_pos.x), static_cast<int>(m_pos.y),
-                    static_cast<int>(m_size.x), static_cast<int>(m_size.y)};
+    Rect renderQuad{{static_cast<int>(m_pos.x), static_cast<int>(m_pos.y),
+                     m_size.w, m_size.h}};
     Rect nullRect{nullptr};
     copyTexturePortion(renderer, m_texture, nullRect, renderQuad);
 }

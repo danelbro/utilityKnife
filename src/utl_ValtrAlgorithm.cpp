@@ -33,6 +33,7 @@
 #include "utl_random.hpp"
 #include <algorithm>
 #include <cstddef>
+#include <ranges>
 #include <vector>
 
 namespace utl {
@@ -43,7 +44,8 @@ std::vector<Vec2d> genRandConvexPolygon(int m, const double& radius,
     size_t n = static_cast<size_t>(m);
     std::uniform_real_distribution<double> dist(-radius, radius);
     std::uniform_int_distribution<int> coinFlip(0, 1);
-    std::vector<double> xPool{}, yPool{};
+    std::vector<double> xPool{};
+    std::vector<double> yPool{};
     xPool.reserve(n);
     yPool.reserve(n);
 
@@ -96,13 +98,13 @@ std::vector<Vec2d> genRandConvexPolygon(int m, const double& radius,
     yVec.emplace_back(maxY - lastLeft);
     yVec.emplace_back(lastRight - maxY);
 
-    std::shuffle(yVec.begin(), yVec.end(), rng.rng());
+    std::ranges::shuffle(yVec, rng.rng());
     std::vector<Vec2d> vec{};
     vec.reserve(n);
 
     for (size_t i{0}; i < n; ++i) vec.emplace_back(Vec2d{xVec[i], yVec[i]});
 
-    std::sort(vec.begin(), vec.end(), [](const Vec2d& lhs, const Vec2d& rhs) {
+    std::ranges::sort(vec, [](const Vec2d& lhs, const Vec2d& rhs) {
         return lhs.angle() < rhs.angle();
     });
 

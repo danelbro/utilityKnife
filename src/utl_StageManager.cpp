@@ -61,7 +61,6 @@ void StageManager::run()
             }
 
             next = current_stage->handle_input(t, dt, keyState);
-
             if (next != current) {
                 handle_stage_transition();
                 current_stage = nullptr;
@@ -69,7 +68,6 @@ void StageManager::run()
             }
 
             next = current_stage->update(t, dt);
-
             if (next != current) {
                 handle_stage_transition();
                 current_stage = nullptr;

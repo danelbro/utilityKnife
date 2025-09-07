@@ -12,17 +12,7 @@ class VecGraphPhysEnt;
  */
 class VecGraphPhysComp {
 public:
-    VecGraphPhysComp()
-        : m_mass{}, m_impulse{}, m_acceleration{}, m_velocity{},
-          m_facingAngle{}, m_facingVector{}, m_velocityVector{},
-          m_velocityAngle{}, m_owner{nullptr}
-    {}
-
-    VecGraphPhysComp(double mass, VecGraphPhysEnt* new_owner)
-        : m_mass{mass}, m_impulse{0.0}, m_acceleration{0.0, 0.0},
-          m_velocity{0.0, 0.0}, m_facingAngle{0.0}, m_facingVector{0, 0},
-          m_velocityVector{0.0, 0.0}, m_velocityAngle{0.0}, m_owner{new_owner}
-    {}
+    VecGraphPhysComp(double mass={}, VecGraphPhysEnt* new_owner=nullptr);
 
     double mass() const { return m_mass; }
     double impulse() const { return m_impulse; }
