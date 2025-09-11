@@ -5,12 +5,10 @@
 namespace utl {
 
 struct Vec2d {
-    Vec2d() : x{}, y{} {}
-    Vec2d(double new_x, double new_y) : x{new_x}, y{new_y} {}
-    Vec2d(float new_x, float new_y) : x{new_x}, y{new_y} {}
-    Vec2d(int new_x, int new_y)
-        : x{static_cast<double>(new_x)}, y{static_cast<double>(new_y)}
-    {}
+    Vec2d() = default;
+    Vec2d(double new_x, double new_y);
+    Vec2d(float new_x, float new_y);
+    Vec2d(int new_x, int new_y);
     Vec2d(double angle);
 
     Vec2d& operator=(const double& angle);

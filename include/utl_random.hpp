@@ -8,11 +8,11 @@ class RNG {
 public:
     RNG();
 
-    std::mt19937& rng() { return m_rng; }
+    std::mt19937& rng();
 
 private:
-    std::random_device randDev;
-    std::mt19937 m_rng;
+    std::random_device randDev{};
+    std::mt19937 m_rng{randDev()};
 };
 
 }  // namespace utl

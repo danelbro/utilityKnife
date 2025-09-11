@@ -9,16 +9,31 @@
 
 namespace utl {
 
-StageManager::StageManager(Application& app) : current{""}, next{""}, m_app{app}
+StageManager::StageManager(Application* app) : current{""}, next{""}, m_app{app}
 {
     std::fill(keyState.begin(), keyState.end(), false);
     LOG("Constructed StageManager\n");
 }
 
-// StageManager::~StageManager()
-// {
-//     LOG("Destroyed StageManager\n");
-// }
+const std::string& StageManager::get_current() const
+{
+    return current;
+}
+
+Stage* StageManager::get_current_stage()
+{
+    return stages[current].get();
+}
+
+Stage* StageManager::get_next_stage()
+{
+    return stages[next].get();
+}
+
+const std::string& StageManager::get_next() const
+{
+    return next;
+}
 
 void StageManager::set_current_stage(const std::string& new_current)
 {
@@ -91,7 +106,7 @@ void StageManager::run()
 void StageManager::handle_stage_transition()
 {
     keyState.fill(false);
-    m_app.trigger_stage_change(next);
+    m_app->trigger_stage_change(next);
     stages[current].reset(nullptr);
 }
 

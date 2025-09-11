@@ -6,47 +6,91 @@
 #include "utl_Stage.hpp"
 #include "utl_Vec2d.hpp"
 
+#include <stdexcept>
 #include <string>
 
 namespace utl {
 
-TextObject::TextObject(Font& font, Stage& stage, const Colour& color,
-                       const Vec2d& pos, const std::string& newText)
-    : Entity{}, colour{color}, m_type{"TEXT"}, m_size{0, 0}, m_pos{pos},
-      m_stage{stage}, m_font{font}, text{newText}, m_texture{nullptr}
+static void recentreX_(TextObject& to, double least, double width);
+static void recentreY_(TextObject& to, double least, double height);
+
+TextObject::TextObject(Stage* stage, Font* font, const Colour& colour,
+                       const std::string& newText)
+    : TextObject{stage, font, colour, newText, {0.0, 0.0}}
+{}
+
+TextObject::TextObject(Stage* stage, Font* font, const Colour& colour,
+                       const Vec2d& pos)
+    : TextObject{stage, font, colour, {}, pos}
+{}
+
+TextObject::TextObject(Stage* stage, Font* font, const Colour& color,
+                       const std::string& newText, const Vec2d& pos)
+    : Entity{}, colour{color}, m_stage{stage}, m_font{font}, text{newText},
+      m_pos{pos}, m_texture{nullptr}
 {
+    if (!m_stage || !m_font)
+        throw std::runtime_error("creating stateful utl::TextObject without a "
+                                 "font or an owning utl::Stage!");
     loadTexture();
 }
 
-void TextObject::free()
+void TextObject::update(double, double) {}
+
+void TextObject::render(Renderer& renderer)
 {
-    m_texture.reset(nullptr);
-    m_size = {0, 0};
+    Rect renderQuad{{static_cast<float>(m_pos.x), static_cast<float>(m_pos.y),
+                     static_cast<float>(m_size.w),
+                     static_cast<float>(m_size.h)}};
+    Rect nullRect{nullptr};
+    copyTexturePortion(renderer, m_texture, nullRect, renderQuad);
 }
 
-void TextObject::updateText(const std::string& new_text)
+const std::string& TextObject::type() const
 {
-    text = new_text;
-    loadTexture();
+    return m_type;
 }
 
-void TextObject::loadTexture()
+const Vec2d& TextObject::pos() const
 {
-    free();
-    auto texPstruct{
-        createTextTexture(m_font, text, colour, m_stage.renderer())};
-    m_texture = std::move(texPstruct.texP);
-    m_size = {texPstruct.w, texPstruct.h};
+    return m_pos;
 }
 
-static void recentreX_(TextObject& to, double least, double width)
+const Size& TextObject::size() const
 {
-    to.set_pos({least + width / 2.0 - to.size().h / 2.0, to.pos().y});
+    return m_size;
 }
 
-static void recentreY_(TextObject& to, double least, double height)
+Stage& TextObject::stage()
 {
-    to.set_pos({to.pos().x, least + height / 2.0 - to.size().h / 2.0});
+    if (!m_stage)
+        throw std::runtime_error("TextObject has no owner!");
+    return *m_stage;
+}
+
+void TextObject::set_pos(const Vec2d& new_pos)
+{
+    m_pos = new_pos;
+}
+
+void TextObject::set_x_pos(double newX)
+{
+    m_pos.x = newX;
+}
+
+void TextObject::set_y_pos(double newY)
+{
+    m_pos.y = newY;
+}
+
+void TextObject::move_x_pos(double shiftX)
+{
+    m_pos.x += shiftX;
+}
+
+void TextObject::move_y_pos(double shiftY)
+{
+    m_pos.y += shiftY;
 }
 
 void TextObject::recentre(const Box& screen)
@@ -81,12 +125,40 @@ void TextObject::recentreY(const Entity& entity)
     recentreY_(*this, entity.pos().y, entity.size().h);
 }
 
-void TextObject::render(Renderer& renderer)
+void TextObject::updateText(const std::string& new_text)
 {
-    Rect renderQuad{{static_cast<int>(m_pos.x), static_cast<int>(m_pos.y),
-                     m_size.w, m_size.h}};
-    Rect nullRect{nullptr};
-    copyTexturePortion(renderer, m_texture, nullRect, renderQuad);
+    text = new_text;
+    loadTexture();
+}
+
+void TextObject::free()
+{
+    m_texture.reset(nullptr);
+    m_size = {0, 0};
+}
+
+void TextObject::loadTexture()
+{
+    if (!m_stage || !m_font) {
+        LOG("Trying to load texture on default-initialized TextObject");
+        return;
+    }
+    free();
+    auto texPstruct{
+        createTextTexture(*m_font, text, colour, m_stage->renderer())};
+    m_texture = std::move(texPstruct.texP);
+    m_size = {static_cast<double>(texPstruct.w),
+              static_cast<double>(texPstruct.h)};
+}
+
+static void recentreX_(TextObject& to, double least, double width)
+{
+    to.set_pos({least + width / 2.0 - to.size().h / 2.0, to.pos().y});
+}
+
+static void recentreY_(TextObject& to, double least, double height)
+{
+    to.set_pos({to.pos().x, least + height / 2.0 - to.size().h / 2.0});
 }
 
 }  // namespace utl

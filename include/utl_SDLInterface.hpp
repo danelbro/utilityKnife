@@ -71,8 +71,8 @@ public:
     Window(Window&&) = default;
     Window& operator=(Window&&) = default;
 
-    uint32_t ID() const { return SDL_GetWindowID(m_winPtr.get()); }
-    SDL_Window* get() const { return m_winPtr.get(); }
+    uint32_t ID() const;
+    SDL_Window* get() const;
 
 private:
     std::unique_ptr<SDL_Window, sdl_deleter> m_winPtr;
@@ -87,7 +87,7 @@ public:
     Renderer(Renderer&&) = default;
     Renderer& operator=(Renderer&&) = delete;
 
-    SDL_Renderer* get() const { return m_rendPtr.get(); }
+    SDL_Renderer* get() const;
     bool setVSync(int vsync);
     bool setDrawingBlendMode(unsigned blendMode);
 
@@ -104,7 +104,7 @@ public:
     Surface(Surface&&) = default;
     Surface& operator=(Surface&&) = default;
 
-    SDL_Surface* get() const { return m_surfPtr.get(); }
+    SDL_Surface* get() const;
 
 private:
     std::unique_ptr<SDL_Surface, sdl_deleter> m_surfPtr;
@@ -119,8 +119,8 @@ public:
     Texture(Texture&&) = default;
     Texture& operator=(Texture&&) = default;
 
-    SDL_Texture* get() const { return m_texPtr.get(); }
-    void reset(SDL_Texture* new_ptr) { m_texPtr.reset(new_ptr); }
+    SDL_Texture* get() const;
+    void reset(SDL_Texture* new_ptr);
 
 private:
     std::unique_ptr<SDL_Texture, sdl_deleter> m_texPtr;
@@ -135,7 +135,7 @@ public:
     Font(Font&&) = default;
     Font& operator=(Font&&) = default;
 
-    TTF_Font* get() const { return m_fontPtr.get(); }
+    TTF_Font* get() const;
 
 private:
     std::unique_ptr<TTF_Font, sdl_deleter> m_fontPtr;
@@ -143,10 +143,10 @@ private:
 };
 
 struct RectDimensions {
-    int x;
-    int y;
-    int w;
-    int h;
+    float x;
+    float y;
+    float w;
+    float h;
 };
 
 struct Rect {
@@ -163,21 +163,20 @@ public:
     void reset(const RectDimensions& rect);
     void draw(Renderer& renderer);
 
-    SDL_FRect* get() const { return m_rectPtr.get(); }
+    SDL_FRect* get() const;
 
-    const float& x() const { return m_rectPtr.get()->x; }
-    const float& y() const { return m_rectPtr.get()->y; }
-    const float& w() const { return m_rectPtr.get()->w; }
-    const float& h() const { return m_rectPtr.get()->h; }
+    const float& x() const;
+    const float& y() const;
+    const float& w() const;
+    const float& h() const;
 
 private:
     std::unique_ptr<SDL_FRect> m_rectPtr;
 };
 
 struct WindowWithRenderer {
-    WindowWithRenderer(Window&& w, Renderer&& r)
-        : window{std::move(w)}, renderer{std::move(r)}
-    {}
+    WindowWithRenderer(Window&& w, Renderer&& r);
+
     Window window;
     Renderer renderer;
 };

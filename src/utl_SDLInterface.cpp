@@ -107,6 +107,16 @@ Window& Window::operator=(const Window& other)
     return *this;
 }
 
+uint32_t Window::ID() const
+{
+    return SDL_GetWindowID(m_winPtr.get());
+}
+
+SDL_Window* Window::get() const
+{
+    return m_winPtr.get();
+}
+
 Window createWindow(const std::string& title, int w, int h, uint32_t flags)
 {
     LOG("creating a window\n");
@@ -150,6 +160,15 @@ Renderer& Renderer::operator=(const Renderer& other)
 
     return *this;
 }
+
+SDL_Renderer* Renderer::get() const
+{
+    return m_rendPtr.get();
+}
+
+WindowWithRenderer::WindowWithRenderer(Window&& w, Renderer&& r)
+    : window{std::move(w)}, renderer{std::move(r)}
+{}
 
 WindowWithRenderer create_window_with_renderer(const std::string& title, int w,
                                                int h, uint32_t flags)
@@ -258,6 +277,11 @@ Surface& Surface::operator=(const Surface& other)
     return *this;
 }
 
+SDL_Surface* Surface::get() const
+{
+    return m_surfPtr.get();
+}
+
 Texture::Texture(SDL_Texture* new_tex) : m_texPtr{new_tex, sdl_deleter()} {}
 
 Texture::Texture(const Texture& other) : m_texPtr{nullptr, sdl_deleter()}
@@ -309,6 +333,16 @@ Texture& Texture::operator=(const Texture& other)
     m_texPtr.swap(temp.m_texPtr);
 
     return *this;
+}
+
+SDL_Texture* Texture::get() const
+{
+    return m_texPtr.get();
+}
+
+void Texture::reset(SDL_Texture* new_ptr)
+{
+    m_texPtr.reset(new_ptr);
 }
 
 textureAndSize::textureAndSize(Texture&& newTexP, int newW, int newH)
@@ -370,6 +404,11 @@ Font& Font::operator=(const Font& other)
     return *this;
 }
 
+TTF_Font* Font::get() const
+{
+    return m_fontPtr.get();
+}
+
 Font createFont(const std::filesystem::path& path, int font_size)
 {
     LOG("creating a font\n");
@@ -405,6 +444,31 @@ Rect& Rect::operator=(const Rect& other)
     Rect temp{other};
     m_rectPtr.swap(temp.m_rectPtr);
     return *this;
+}
+
+SDL_FRect* Rect::get() const
+{
+    return m_rectPtr.get();
+}
+
+const float& Rect::x() const
+{
+    return m_rectPtr.get()->x;
+}
+
+const float& Rect::y() const
+{
+    return m_rectPtr.get()->y;
+}
+
+const float& Rect::w() const
+{
+    return m_rectPtr.get()->w;
+}
+
+const float& Rect::h() const
+{
+    return m_rectPtr.get()->h;
 }
 
 void Rect::reset(const RectDimensions& rect)

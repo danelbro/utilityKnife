@@ -1,14 +1,14 @@
 ﻿#pragma once
 
-#include "utl_Application.hpp"
 #include "utl_Box.hpp"
 #include "utl_SDLInterface.hpp"
 
 #include <array>
-#include <cstdint>
 #include <string>
 
 namespace utl {
+
+class Application;
 
 /**
  * The Stage is the base class for a level, screen, stage, etc. Your derived
@@ -24,6 +24,10 @@ namespace utl {
 class Stage {
 public:
     virtual ~Stage() = default;
+    Stage(const Stage&) = delete;
+    Stage& operator=(const Stage&) = delete;
+    Stage(Stage&&) = delete;
+    Stage& operator=(Stage&&) = delete;
 
     virtual std::string
     handle_input(double t, double dt,
@@ -31,19 +35,12 @@ public:
     virtual std::string update(double t, double dt) = 0;
     virtual void render(double t, double dt) = 0;
 
-    virtual Box& modifiable_screen() = 0;
-    virtual const Box& screen() const = 0;
-    virtual uint32_t windowID() = 0;
+    virtual Application& app() = 0;
+    virtual Box& screen() = 0;
     virtual Renderer& renderer() = 0;
-    virtual const std::string& ID() const = 0;
-    virtual const Application& app() const = 0;
 
 protected:
-    Stage();
-    Stage(const Stage&) = default;
-    Stage& operator=(const Stage&) = default;
-    Stage(Stage&&) = default;
-    Stage& operator=(Stage&&) = default;
+    Stage() = default;
 };
 
 }  // namespace utl

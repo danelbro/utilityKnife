@@ -12,14 +12,20 @@
 
 namespace utl {
 
-VecGraphPhysEnt::VecGraphPhysEnt(const Stage* stage, const std::string& type,
-                                 const Vec2d& pos,
-                                 const std::vector<Vec2d>& shape,
+static Vec2d syncPointToColliderWorldSpace(const VecGraphPhysEnt& pe1,
+                                           const VecGraphPhysEnt& pe2,
+                                           const Box& screen);
+
+static std::vector<Vec2d> syncColliderWorldSpace(const VecGraphPhysEnt& pe1,
+                                                 const VecGraphPhysEnt& pe2,
+                                                 const Box& screen);
+
+VecGraphPhysEnt::VecGraphPhysEnt(Stage* stage,
                                  const VecGraphPhysEntConfig& config)
-    : Entity{}, physicsComponent{config.mass, this}, shape{shape}, m_type{type},
-      m_pos{pos}, m_stage{stage}, m_color{config.color}, m_scale{config.scale},
-      m_isVisible{true}, m_killMe{false}, m_wrap{config.wrap},
-      m_fill{config.fill}, m_rotatedShape{}, m_collider{}
+    : Entity{}, physicsComponent{config.mass, this}, shape{config.shape},
+      m_stage{stage}, m_type{config.type}, m_pos{config.pos},
+      m_color{config.color}, m_scale{config.scale}, m_wrap{config.wrap},
+      m_fill{config.fill}
 {
     update_shapes();
 }
@@ -27,22 +33,6 @@ VecGraphPhysEnt::VecGraphPhysEnt(const Stage* stage, const std::string& type,
 void VecGraphPhysEnt::update(double, double)
 {
     update_shapes();
-}
-
-void VecGraphPhysEnt::update_shapes()
-{
-    m_collider.clear();
-    m_rotatedShape.clear();
-    m_collider.reserve(shape.size());
-    m_rotatedShape.reserve(shape.size());
-
-    for (Vec2d p : shape) {
-        p.rotate_deg_ip(physicsComponent.facing());
-        p *= m_scale;
-        m_rotatedShape.emplace_back(p);
-        p += m_pos;
-        m_collider.emplace_back(p);
-    }
 }
 
 void VecGraphPhysEnt::render(Renderer& renderer)
@@ -74,6 +64,92 @@ void VecGraphPhysEnt::render(Renderer& renderer)
     }
 
     setRendererDrawColour(renderer, oldColor);
+}
+
+const std::string& VecGraphPhysEnt::type() const
+{
+    return m_type;
+}
+
+const Vec2d& VecGraphPhysEnt::pos() const
+{
+    return m_pos;
+}
+
+const Size& VecGraphPhysEnt::size() const
+{
+    return m_size;
+};
+
+Stage& VecGraphPhysEnt::stage()
+{
+    return *m_stage;
+}
+
+void VecGraphPhysEnt::set_pos(const Vec2d& new_pos)
+{
+    m_pos = new_pos;
+}
+
+const std::vector<Vec2d>& VecGraphPhysEnt::rotatedShape() const
+{
+    return m_rotatedShape;
+}
+
+const std::vector<Vec2d>& VecGraphPhysEnt::collider() const
+{
+    return m_collider;
+}
+
+bool VecGraphPhysEnt::isVisible() const
+{
+    return m_isVisible;
+}
+
+bool VecGraphPhysEnt::toBeKilled() const
+{
+    return m_killMe;
+}
+
+double VecGraphPhysEnt::scale() const
+{
+    return m_scale;
+}
+
+const Colour& VecGraphPhysEnt::color() const
+{
+    return m_color;
+}
+
+bool VecGraphPhysEnt::drawWrapped() const
+{
+    return m_wrap;
+}
+
+void VecGraphPhysEnt::kill_it()
+{
+    m_killMe = true;
+};
+
+void VecGraphPhysEnt::setVisible(bool vis)
+{
+    m_isVisible = vis;
+}
+
+void VecGraphPhysEnt::update_shapes()
+{
+    m_collider.clear();
+    m_rotatedShape.clear();
+    m_collider.reserve(shape.size());
+    m_rotatedShape.reserve(shape.size());
+
+    for (Vec2d p : shape) {
+        p.rotate_deg_ip(physicsComponent.facing());
+        p *= m_scale;
+        m_rotatedShape.emplace_back(p);
+        p += m_pos;
+        m_collider.emplace_back(p);
+    }
 }
 
 static Vec2d syncPointToColliderWorldSpace(const VecGraphPhysEnt& pe1,

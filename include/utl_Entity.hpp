@@ -43,12 +43,12 @@ public:
     virtual const std::string& type() const = 0;
     virtual const Vec2d& pos() const = 0;
     virtual const Size& size() const = 0;
-    virtual const Stage& stage() const = 0;
+    virtual Stage& stage() = 0;
 
     virtual void set_pos(const Vec2d& new_pos) = 0;
 
 protected:
-    Entity() {}
+    Entity() = default;
     Entity(const Entity&) = default;
     Entity& operator=(const Entity&) = default;
     Entity(Entity&&) = default;

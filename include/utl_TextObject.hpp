@@ -13,18 +13,26 @@ class Stage;
 
 class TextObject : public Entity {
 public:
-    TextObject(Stage& stage, Font& font, const Colour& colour = {0, 0, 0, 0},
-               const Vec2d& pos = {0.0, 0.0}, const std::string& newText = {});
+    TextObject() = default;
+    TextObject(Stage* stage, Font* font, const Colour& colour,
+               const std::string& newText);
+    TextObject(Stage* stage, Font* font, const Colour& colour,
+               const Vec2d& pos);
+    TextObject(Stage* stage, Font* font, const Colour& colour,
+               const std::string& newText, const Vec2d& pos);
 
-    void update(double, double) override {}
+    void update(double, double) override;
     void render(Renderer& renderer) override;
-    const std::string& type() const override { return m_type; }
-    const Vec2d& pos() const override { return m_pos; }
-    const Size& size() const override { return m_size; }
-    const Stage& stage() const override;
-    void set_pos(const Vec2d& new_pos) override { m_pos = new_pos; }
+    const std::string& type() const override;
+    const Vec2d& pos() const override;
+    const Size& size() const override;
+    Stage& stage() override;
+    void set_pos(const Vec2d& new_pos) override;
 
-    void updateText(const std::string& new_text);
+    void set_x_pos(double newX);
+    void set_y_pos(double newY);
+    void move_x_pos(double shiftX);
+    void move_y_pos(double shiftY);
 
     void recentre(const Box& screen);
     void recentre(const Entity& entity);
@@ -33,21 +41,23 @@ public:
     void recentreY(const Box& screen);
     void recentreY(const Entity& entity);
 
+    void updateText(const std::string& new_text);
+
 public:
-    Colour colour;
+    Colour colour{0, 0, 0, 0};
 
 private:
     void free();
     void loadTexture();
 
 private:
-    const std::string m_type;
-    Size m_size;
-    Vec2d m_pos;
-    Stage& m_stage;
-    Font& m_font;
-    std::string text;
-    Texture m_texture;
+    std::string m_type{"TEXT"};
+    Stage* m_stage{nullptr};
+    Font* m_font{nullptr};
+    std::string text{};
+    Vec2d m_pos{0.0, 0.0};
+    Size m_size{0.0, 0.0};
+    Texture m_texture{nullptr};
 };
 
 }  // namespace utl

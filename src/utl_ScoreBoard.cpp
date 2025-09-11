@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <numeric>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -15,7 +16,7 @@ static double calculate_width(const std::vector<TextObject>& scores);
 static double calculate_height(const std::vector<TextObject>& scores,
                                double padding);
 
-ScoreBoard::ScoreBoard(Stage& stage, Font& font, const Vec2d& pos,
+ScoreBoard::ScoreBoard(Stage* stage, Font* font, const Vec2d& pos,
                        double padding, const Colour& textColor,
                        const Colour& newScoreColor,
                        const std::vector<std::string>& scores)
@@ -28,6 +29,8 @@ ScoreBoard::ScoreBoard(Stage& stage, Font& font, const Vec2d& pos,
     set_pos(m_pos);
 }
 
+void ScoreBoard::update(double, double) {}
+
 void ScoreBoard::render(Renderer& renderer)
 {
     for (auto& score : m_scores) {
@@ -35,19 +38,25 @@ void ScoreBoard::render(Renderer& renderer)
     }
 }
 
-void ScoreBoard::set_text(const std::vector<std::string>& scores,
-                          int newScorePos)
+const std::string& ScoreBoard::type() const
 {
-    for (size_t i{0}; i < scores.size(); i++) {
-        if (newScorePos == static_cast<int>(i)) {
-            m_scores.emplace_back(m_stage, m_font, newScoreColor, m_pos,
-                                  scores[i]);
-        } else {
-            m_scores.emplace_back(m_stage, m_font, textColor, m_pos, scores[i]);
-        }
-    }
-    m_size = {calculate_width(m_scores), calculate_height(m_scores, m_padding)};
-    reposition_text();
+    return m_type;
+}
+
+const Vec2d& ScoreBoard::pos() const
+{
+    return m_pos;
+}
+
+const Size& ScoreBoard::size() const
+{
+    return m_size;
+}
+
+Stage& ScoreBoard::stage()
+{
+    if (!m_stage) throw std::runtime_error("ScoreBoard doesn't have an owner!");
+    return *m_stage;
 }
 
 void ScoreBoard::set_pos(const Vec2d& pos)
@@ -59,6 +68,21 @@ void ScoreBoard::set_pos(const Vec2d& pos)
 void ScoreBoard::change_padding(double padding)
 {
     m_padding = padding;
+    reposition_text();
+}
+
+void ScoreBoard::set_text(const std::vector<std::string>& scores,
+                          int newScorePos)
+{
+    for (size_t i{0}; i < scores.size(); i++) {
+        if (newScorePos == static_cast<int>(i)) {
+            m_scores.emplace_back(m_stage, m_font, newScoreColor, scores[i],
+                                  m_pos);
+        } else {
+            m_scores.emplace_back(m_stage, m_font, textColor, scores[i], m_pos);
+        }
+    }
+    m_size = {calculate_width(m_scores), calculate_height(m_scores, m_padding)};
     reposition_text();
 }
 
@@ -89,7 +113,7 @@ static double calculate_height(const std::vector<TextObject>& scores,
                                   [](double acc, const auto& score) {
                                       return std::move(acc) + score.size().h;
                                   });
-    height += padding * (scores.size() - 1);
+    height += padding * static_cast<double>((scores.size() - 1));
 
     return height;
 }

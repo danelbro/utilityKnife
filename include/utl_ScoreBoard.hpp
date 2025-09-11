@@ -14,41 +14,37 @@ class Stage;
 
 class ScoreBoard : public Entity {
 public:
-    ScoreBoard(Stage& stage, Font& font, const Vec2d& pos = {0.0, 0.0},
-               double padding = 0.0, const Colour& color = {0, 0, 0, 0},
-               const Colour& newScoreColor = {0, 0, 0, 0},
-               const std::vector<std::string>& scores = {});
+    ScoreBoard() = default;
+    ScoreBoard(Stage* stage, Font* font, const Vec2d& pos, double padding,
+               const Colour& color, const Colour& newScoreColor,
+               const std::vector<std::string>& scores);
 
-    void update(double, double) override {}
+    void update(double, double) override;
     void render(Renderer& renderer) override;
-
-    const std::string& type() const override { return m_type; }
-    const Vec2d& pos() const override { return m_pos; }
-    const Size& size() const override { return m_size; }
-    const Stage& stage() const override { return m_stage; }
-
+    const std::string& type() const override;
+    const Vec2d& pos() const override;
+    const Size& size() const override;
+    Stage& stage() override;
     void set_pos(const Vec2d& newPos) override;
 
     void change_padding(double padding);
-    void change_font(Font& font);
-    void change_renderer(Renderer& renderer);
     void set_text(const std::vector<std::string>& scores, int newScore = -1);
 
 public:
-    Colour textColor;
-    Colour newScoreColor;
+    Colour textColor{0, 0, 0, 0};
+    Colour newScoreColor{0, 0, 0, 0};
 
 private:
     void reposition_text();
 
 private:
-    const std::string m_type;
-    Size m_size;
-    Vec2d m_pos;
-    double m_padding;
-    Font& m_font;
-    Stage& m_stage;
-    std::vector<TextObject> m_scores;
+    const std::string m_type{"SCOREBOARD"};
+    Size m_size{0.0, 0.0};
+    Vec2d m_pos{0.0, 0.0};
+    double m_padding{0.0};
+    Font* m_font{nullptr};
+    Stage* m_stage{nullptr};
+    std::vector<TextObject> m_scores{};
 };
 
 }  // namespace utl

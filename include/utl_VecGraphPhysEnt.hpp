@@ -14,6 +14,9 @@ class Stage;
 struct Vec2d;
 
 struct VecGraphPhysEntConfig {
+    const std::string type;
+    const std::vector<Vec2d> shape;
+    const Vec2d pos;
     const Colour color;
     const double scale;
     const double mass;
@@ -34,57 +37,57 @@ public:
      * in VectorDraw.hpp
      */
     void render(Renderer& renderer) override;
-    const std::string& type() const override { return m_type; }
-    const Vec2d& pos() const override { return m_pos; }
-    const Size& size() const override { return m_size; };
-    const Stage& stage() const override { return *m_stage; }
+    const std::string& type() const override;
+    const Vec2d& pos() const override;
+    const Size& size() const override;
+    Stage& stage() override;
     void set_pos(const Vec2d& new_pos) override;
 
-    const std::vector<Vec2d>& rotatedShape() const { return m_rotatedShape; }
+    const std::vector<Vec2d>& rotatedShape() const;
 
     /**
      * collider() returns the current (rotated, translated) shape of the
      * entity - this is updated every frame
      */
-    const std::vector<Vec2d>& collider() const { return m_collider; }
+    const std::vector<Vec2d>& collider() const;
 
-    bool isVisible() const { return m_isVisible; }
-    bool toBeKilled() const { return m_killMe; }
-    double scale() const { return m_scale; }
-    const Colour& color() const { return m_color; }
-    bool drawWrapped() const { return m_wrap; }
+    bool isVisible() const;
+    bool toBeKilled() const;
+    double scale() const;
+    const Colour& color() const;
+    bool drawWrapped() const;
 
     /**
      * sets a flag intended to indicate that the entity should be destroyed
      */
-    virtual void kill_it() { m_killMe = true; };
-    void setVisible(bool vis) { m_isVisible = vis; }
+    virtual void kill_it();
+    void setVisible(bool vis);
 
 public:
-    VecGraphPhysComp physicsComponent;
-    const std::vector<Vec2d> shape;
+    VecGraphPhysComp physicsComponent{0.0, this};
+    const std::vector<Vec2d> shape{};
 
 protected:
-    VecGraphPhysEnt(const Stage* stage, const std::string& type,
-                    const Vec2d& pos, const std::vector<Vec2d>& shape,
-                    const VecGraphPhysEntConfig& config);
+    VecGraphPhysEnt() = default;
+    VecGraphPhysEnt(Stage* stage, const VecGraphPhysEntConfig& config);
+
     void update_shapes();
 
-    const std::string m_type;
-    Vec2d m_pos;
-    const Stage* m_stage;
+protected:
+    Stage* m_stage{nullptr};
+    std::string m_type{"VECTORGRAPHICS_PHYSICSENTITY"};
+    Vec2d m_pos{};
+    Size m_size{};
 
-    Colour m_color;
-    double m_scale;
-    bool m_isVisible;
-    bool m_killMe;
-    bool m_wrap;
-    bool m_fill;
+    Colour m_color{0xff, 0xff, 0xff, 0xff};
+    double m_scale{1.0};
+    bool m_isVisible{true};
+    bool m_killMe{false};
+    bool m_wrap{true};
+    bool m_fill{false};
 
-    std::vector<Vec2d> m_rotatedShape;
-    std::vector<Vec2d> m_collider;
-
-    Size m_size = {0,0};  // todo
+    std::vector<Vec2d> m_rotatedShape{};
+    std::vector<Vec2d> m_collider{};
 };
 
 /**

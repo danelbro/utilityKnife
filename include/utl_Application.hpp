@@ -70,7 +70,7 @@ public:
     virtual StageManager& stageManager() = 0;
 
 protected:
-    Application();
+    Application() = default;
 };
 
 }  // namespace utl
