@@ -6,6 +6,7 @@
 #include "utl_Stage.hpp"
 #include "utl_Vec2d.hpp"
 
+#include <cmath>
 #include <stdexcept>
 #include <string>
 
@@ -70,27 +71,30 @@ Stage& TextObject::stage()
 
 void TextObject::set_pos(const Vec2d& new_pos)
 {
-    m_pos = new_pos;
+    m_pos.x = std::trunc(new_pos.x);
+    m_pos.y = std::trunc(new_pos.y);
 }
 
 void TextObject::set_x_pos(double newX)
 {
-    m_pos.x = newX;
+    m_pos.x = std::trunc(newX);
 }
 
 void TextObject::set_y_pos(double newY)
 {
-    m_pos.y = newY;
+    m_pos.y = std::trunc(newY);
 }
 
 void TextObject::move_x_pos(double shiftX)
 {
     m_pos.x += shiftX;
+    m_pos.x = std::trunc(m_pos.x);
 }
 
 void TextObject::move_y_pos(double shiftY)
 {
     m_pos.y += shiftY;
+    m_pos.y = std::trunc(m_pos.y);
 }
 
 void TextObject::recentre(const Box& screen)
@@ -146,14 +150,15 @@ void TextObject::loadTexture()
     free();
     auto texPstruct{
         createTextTexture(*m_font, text, colour, m_stage->renderer())};
-    m_texture = std::move(texPstruct.texP);
     m_size = {static_cast<double>(texPstruct.w),
               static_cast<double>(texPstruct.h)};
+    m_texture = std::move(texPstruct.texP);
+
 }
 
 static void recentreX_(TextObject& to, double least, double width)
 {
-    to.set_pos({least + width / 2.0 - to.size().h / 2.0, to.pos().y});
+    to.set_pos({least + width / 2.0 - to.size().w / 2.0, to.pos().y});
 }
 
 static void recentreY_(TextObject& to, double least, double height)
