@@ -563,6 +563,9 @@ void process_input(Box& screen, uint32_t windowID,
             case SDLK_SPACE:
                 key_state[KeyFlag::K_SPACE] = false;
                 break;
+            case SDLK_RETURN:
+                key_state[KeyFlag::K_ENTER] = false;
+                break;
             case SDLK_LSHIFT:
                 key_state[KeyFlag::K_LSHIFT] = false;
                 break;
