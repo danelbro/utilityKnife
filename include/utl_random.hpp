@@ -9,10 +9,10 @@ public:
     RNG();
 
     std::mt19937& rng();
+    void seed();
 
 private:
-    std::random_device randDev{};
-    std::mt19937 m_rng{randDev()};
+    std::mt19937 m_rng;
 };
 
 }  // namespace utl
