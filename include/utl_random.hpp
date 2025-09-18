@@ -4,15 +4,13 @@
 
 namespace utl {
 
-class RNG {
+struct RNG {
+private:
+    std::random_device rand_dev;
+
 public:
     RNG();
-
-    std::mt19937& rng();
-    void seed();
-
-private:
-    std::mt19937 m_rng;
+    std::mt19937 rng;
 };
 
 }  // namespace utl

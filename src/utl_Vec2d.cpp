@@ -178,7 +178,7 @@ Vec2d randomPos(utl::RNG& rng, int w, int h)
     std::uniform_real_distribution<double> xDist(0.0, static_cast<double>(w));
     std::uniform_real_distribution<double> yDist(0.0, static_cast<double>(h));
 
-    return {xDist(rng.rng()), yDist(rng.rng())};
+    return {xDist(rng.rng), yDist(rng.rng)};
 }
 
 }  // namespace utl
