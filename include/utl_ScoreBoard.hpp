@@ -5,6 +5,7 @@
 #include "utl_TextObject.hpp"
 #include "utl_Vec2d.hpp"
 
+#include <chrono>
 #include <string>
 #include <vector>
 
@@ -19,7 +20,7 @@ public:
                const Colour& color, const Colour& newScoreColor,
                const std::vector<std::string>& scores);
 
-    void update(double, double) override;
+    void update(std::chrono::milliseconds, std::chrono::milliseconds) override;
     void render(Renderer& renderer) override;
     const std::string& type() const override;
     const Vec2d& pos() const override;

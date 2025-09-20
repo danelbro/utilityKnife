@@ -4,6 +4,8 @@
 #include "utl_SDLInterface.hpp"
 
 #include <array>
+#include <chrono>
+#include <cstdint>
 #include <string>
 
 namespace utl {
@@ -30,10 +32,12 @@ public:
     Stage& operator=(Stage&&) = delete;
 
     virtual std::string
-    handle_input(double t, double dt,
+    handle_input(std::chrono::milliseconds t, std::chrono::milliseconds dt,
                  std::array<bool, KeyFlag::K_TOTAL>& key_state) = 0;
-    virtual std::string update(double t, double dt) = 0;
-    virtual void render(double t, double dt) = 0;
+    virtual std::string update(std::chrono::milliseconds t,
+                               std::chrono::milliseconds dt) = 0;
+    virtual void render(std::chrono::milliseconds t,
+                        std::chrono::milliseconds dt) = 0;
 
     virtual Application& app() = 0;
     virtual Box& screen() = 0;

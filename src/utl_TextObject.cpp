@@ -36,7 +36,7 @@ TextObject::TextObject(Stage* stage, Font* font, const Colour& color,
     loadTexture();
 }
 
-void TextObject::update(double, double) {}
+void TextObject::update(std::chrono::milliseconds, std::chrono::milliseconds) {}
 
 void TextObject::render(Renderer& renderer)
 {
@@ -153,7 +153,6 @@ void TextObject::loadTexture()
     m_size = {static_cast<double>(texPstruct.w),
               static_cast<double>(texPstruct.h)};
     m_texture = std::move(texPstruct.texP);
-
 }
 
 static void recentreX_(TextObject& to, double least, double width)

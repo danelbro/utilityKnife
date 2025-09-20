@@ -5,6 +5,7 @@
 #include "utl_SDLInterface.hpp"
 #include "utl_Vec2d.hpp"
 
+#include <chrono>
 #include <string>
 
 namespace utl {
@@ -21,7 +22,7 @@ public:
     TextObject(Stage* stage, Font* font, const Colour& colour,
                const std::string& newText, const Vec2d& pos);
 
-    void update(double, double) override;
+    void update(std::chrono::milliseconds, std::chrono::milliseconds) override;
     void render(Renderer& renderer) override;
     const std::string& type() const override;
     const Vec2d& pos() const override;

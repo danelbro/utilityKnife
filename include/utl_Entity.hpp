@@ -3,6 +3,7 @@
 #include "utl_SDLInterface.hpp"
 #include "utl_Vec2d.hpp"
 
+#include <chrono>
 #include <string>
 
 namespace utl {
@@ -30,7 +31,8 @@ public:
      * It’s recommended to derive from one of the provided derived classes
      * instead of Entity as they will handle the relevant updates.
      */
-    virtual void update(double t, double dt) = 0;
+    virtual void update(std::chrono::milliseconds t,
+                        std::chrono::milliseconds dt) = 0;
 
     /**
      * render() is called each frame. It should draw the Entity to the screen.

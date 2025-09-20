@@ -3,8 +3,10 @@
 #include "utl_SDLInterface.hpp"
 #include "utl_Stage.hpp"
 #include "utl_TextObject.hpp"
+
 #include <algorithm>
 #include <cstddef>
+#include <chrono>
 #include <numeric>
 #include <stdexcept>
 #include <string>
@@ -29,7 +31,7 @@ ScoreBoard::ScoreBoard(Stage* stage, Font* font, const Vec2d& pos,
     set_pos(m_pos);
 }
 
-void ScoreBoard::update(double, double) {}
+void ScoreBoard::update(std::chrono::milliseconds, std::chrono::milliseconds) {}
 
 void ScoreBoard::render(Renderer& renderer)
 {
@@ -55,7 +57,8 @@ const Size& ScoreBoard::size() const
 
 Stage& ScoreBoard::stage()
 {
-    if (!m_stage) throw std::runtime_error("ScoreBoard doesn't have an owner!");
+    if (!m_stage)
+        throw std::runtime_error("ScoreBoard doesn't have an owner!");
     return *m_stage;
 }
 

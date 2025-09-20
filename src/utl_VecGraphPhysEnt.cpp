@@ -30,7 +30,8 @@ VecGraphPhysEnt::VecGraphPhysEnt(Stage* stage,
     update_shapes();
 }
 
-void VecGraphPhysEnt::update(double, double)
+void VecGraphPhysEnt::update(std::chrono::milliseconds,
+                             std::chrono::milliseconds)
 {
     update_shapes();
 }

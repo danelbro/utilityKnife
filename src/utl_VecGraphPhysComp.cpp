@@ -3,6 +3,7 @@
 #include "utl_Stage.hpp"
 #include "utl_VecGraphPhysEnt.hpp"
 #include "utl_VectorDraw.hpp"
+#include <chrono>
 
 namespace utl {
 
@@ -104,17 +105,26 @@ void VecGraphPhysComp::setOwner(VecGraphPhysEnt* new_owner)
     m_owner = new_owner;
 }
 
-void VecGraphPhysComp::update(double dt)
+void VecGraphPhysComp::update(std::chrono::milliseconds dt)
 {
+    using namespace std::chrono;
     Vec2d totalForces{m_facingVector * m_impulse};
-    m_acceleration = (totalForces / m_mass) * dt;
-    m_velocity += m_acceleration * dt;
+    m_acceleration = (totalForces / m_mass)
+                     * static_cast<double>(duration_cast<seconds>(dt).count());
+    m_velocity += m_acceleration
+                  * static_cast<double>(duration_cast<seconds>(dt).count());
 
     if (m_owner->drawWrapped()) {
-        m_owner->set_pos(
-            wrap(m_owner->pos() + m_velocity * dt, m_owner->stage().screen()));
+        m_owner->set_pos(wrap(
+            m_owner->pos()
+                + m_velocity
+                      * static_cast<double>(duration_cast<seconds>(dt).count()),
+            m_owner->stage().screen()));
     } else {
-        m_owner->set_pos(m_owner->pos() + m_velocity * dt);
+        m_owner->set_pos(
+            m_owner->pos()
+            + m_velocity
+                  * static_cast<double>(duration_cast<seconds>(dt).count()));
     }
 
     m_velocityVector = m_velocity.normalize();

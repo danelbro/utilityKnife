@@ -5,6 +5,7 @@
 #include "utl_Vec2d.hpp"
 #include "utl_VecGraphPhysComp.hpp"
 
+#include <chrono>
 #include <string>
 #include <vector>
 
@@ -30,7 +31,7 @@ struct VecGraphPhysEntConfig {
  */
 class VecGraphPhysEnt : public Entity {
 public:
-    void update(double, double) override;
+    void update(std::chrono::milliseconds, std::chrono::milliseconds) override;
 
     /**
      * render() draws the entity using the vector graphics functions

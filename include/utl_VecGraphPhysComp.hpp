@@ -2,6 +2,8 @@
 
 #include "utl_Vec2d.hpp"
 
+#include <chrono>
+
 namespace utl {
 
 class VecGraphPhysEnt;
@@ -36,7 +38,7 @@ public:
 
     void setOwner(VecGraphPhysEnt* new_owner);
 
-    void update(double dt);
+    void update(std::chrono::milliseconds dt);
 
 private:
     VecGraphPhysEnt* m_owner{nullptr};
@@ -46,7 +48,7 @@ private:
     Vec2d m_acceleration{0.0, 0.0};
     Vec2d m_velocity{0.0, 0.0};
 
-    double m_facingAngle{0.0};  // between 0 and 360
+    double m_facingAngle{0.0};       // between 0 and 360
     Vec2d m_facingVector{0.0, 0.0};  // vector representation of m_angle
 
     Vec2d m_velocityVector{0.0, 0.0};
