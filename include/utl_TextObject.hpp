@@ -47,11 +47,11 @@ public:
 public:
     Colour colour{0, 0, 0, 0};
 
-private:
+protected:
     void free();
     void loadTexture();
 
-private:
+protected:
     std::string m_type{"TEXT"};
     Stage* m_stage{nullptr};
     Font* m_font{nullptr};
