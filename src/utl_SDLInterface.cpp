@@ -473,9 +473,15 @@ const float& Rect::h() const
 
 void Rect::reset(const RectDimensions& rect)
 {
-    m_rectPtr = std::make_unique<SDL_FRect>(
-        static_cast<float>(rect.x), static_cast<float>(rect.y),
-        static_cast<float>(rect.w), static_cast<float>(rect.h));
+    if (!m_rectPtr)
+        m_rectPtr = std::make_unique<SDL_FRect>(rect.x, rect.y, rect.w, rect.h);
+
+    else {
+        m_rectPtr->x = rect.x;
+        m_rectPtr->y = rect.y;
+        m_rectPtr->w = rect.w;
+        m_rectPtr->h = rect.h;
+    }
 }
 
 void Rect::draw(Renderer& renderer)
