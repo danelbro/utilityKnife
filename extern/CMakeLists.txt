@@ -1,6 +1,8 @@
 add_subdirectory(SDL)
 add_subdirectory(SDL_ttf)
+add_subdirectory(SDL_mixer)
 
 add_library(utility_extern INTERFACE)
 target_link_libraries(utility_extern INTERFACE SDL3::SDL3)
 target_link_libraries(utility_extern INTERFACE SDL3_ttf::SDL3_ttf)
+target_link_libraries(utility_extern INTERFACE SDL3_mixer::SDL3_mixer)
