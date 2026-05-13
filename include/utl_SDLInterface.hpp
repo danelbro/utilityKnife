@@ -6,6 +6,7 @@
 
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
+#include <SDL3_mixer/SDL_mixer.h>
 #include <array>
 #include <cstdint>
 #include <filesystem>
@@ -45,6 +46,9 @@ struct sdl_deleter {
     void operator()(SDL_Surface*) const;
     void operator()(SDL_Texture*) const;
     void operator()(TTF_Font*) const;
+    void operator()(MIX_Mixer*) const;
+    void operator()(MIX_Track*) const;
+    void operator()(MIX_Audio*) const;
 };
 
 // wrapper around std::runtime_error to make SDL exception handling smoother
@@ -94,6 +98,22 @@ public:
 private:
     std::unique_ptr<SDL_Renderer, sdl_deleter> m_rendPtr;
 };
+
+struct WindowWithRenderer {
+    WindowWithRenderer(Window&& w, Renderer&& r);
+
+    Window window;
+    Renderer renderer;
+};
+
+// Create an SDL_Window*. Throw an SdlException if creation fails
+Window createWindow(const std::string& title, int w, int h, Uint32 flags);
+
+WindowWithRenderer create_window_with_renderer(const std::string& title, int w,
+                                               int h, uint32_t flags);
+
+// Create an SDL_Renderer*. Throw an SdlException if creation fails
+Renderer createRenderer(const Window& window, const char* index);
 
 struct Surface {
 public:
@@ -174,21 +194,6 @@ private:
     std::unique_ptr<SDL_FRect> m_rectPtr;
 };
 
-struct WindowWithRenderer {
-    WindowWithRenderer(Window&& w, Renderer&& r);
-
-    Window window;
-    Renderer renderer;
-};
-
-// Create an SDL_Window*. Throw an SdlException if creation fails
-Window createWindow(const std::string& title, int w, int h, Uint32 flags);
-
-WindowWithRenderer create_window_with_renderer(const std::string& title, int w,
-                                               int h, uint32_t flags);
-
-// Create an SDL_Renderer*. Throw an SdlException if creation fails
-Renderer createRenderer(const Window& window, const char* index);
 
 void clearScreen(Renderer&);
 void presentRenderer(Renderer&);
