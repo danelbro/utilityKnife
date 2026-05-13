@@ -4,6 +4,8 @@
  * Interface wrapper functions and data for SDL3.
  */
 
+#include "SDL3/SDL_audio.h"
+#include "SDL3/SDL_dlopennote.h"
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <SDL3_mixer/SDL_mixer.h>
@@ -146,22 +148,6 @@ private:
     std::unique_ptr<SDL_Texture, sdl_deleter> m_texPtr;
 };
 
-struct Font {
-public:
-    Font(TTF_Font*, const std::filesystem::path& path);
-    ~Font() = default;
-    Font(const Font&);
-    Font& operator=(const Font&);
-    Font(Font&&) = default;
-    Font& operator=(Font&&) = default;
-
-    TTF_Font* get() const;
-
-private:
-    std::unique_ptr<TTF_Font, sdl_deleter> m_fontPtr;
-    std::filesystem::path m_path;
-};
-
 struct RectDimensions {
     float x;
     float y;
@@ -194,13 +180,24 @@ private:
     std::unique_ptr<SDL_FRect> m_rectPtr;
 };
 
+struct Font {
+public:
+    Font(TTF_Font*, const std::filesystem::path& path);
+    ~Font() = default;
+    Font(const Font&);
+    Font& operator=(const Font&);
+    Font(Font&&) = default;
+    Font& operator=(Font&&) = default;
 
-void clearScreen(Renderer&);
-void presentRenderer(Renderer&);
-void setRendererDrawColour(Renderer&, const Colour&);
-Colour getRendererDrawColour(const Renderer&);
-void copyTexturePortion(Renderer&, Texture&, Rect& src, Rect& dst);
-void drawPoint(Renderer&, double x, double y);
+    TTF_Font* get() const;
+
+private:
+    std::unique_ptr<TTF_Font, sdl_deleter> m_fontPtr;
+    std::filesystem::path m_path;
+};
+
+// Create a TTF_Font. Throw an SdlException if creation fails
+Font createFont(const std::filesystem::path& path, int font_size);
 
 struct textureAndSize {
     textureAndSize(Texture&& newTexP, int newW, int newH);
@@ -215,8 +212,20 @@ struct textureAndSize {
 textureAndSize createTextTexture(const Font& font, const std::string& text,
                                  const Colour& text_colour, Renderer& rend);
 
-// Create a TTF_Font. Throw an SdlException if creation fails
-Font createFont(const std::filesystem::path& path, int font_size);
+struct Mixer {
+    Mixer();
+    Mixer(std::uint32_t playback_dev_id, const SDL_AudioSpec* spec);
+
+private:
+    std::unique_ptr<MIX_Mixer, sdl_deleter> m_mixerPtr{nullptr, sdl_deleter()};
+};
+
+void clearScreen(Renderer&);
+void presentRenderer(Renderer&);
+void setRendererDrawColour(Renderer&, const Colour&);
+Colour getRendererDrawColour(const Renderer&);
+void copyTexturePortion(Renderer&, Texture&, Rect& src, Rect& dst);
+void drawPoint(Renderer&, double x, double y);
 
 enum KeyFlag
 {

@@ -1,8 +1,10 @@
 #include "utl_SDLInterface.hpp"
+#include "SDL3/SDL_error.h"
 #include "utl_Box.hpp"
 
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
+#include <SDL3_mixer/SDL_mixer.h>
 #include <cstdint>
 #include <filesystem>
 #include <memory>
@@ -46,6 +48,12 @@ void sdl_deleter::operator()(TTF_Font* f) const
     TTF_CloseFont(f);
 }
 
+void sdl_deleter::operator()(MIX_Mixer *m) const
+{
+    LOG("destroying a mixer\n");
+    MIX_DestroyMixer(m);
+}
+
 bool init_SDL(const std::string& title, const std::string& version,
               const std::string& identifier, uint32_t sdlFlags)
 {
@@ -68,6 +76,12 @@ bool init_SDL(const std::string& title, const std::string& version,
             std::string{"Cannot initialise SDL_TTF! TTF_Error: " + ttfError});
     }
 
+    if (!MIX_Init()) {
+        std::string mixError{SDL_GetError()};
+        throw SdlException(
+            std::string{"Cannot initialise SDL_mixer! MIX_Error: " + mixError});
+    }
+
     LOG("Initialised SDL\n");
 
     return true;
@@ -75,6 +89,7 @@ bool init_SDL(const std::string& title, const std::string& version,
 
 void quit_sdl()
 {
+    MIX_Quit();
     TTF_Quit();
     SDL_Quit();
     LOG("Quit SDL\n");
@@ -488,6 +503,10 @@ void Rect::draw(Renderer& renderer)
 {
     SDL_RenderFillRect(renderer.get(), m_rectPtr.get());
 }
+
+Mixer::Mixer(std::uint32_t playback_dev_id, const SDL_AudioSpec *spec)
+    : m_mixerPtr{MIX_CreateMixerDevice(playback_dev_id, spec), sdl_deleter()}
+{}
 
 void process_input(Box& screen, uint32_t windowID,
                    std::array<bool, KeyFlag::K_TOTAL>& key_state)
