@@ -4,10 +4,13 @@
 #include "utl_SDLInterface.hpp"
 
 #include <array>
+#include <chrono>
 #include <cstdint>
 #include <string>
 
 namespace utl {
+
+class Application;
 
 /**
  * The Stage is the base class for a level, screen, stage, etc. Your derived
@@ -23,31 +26,25 @@ namespace utl {
 class Stage {
 public:
     virtual ~Stage() = default;
-    Stage(const Stage&) = default;
+    Stage(const Stage&) = delete;
     Stage& operator=(const Stage&) = delete;
+    Stage(Stage&&) = delete;
+    Stage& operator=(Stage&&) = delete;
 
     virtual std::string
-    handle_input(double t, double dt,
+    handle_input(std::chrono::milliseconds t, std::chrono::milliseconds dt,
                  std::array<bool, KeyFlag::K_TOTAL>& key_state) = 0;
-    virtual std::string update(double t, double dt) = 0;
-    virtual void render(double t, double dt) = 0;
+    virtual std::string update(std::chrono::milliseconds t,
+                               std::chrono::milliseconds dt) = 0;
+    virtual void render(std::chrono::milliseconds t,
+                        std::chrono::milliseconds dt) = 0;
 
-    Box& screen() { return m_screen; }
-    uint32_t windowID() const { return m_windowID; }
-    Renderer& renderer() { return m_rend; }
-    std::string ID() const { return m_ID; }
+    virtual Application& app() = 0;
+    virtual Box& screen() = 0;
+    virtual Renderer& renderer() = 0;
 
 protected:
-    Stage(Box& screen, uint32_t windowID, Renderer& renderer,
-          const std::string& id)
-        : m_screen{screen}, m_windowID{windowID}, m_rend{renderer}, m_ID{id}
-    {}
-
-private:
-    Box& m_screen;
-    uint32_t m_windowID;
-    Renderer& m_rend;
-    std::string m_ID;
+    Stage() = default;
 };
 
 }  // namespace utl

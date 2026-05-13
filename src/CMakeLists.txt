@@ -19,13 +19,13 @@ target_sources(${PROJECT_NAME} PRIVATE
 target_include_directories(${PROJECT_NAME} PUBLIC "../include")
 target_link_libraries(${PROJECT_NAME} PUBLIC utility_extern)
 
-set(is_CC    "$<CXX_COMPILER_ID:Clang,AppleClang,GNU>")
+set(is_CC "$<CXX_COMPILER_ID:Clang,AppleClang,GNU>")
 set(is_MS "$<CXX_COMPILER_ID:MSVC>")
 target_compile_options(${PROJECT_NAME} PRIVATE
 	$<$<OR:${is_CC}>:-pedantic>
 	$<$<OR:${is_CC}>:-pedantic-errors>
 	$<$<OR:${is_CC}>:-Wall>
-	$<$<OR:${is_CC}>:-Weffc++>
+#	$<$<OR:${is_CC}>:-Weffc++>
 	$<$<OR:${is_CC}>:-Wextra>
 	$<$<OR:${is_CC}>:-Wconversion>
 	$<$<OR:${is_CC}>:-Wsign-conversion>
@@ -35,4 +35,4 @@ target_compile_options(${PROJECT_NAME} PRIVATE
 	$<${is_MS}:/permissive->
 	$<${is_MS}:/w44365>
 	$<${is_MS}:/external:W3>
-    )
+  )

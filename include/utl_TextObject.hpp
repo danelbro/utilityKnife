@@ -5,52 +5,60 @@
 #include "utl_SDLInterface.hpp"
 #include "utl_Vec2d.hpp"
 
+#include <chrono>
 #include <string>
 
 namespace utl {
 
+class Stage;
+
 class TextObject : public Entity {
 public:
-    TextObject(Box& screen, utl::Renderer& rend, utl::Font& font)
-        : Entity{"TEXT", screen, {}}, text{}, m_texture{nullptr}, m_font{font},
-          m_size{}, m_rend{rend}, m_col{}
-    {}
-    TextObject(Box& screen, utl::Renderer& rend, utl::Font& font,
-               const std::string& newText, const utl::Colour& color);
-    TextObject(Box& screen, utl::Renderer& rend, utl::Font& font,
-               const Vec2d& pos, const utl::Colour& color);
-    TextObject(Box& screen, utl::Renderer& rend, utl::Font& font,
-               const std::string& newText, const Vec2d& pos,
-               const utl::Colour& color);
+    TextObject() = default;
+    TextObject(Stage* stage, Font* font, const Colour& colour,
+               const std::string& newText);
+    TextObject(Stage* stage, Font* font, const Colour& colour,
+               const Vec2d& pos);
+    TextObject(Stage* stage, Font* font, const Colour& colour,
+               const std::string& newText, const Vec2d& pos);
 
-    ~TextObject() = default;
-    TextObject(const TextObject&) = delete;
-    TextObject& operator=(const TextObject&) = delete;
-    TextObject(TextObject&&) = default;
-    TextObject& operator=(TextObject&&) = delete;
+    void update(std::chrono::milliseconds, std::chrono::milliseconds) override;
+    void render(Renderer& renderer) override;
+    const std::string& type() const override;
+    const Vec2d& pos() const override;
+    const Size& size() const override;
+    Stage& stage() override;
+    void set_pos(const Vec2d& new_pos) override;
 
-    Vec2d size() const override { return m_size; }
+    void set_x_pos(double newX);
+    void set_y_pos(double newY);
+    void move_x_pos(double shiftX);
+    void move_y_pos(double shiftY);
 
-    void loadFromRenderedText(const std::string& textureText,
-                              const utl::Colour& text_colour);
-    void recentre();
-    void recentreToEntityX(const Entity& entity);  // recentres to the central X
-                                                   // of the provided Entity
-    void recentreToEntityY(const Entity& entity);  // recentres to the central Y
-                                                   // of the provided Entity
+    void recentre(const Box& screen);
+    void recentre(const Entity& entity);
+    void recentreX(const Box& screen);
+    void recentreX(const Entity& entity);
+    void recentreY(const Box& screen);
+    void recentreY(const Entity& entity);
+
+    void updateText(const std::string& new_text);
+
+public:
+    Colour colour{0, 0, 0, 0};
+
+protected:
     void free();
-    void render(utl::Renderer& renderer) override;
-    void update(double, double) override {}
-    void updateText(std::string new_text);
-    void setPos(Vec2d new_pos) { m_pos = new_pos; }
+    void loadTexture();
 
-private:
-    std::string text;
-    utl::Texture m_texture;
-    utl::Font& m_font;
-    Vec2d m_size;
-    utl::Renderer& m_rend;
-    Colour m_col;
+protected:
+    std::string m_type{"TEXT"};
+    Stage* m_stage{nullptr};
+    Font* m_font{nullptr};
+    std::string text{};
+    Vec2d m_pos{0.0, 0.0};
+    Size m_size{0.0, 0.0};
+    Texture m_texture{nullptr};
 };
 
 }  // namespace utl

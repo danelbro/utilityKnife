@@ -27,13 +27,15 @@ Vec2d wrap(const Vec2d& pos, const Box& screen)
     return Vec2d{wrapCoord(pos.x, screen.w), wrapCoord(pos.y, screen.h)};
 }
 
-void DrawWrapLine(utl::Renderer& rend, const Box& screen, double x1, double y1,
-                  double x2, double y2)
+void DrawWrapLine(utl::Renderer& rend, const Box& screen, const Vec2d& point1,
+                  const Vec2d& point2)
 {
     double x{};
     double y{};
-    double dy{y2 - y1};
-    double dx{x2 - x1};
+    Vec2d p1{point1};
+    Vec2d p2{point2};
+    double dy{p2.y - p1.y};
+    double dx{p2.x - p1.y};
     double tiny{1.0};  // eventually the lines are drawn onto discrete pixels
 
     int xwrap{screen.w};
@@ -43,34 +45,34 @@ void DrawWrapLine(utl::Renderer& rend, const Box& screen, double x1, double y1,
     points.reserve(0xFFF);
 
     if (std::abs(dx) < tiny) {
-        if (y1 > y2) {
-            y = y2;
-            y2 = y1;
-            y1 = y;
+        if (p1.y > p2.y) {
+            y = p2.y;
+            p2.y = p1.y;
+            p1.y = y;
         }
-        for (y = y1; y <= y2; ++y) {
-            points.emplace_back(wrapCoord(x1, xwrap), wrapCoord(y, ywrap));
+        for (y = p1.y; y <= p2.y; ++y) {
+            points.emplace_back(wrapCoord(p1.x, xwrap), wrapCoord(y, ywrap));
         }
     } else {
         double m{dy / dx};
-        double c{y1 - (m * x1)};
+        double c{p1.y - (m * p1.x)};
         if (-1 <= m && m <= 1) {
-            if (x1 > x2) {
-                x = x2;
-                x2 = x1;
-                x1 = x;
+            if (p1.x > p2.x) {
+                x = p2.x;
+                p2.x = p1.x;
+                p1.x = x;
             }
-            for (x = x1; x <= x2; ++x) {
+            for (x = p1.x; x <= p2.x; ++x) {
                 y = (m * x) + c;
                 points.emplace_back(wrapCoord(x, xwrap), wrapCoord(y, ywrap));
             }
         } else {
-            if (y1 > y2) {
-                y = y2;
-                y2 = y1;
-                y1 = y;
+            if (p1.y > p2.y) {
+                y = p2.y;
+                p2.y = p1.y;
+                p1.y = y;
             }
-            for (y = y1; y <= y2; ++y) {
+            for (y = p1.y; y <= p2.y; ++y) {
                 x = (y - c) / m;
                 points.emplace_back(wrapCoord(x, xwrap), wrapCoord(y, ywrap));
             }
@@ -144,8 +146,8 @@ void ScanFill(const Box& screen, const std::vector<Vec2d>& poly,
         for (i = 0; i < nodesXSize; i += 2) {
             for (pixel.x = nodesX[i]; pixel.x < nodesX.at(i + 1);
                  pixel.x += 1) {
-                DrawWrapLine(renderer, screen, pixel.x, pixel.y,
-                             nodesX.at(i + 1), pixel.y);
+                DrawWrapLine(renderer, screen, pixel,
+                             {nodesX.at(i + 1), pixel.y});
             }
         }
     }

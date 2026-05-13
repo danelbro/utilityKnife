@@ -5,9 +5,9 @@
 
 namespace utl {
 
-RNG::RNG() : randDev{}, m_rng{randDev()}
-{
-    m_rng.seed(static_cast<unsigned long>(std::time(nullptr)));
-}
+RNG::RNG()
+
+    : rand_dev{}, rng{rand_dev()}
+{}
 
 }  // namespace utl

@@ -4,10 +4,8 @@
 #include "utl_Stage.hpp"
 
 #include <array>
-#include <cstdint>
 #include <memory>
 #include <unordered_map>
-#include <utility>
 
 namespace utl {
 
@@ -22,21 +20,20 @@ struct Box;
  */
 class StageManager {
 public:
-    StageManager(Application& app);
-    ~StageManager();
+    StageManager() = default;
+    StageManager(Application* app);
 
-    const std::string& get_current() const { return current; }
-    Stage* get_current_stage() { return stages[current].get(); }
-    Stage* get_next_stage() { return stages[next].get(); }
-    const std::string& get_next() const { return next; }
+    const std::string& get_current() const;
+    Stage* get_current_stage();
+    Stage* get_next_stage();
+    const std::string& get_next() const;
 
     // Only ask add_stage() to add (derived) Stages!
-    template<typename T, typename... Args>
-    void add_stage(const std::string& key, Box& screen, uint32_t windowID,
-                   utl::Renderer& renderer, Args&&... args)
+    template<typename DerivedStage, typename... Args>
+    void add_stage(Application& app, const std::string& key, Args&&... args)
     {
-        stages[key] = std::make_unique<T>(screen, windowID, renderer,
-                                          std::forward<Args>(args)...);
+        stages[key] =
+            std::make_unique<DerivedStage>(app, std::forward<Args>(args)...);
     }
 
     void set_current_stage(const std::string& new_current);
@@ -47,11 +44,12 @@ public:
 private:
     void handle_stage_transition();
 
+private:
     std::unordered_map<std::string, std::unique_ptr<Stage>> stages{};
-    std::string current;
-    std::string next;
+    std::string current{};
+    std::string next{};
     std::array<bool, static_cast<size_t>(utl::KeyFlag::K_TOTAL)> keyState{};
-    Application& m_app;
+    Application* m_app{nullptr};
 };
 
 }  // namespace utl

@@ -14,8 +14,8 @@ namespace utl {
 
 Vec2d wrap(const Vec2d& pos, const Box& bounds);
 
-void DrawWrapLine(Renderer& rend, const Box& screen, double x1, double y1,
-                  double x2, double y2);
+void DrawWrapLine(Renderer& rend, const Box& screen, const Vec2d& point1,
+                  const Vec2d& point2);
 
 bool isPointInPolygon(const Vec2d& point, const std::vector<Vec2d>& polygon);
 

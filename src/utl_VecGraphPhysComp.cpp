@@ -1,30 +1,84 @@
 ﻿#include "utl_VecGraphPhysComp.hpp"
 
+#include "utl_Stage.hpp"
 #include "utl_VecGraphPhysEnt.hpp"
 #include "utl_VectorDraw.hpp"
+#include <chrono>
 
 namespace utl {
+
+VecGraphPhysComp::VecGraphPhysComp(double mass, VecGraphPhysEnt* new_owner)
+    : m_owner{new_owner}, m_mass{mass}
+{}
+
+double VecGraphPhysComp::mass() const
+{
+    return m_mass;
+}
+
+double VecGraphPhysComp::impulse() const
+{
+    return m_impulse;
+}
+
+Vec2d VecGraphPhysComp::acceleration() const
+{
+    return m_acceleration;
+}
+
+Vec2d VecGraphPhysComp::velocity() const
+{
+    return m_velocity;
+}
+
+Vec2d VecGraphPhysComp::velocityAngleVector() const
+{
+    return m_velocityVector;
+}
+
+double VecGraphPhysComp::velocityAngle() const
+{
+    return m_velocityAngle;
+}
+
+double VecGraphPhysComp::facing() const
+{
+    return m_facingAngle;
+}
+
+Vec2d VecGraphPhysComp::facingVec() const
+{
+    return m_facingVector;
+}
+
+VecGraphPhysEnt* VecGraphPhysComp::owner()
+{
+    return m_owner;
+}
+
 void VecGraphPhysComp::turn(double turnSpeed, double dt)
 {
     set_facing_angle(m_facingAngle + turnSpeed * dt);
 }
 
-void VecGraphPhysComp::update(double dt)
+void VecGraphPhysComp::setMass(double mass)
 {
-    Vec2d totalForces{m_facingVector * m_impulse};
-    m_acceleration = (totalForces / m_mass) * dt;
-    m_velocity += m_acceleration * dt;
+    m_mass = mass;
+}
 
-    if (m_owner->drawWrapped()) {
-        m_owner->set_pos(
-            wrap(m_owner->pos() + m_velocity * dt, m_owner->screen()));
-    } else {
-        m_owner->set_pos(m_owner->pos() + m_velocity * dt);
-    }
+void VecGraphPhysComp::setFrameImpulse(double power)
+{
+    m_impulse = power;
+}
 
-    m_velocityVector = m_velocity.normalize();
-    m_velocityAngle = m_velocityVector.angleDeg();
-    m_impulse = 0;
+void VecGraphPhysComp::setAcceleration(Vec2d accel)
+{
+    m_acceleration = accel;
+}
+
+void VecGraphPhysComp::setVelocity(Vec2d vel)
+{
+    m_velocity = vel;
 }
 
 void VecGraphPhysComp::set_facing_angle(double angle)
@@ -44,6 +98,38 @@ void VecGraphPhysComp::set_facing_angle(Vec2d newVector)
 {
     m_facingVector = newVector;
     set_facing_angle(newVector.angleDeg());
+}
+
+void VecGraphPhysComp::setOwner(VecGraphPhysEnt* new_owner)
+{
+    m_owner = new_owner;
+}
+
+void VecGraphPhysComp::update(std::chrono::milliseconds dt)
+{
+    using namespace std::chrono;
+    Vec2d totalForces{m_facingVector * m_impulse};
+    m_acceleration = (totalForces / m_mass)
+                     * static_cast<double>(duration_cast<seconds>(dt).count());
+    m_velocity += m_acceleration
+                  * static_cast<double>(duration_cast<seconds>(dt).count());
+
+    if (m_owner->drawWrapped()) {
+        m_owner->set_pos(wrap(
+            m_owner->pos()
+                + m_velocity
+                      * static_cast<double>(duration_cast<seconds>(dt).count()),
+            m_owner->stage().screen()));
+    } else {
+        m_owner->set_pos(
+            m_owner->pos()
+            + m_velocity
+                  * static_cast<double>(duration_cast<seconds>(dt).count()));
+    }
+
+    m_velocityVector = m_velocity.normalize();
+    m_velocityAngle = m_velocityVector.angleDeg();
+    m_impulse = 0;
 }
 
 }  // namespace utl

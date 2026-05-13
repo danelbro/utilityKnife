@@ -1,8 +1,8 @@
 ﻿#include "utl_VecGraphPhysEnt.hpp"
 
 #include "utl_Entity.hpp"
-#include "utl_GameWorld.hpp"
 #include "utl_SDLInterface.hpp"
+#include "utl_Stage.hpp"
 #include "utl_Vec2d.hpp"
 #include "utl_VecGraphPhysComp.hpp"
 #include "utl_VectorDraw.hpp"
@@ -12,33 +12,28 @@
 
 namespace utl {
 
-VecGraphPhysEnt::VecGraphPhysEnt(const std::string& type, GameWorld& gameWorld,
-                                 const Vec2d& pos,
-                                 const std::vector<Vec2d>& shape,
-                                 const Colour& color, const double& scale,
-                                 const double& mass, bool wrap, bool fill)
-    : Entity{type, gameWorld.screen, pos}, physicsComponent{mass, this},
-      m_gameWorld{gameWorld}, m_color{color}, m_scale{scale}, m_isVisible{true},
-      m_killMe{false}, m_wrap{wrap}, m_fill{fill}, m_shape{shape},
-      m_rotatedShape{}, m_collider{}
+static Vec2d syncPointToColliderWorldSpace(const VecGraphPhysEnt& pe1,
+                                           const VecGraphPhysEnt& pe2,
+                                           const Box& screen);
+
+static std::vector<Vec2d> syncColliderWorldSpace(const VecGraphPhysEnt& pe1,
+                                                 const VecGraphPhysEnt& pe2,
+                                                 const Box& screen);
+
+VecGraphPhysEnt::VecGraphPhysEnt(Stage* stage,
+                                 const VecGraphPhysEntConfig& config)
+    : Entity{}, physicsComponent{config.mass, this}, shape{config.shape},
+      m_stage{stage}, m_type{config.type}, m_pos{config.pos},
+      m_color{config.color}, m_scale{config.scale}, m_wrap{config.wrap},
+      m_fill{config.fill}
 {
     update_shapes();
 }
 
-void VecGraphPhysEnt::update_shapes()
+void VecGraphPhysEnt::update(std::chrono::milliseconds,
+                             std::chrono::milliseconds)
 {
-    m_collider.clear();
-    m_rotatedShape.clear();
-    m_collider.reserve(m_shape.size());
-    m_rotatedShape.reserve(m_shape.size());
-
-    for (auto p : m_shape) {
-        p = p.rotate_deg(physicsComponent.facing());
-        p = p * m_scale;
-        m_rotatedShape.emplace_back(p);
-        p += m_pos;
-        m_collider.emplace_back(p);
-    }
+    update_shapes();
 }
 
 void VecGraphPhysEnt::render(Renderer& renderer)
@@ -50,38 +45,124 @@ void VecGraphPhysEnt::render(Renderer& renderer)
     auto oldColor{getRendererDrawColour(renderer)};
     setRendererDrawColour(renderer, m_color);
 
-    #ifndef NDEBUG
+#ifndef NDEBUG
     if (m_killMe && m_type == "ASTEROID")
         setRendererDrawColour(renderer, {0xFF, 0x00, 0x00, 0xFF});  // red
-    #endif  // !NDEBUG
+#endif                                                              // !NDEBUG
 
     const size_t& colliderSize{m_collider.size()};
     for (size_t i{0}; i < colliderSize; ++i) {
-        DrawWrapLine(renderer, m_screenSpace, m_collider[i].x, m_collider[i].y,
-                     m_collider[(i + 1) % colliderSize].x,
-                     m_collider[(i + 1) % colliderSize].y);
+        DrawWrapLine(renderer, m_stage->screen(), m_collider[i],
+                     {m_collider[(i + 1) % colliderSize].x,
+                      m_collider[(i + 1) % colliderSize].y});
     }
-    #ifndef NDEBUG
+#ifndef NDEBUG
     drawPoint(renderer, m_pos.x, m_pos.y);
-    #endif  // !NDEBUG
-
+#endif  // !NDEBUG
 
     if (m_fill) {
-        ScanFill(m_screenSpace, m_collider, m_color, renderer);
+        ScanFill(m_stage->screen(), m_collider, m_color, renderer);
     }
 
     setRendererDrawColour(renderer, oldColor);
 }
 
+const std::string& VecGraphPhysEnt::type() const
+{
+    return m_type;
+}
+
+const Vec2d& VecGraphPhysEnt::pos() const
+{
+    return m_pos;
+}
+
+const Size& VecGraphPhysEnt::size() const
+{
+    return m_size;
+};
+
+Stage& VecGraphPhysEnt::stage()
+{
+    return *m_stage;
+}
+
+void VecGraphPhysEnt::set_pos(const Vec2d& new_pos)
+{
+    m_pos = new_pos;
+}
+
+const std::vector<Vec2d>& VecGraphPhysEnt::rotatedShape() const
+{
+    return m_rotatedShape;
+}
+
+const std::vector<Vec2d>& VecGraphPhysEnt::collider() const
+{
+    return m_collider;
+}
+
+bool VecGraphPhysEnt::isVisible() const
+{
+    return m_isVisible;
+}
+
+bool VecGraphPhysEnt::toBeKilled() const
+{
+    return m_killMe;
+}
+
+double VecGraphPhysEnt::scale() const
+{
+    return m_scale;
+}
+
+const Colour& VecGraphPhysEnt::color() const
+{
+    return m_color;
+}
+
+bool VecGraphPhysEnt::drawWrapped() const
+{
+    return m_wrap;
+}
+
+void VecGraphPhysEnt::kill_it()
+{
+    m_killMe = true;
+};
+
+void VecGraphPhysEnt::setVisible(bool vis)
+{
+    m_isVisible = vis;
+}
+
+void VecGraphPhysEnt::update_shapes()
+{
+    m_collider.clear();
+    m_rotatedShape.clear();
+    m_collider.reserve(shape.size());
+    m_rotatedShape.reserve(shape.size());
+
+    for (Vec2d p : shape) {
+        p.rotate_deg_ip(physicsComponent.facing());
+        p *= m_scale;
+        m_rotatedShape.emplace_back(p);
+        p += m_pos;
+        m_collider.emplace_back(p);
+    }
+}
+
 static Vec2d syncPointToColliderWorldSpace(const VecGraphPhysEnt& pe1,
-                                    const VecGraphPhysEnt& pe2)
+                                           const VecGraphPhysEnt& pe2,
+                                           const Box& screen)
 {
     // we're going to sync pe1 to pe2
     auto size{pe2.collider().size()};
     std::vector<double> pe2ColliderXs{};
     std::vector<double> pe2ColliderYs{};
-    double screenXMax{static_cast<double>(pe2.screen().w)};
-    double screenYMax{static_cast<double>(pe2.screen().h)};
+    double screenXMax{static_cast<double>(screen.w)};
+    double screenYMax{static_cast<double>(screen.h)};
     Vec2d pos{pe1.pos()};
 
     pe2ColliderXs.reserve(size);
@@ -128,9 +209,10 @@ static Vec2d syncPointToColliderWorldSpace(const VecGraphPhysEnt& pe1,
 }
 
 static std::vector<Vec2d> syncColliderWorldSpace(const VecGraphPhysEnt& pe1,
-                                                 const VecGraphPhysEnt& pe2)
+                                                 const VecGraphPhysEnt& pe2,
+                                                 const Box& screen)
 {
-    Vec2d pos{syncPointToColliderWorldSpace(pe1, pe2)};
+    Vec2d pos{syncPointToColliderWorldSpace(pe1, pe2, screen)};
     std::vector<Vec2d> pe1ColliderSynced{};
     for (auto p : pe1.rotatedShape()) {
         p += pos;
@@ -140,18 +222,18 @@ static std::vector<Vec2d> syncColliderWorldSpace(const VecGraphPhysEnt& pe1,
     return pe1ColliderSynced;
 }
 
-
 bool isPointInPolygonSyncFirst(const VecGraphPhysEnt& pe1,
-                               const VecGraphPhysEnt& pe2)
+                               const VecGraphPhysEnt& pe2, const Box& screen)
 {
-    Vec2d point{syncPointToColliderWorldSpace(pe1, pe2)};
+    Vec2d point{syncPointToColliderWorldSpace(pe1, pe2, screen)};
 
     return isPointInPolygon(point, pe2.collider());
 }
 
-bool areColliding(const VecGraphPhysEnt& pe1, const VecGraphPhysEnt& pe2)
+bool areColliding(const VecGraphPhysEnt& pe1, const VecGraphPhysEnt& pe2,
+                  const Box& screen)
 {
-    std::vector<Vec2d> pe1Collider{syncColliderWorldSpace(pe1, pe2)};
+    std::vector<Vec2d> pe1Collider{syncColliderWorldSpace(pe1, pe2, screen)};
 
     // from VectorDraw.hpp
     return areColliding_SAT(pe1Collider, pe2.collider());
