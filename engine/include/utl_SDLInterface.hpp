@@ -70,6 +70,7 @@ void quit_sdl();
 
 struct Window {
 public:
+    Window() = default;
     Window(SDL_Window*);
     ~Window() = default;
     Window(const Window&);
@@ -81,11 +82,12 @@ public:
     SDL_Window* get() const;
 
 private:
-    std::unique_ptr<SDL_Window, sdl_deleter> m_winPtr;
+    std::unique_ptr<SDL_Window, sdl_deleter> m_winPtr{ nullptr };
 };
 
 struct Renderer {
 public:
+    Renderer() = default;
     Renderer(SDL_Renderer*);
     ~Renderer() = default;
     Renderer(const Renderer&);
@@ -98,14 +100,15 @@ public:
     bool setDrawingBlendMode(unsigned blendMode);
 
 private:
-    std::unique_ptr<SDL_Renderer, sdl_deleter> m_rendPtr;
+    std::unique_ptr<SDL_Renderer, sdl_deleter> m_rendPtr{ nullptr };
 };
 
 struct WindowWithRenderer {
+    WindowWithRenderer() = default;
     WindowWithRenderer(Window&& w, Renderer&& r);
 
-    Window window;
-    Renderer renderer;
+    Window window{};
+    Renderer renderer{};
 };
 
 // Create an SDL_Window*. Throw an SdlException if creation fails
