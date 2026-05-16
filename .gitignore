@@ -21,3 +21,4 @@ obj/
 /out/
 CMakeSettings.json
 .clang-format
+/CMakePresets.json
