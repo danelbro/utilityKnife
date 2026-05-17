@@ -66,7 +66,7 @@ if(MSVC)
 		/external:W3
 	)
 else()
-	target_compile_features(${ENGINE_NAME} PRIVATE
+	target_compile_options(${ENGINE_NAME} PRIVATE
 		-pedantic
 		-pedantic-errors
 		-Wall
@@ -77,7 +77,7 @@ else()
 		-std=c++20
 	)
 
-	target_compile_features(${EDITOR_NAME} PRIVATE
+	target_compile_options(${EDITOR_NAME} PRIVATE
 		-pedantic
 		-pedantic-errors
 		-Wall
