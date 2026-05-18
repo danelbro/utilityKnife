@@ -3,8 +3,8 @@
 #include "utl_Box.hpp"
 
 #include <SDL3/SDL.h>
-#include <SDL3_ttf/SDL_ttf.h>
 #include <SDL3_mixer/SDL_mixer.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <cstdint>
 #include <filesystem>
 #include <memory>
@@ -48,7 +48,7 @@ void sdl_deleter::operator()(TTF_Font* f) const
     TTF_CloseFont(f);
 }
 
-void sdl_deleter::operator()(MIX_Mixer *m) const
+void sdl_deleter::operator()(MIX_Mixer* m) const
 {
     LOG("destroying a mixer\n");
     MIX_DestroyMixer(m);
@@ -504,9 +504,42 @@ void Rect::draw(Renderer& renderer)
     SDL_RenderFillRect(renderer.get(), m_rectPtr.get());
 }
 
-Mixer::Mixer(std::uint32_t playback_dev_id, const SDL_AudioSpec *spec)
+Mixer::Mixer(std::uint32_t playback_dev_id, const SDL_AudioSpec* spec)
     : m_mixerPtr{MIX_CreateMixerDevice(playback_dev_id, spec), sdl_deleter()}
-{}
+{
+    if (!m_mixerPtr)
+        throw SdlException(
+            std::string{"Failed to make mixer! MIX_Error: ", SDL_GetError()});
+}
+
+MIX_Mixer* Mixer::get()
+{
+    return m_mixerPtr.get();
+}
+
+Track::Track(Mixer& mixer)
+    : m_trackPtr{MIX_CreateTrack(mixer.get()), sdl_deleter()}
+{
+    if (!m_trackPtr)
+        throw SdlException(
+            std::string{"Failed to make track! MIX_Error: ", SDL_GetError()});
+}
+
+Music::Music(Mixer& mixer, std::filesystem::path data)
+    : m_musicPtr{MIX_LoadAudio(mixer.get(), data.c_str(), true)}
+{
+    if (!m_musicPtr)
+        throw SdlException(
+            std::string{"Failed to load music! MIX_Error: ", SDL_GetError()});
+}
+
+Effect::Effect(Mixer& mixer, std::filesystem::path data)
+    : m_effectPtr{MIX_LoadAudio(mixer.get(), data.c_str(), true)}
+{
+    if (!m_effectPtr)
+        throw SdlException(
+            std::string{"Failed to load effect! MIX_Error: ", SDL_GetError()});
+}
 
 void process_input(Box& screen, uint32_t windowID,
                    std::array<bool, KeyFlag::K_TOTAL>& key_state)

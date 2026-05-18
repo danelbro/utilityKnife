@@ -4,11 +4,9 @@
  * Interface wrapper functions and data for SDL3.
  */
 
-#include "SDL3/SDL_audio.h"
-#include "SDL3/SDL_dlopennote.h"
 #include <SDL3/SDL.h>
-#include <SDL3_ttf/SDL_ttf.h>
 #include <SDL3_mixer/SDL_mixer.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <array>
 #include <cstdint>
 #include <filesystem>
@@ -82,7 +80,7 @@ public:
     SDL_Window* get() const;
 
 private:
-    std::unique_ptr<SDL_Window, sdl_deleter> m_winPtr{ nullptr };
+    std::unique_ptr<SDL_Window, sdl_deleter> m_winPtr{nullptr};
 };
 
 struct Renderer {
@@ -100,7 +98,7 @@ public:
     bool setDrawingBlendMode(unsigned blendMode);
 
 private:
-    std::unique_ptr<SDL_Renderer, sdl_deleter> m_rendPtr{ nullptr };
+    std::unique_ptr<SDL_Renderer, sdl_deleter> m_rendPtr{nullptr};
 };
 
 struct WindowWithRenderer {
@@ -216,11 +214,41 @@ textureAndSize createTextTexture(const Font& font, const std::string& text,
                                  const Colour& text_colour, Renderer& rend);
 
 struct Mixer {
+public:
     Mixer();
     Mixer(std::uint32_t playback_dev_id, const SDL_AudioSpec* spec);
 
+    MIX_Mixer* get();
+
 private:
     std::unique_ptr<MIX_Mixer, sdl_deleter> m_mixerPtr{nullptr, sdl_deleter()};
+};
+
+class Track {
+public:
+    Track();
+    Track(Mixer& mixer);
+
+private:
+    std::unique_ptr<MIX_Track, sdl_deleter> m_trackPtr{nullptr, sdl_deleter()};
+};
+
+class Music {
+public:
+    Music();
+    Music(Mixer& mixer, std::filesystem::path data);
+
+private:
+    std::unique_ptr<MIX_Audio, sdl_deleter> m_musicPtr{nullptr, sdl_deleter()};
+};
+
+class Effect {
+public:
+    Effect();
+    Effect(Mixer& mixer, std::filesystem::path data);
+
+private:
+    std::unique_ptr<MIX_Audio, sdl_deleter> m_effectPtr{nullptr, sdl_deleter()};
 };
 
 void clearScreen(Renderer&);
