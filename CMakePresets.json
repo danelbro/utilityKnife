@@ -18,6 +18,14 @@
       "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
     },
     {
+      "name": "RelWithDebInfo",
+      "displayName": "RelWithDebInfo",
+      "description": "RelWithDebInfo configuration with Ninja",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" }
+    },
+    {
       "name": "MSVC",
       "description": "Target Windows (64-bit) with the Visual Studio development environment.",
       "displayName": "MSVC",
@@ -46,6 +54,12 @@
             "displayName": "Release",
             "configurePreset": "Release",
             "description": "Default release build"
+        },
+        {
+            "name": "RelWithDebInfo",
+            "displayName": "RelWithDebInfo",
+            "configurePreset": "RelWithDebInfo",
+            "description": "Default RelWithDebInfo build"
         }
     ]
 }
