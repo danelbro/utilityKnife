@@ -71,27 +71,23 @@ bool init_SDL(const std::string& title, const std::string& version,
 {
     if (!SDL_SetAppMetadata(title.c_str(), version.c_str(),
                             identifier.c_str())) {
-        std::string sdlError{SDL_GetError()};
-        throw SdlException(
-            std::string{"Cannot set SDL App metadata! SDL_Error: " + sdlError});
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Cannot set SDL App metadata!"};
     }
 
     if (!SDL_Init(sdlFlags)) {
-        std::string sdlError{SDL_GetError()};
-        throw SdlException(
-            std::string{"Cannot initialise SDL! SDL_Error: " + sdlError});
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Cannot initialise SDL!"};
     }
 
     if (!TTF_Init()) {
-        std::string ttfError{SDL_GetError()};
-        throw SdlException(
-            std::string{"Cannot initialise SDL_TTF! TTF_Error: " + ttfError});
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Cannot initialise SDL_TTF!"};
     }
 
     if (!MIX_Init()) {
-        std::string mixError{SDL_GetError()};
-        throw SdlException(
-            std::string{"Cannot initialise SDL_mixer! MIX_Error: " + mixError});
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Cannot initialise SDL_mixer!"};
     }
 
     LOG("Initialised SDL\n");
@@ -119,9 +115,10 @@ Window::Window(const Window& other) : m_winPtr{nullptr, sdl_deleter()}
 
     SDL_Window* window{SDL_CreateWindow(title, w, h, flags)};
 
-    if (!window)
-        throw SdlException(
-            std::string{"Cannot copy window! SDL_Error: ", SDL_GetError()});
+    if (!window) {
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Cannot copy window!"};
+    }
 
     m_winPtr.reset(window);
 }
@@ -151,8 +148,8 @@ Window createWindow(const std::string& title, int w, int h, uint32_t flags)
     SDL_Window* sdlWindow{SDL_CreateWindow(title.c_str(), w, h, flags)};
 
     if (!sdlWindow) {
-        throw SdlException(
-            std::string{"Cannot create window! SDL_Error: ", SDL_GetError()});
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Cannot create window!"};
     }
     return Window{sdlWindow};
 }
@@ -207,8 +204,8 @@ WindowWithRenderer create_window_with_renderer(const std::string& title, int w,
 
     if (!SDL_CreateWindowAndRenderer(title.c_str(), w, h, flags, &sdlWindow,
                                      &sdlRenderer)) {
-        throw SdlException(std::string{
-            "Cannot create window/renderer! SDL_Error: ", SDL_GetError()});
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Cannot create window/renderer!"};
     }
 
     return {Window{sdlWindow}, Renderer{sdlRenderer}};
@@ -221,8 +218,8 @@ Renderer createRenderer(const Window& window, const char* index)
     SDL_Renderer* sdlRenderer{SDL_CreateRenderer(window.get(), index)};
 
     if (!sdlRenderer) {
-        throw SdlException(
-            std::string{"Cannot create renderer! SDL_Error: ", SDL_GetError()});
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Cannot create renderer!"};
     }
     return Renderer{sdlRenderer};
 }
@@ -231,8 +228,8 @@ bool Renderer::setVSync(int vsync)
 {
     bool isVSyncSet{SDL_SetRenderVSync(m_rendPtr.get(), vsync)};
     if (!isVSyncSet) {
-        throw SdlException(
-            std::string{"Couldn't set vsync! SDL_Error: ", SDL_GetError()});
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Couldn't set vsync!"};
     }
     return isVSyncSet;
 }
@@ -242,8 +239,8 @@ bool Renderer::setDrawingBlendMode(unsigned blendMode)
     bool isBlendModeSet{SDL_SetRenderDrawBlendMode(get(), blendMode)};
 
     if (!isBlendModeSet) {
-        throw SdlException(std::string{"Couldn't set blend mode! SDL_Error: ",
-                                       SDL_GetError()});
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Couldn't set blend mode!"};
     }
     return isBlendModeSet;
 }
@@ -289,9 +286,10 @@ Surface::Surface(const Surface& other) : m_surfPtr{nullptr, sdl_deleter()}
     surf = SDL_CreateSurfaceFrom(other.get()->w, other.get()->h,
                                  other.get()->format, other.get()->pixels,
                                  other.get()->pitch);
-    if (!surf)
-        throw SdlException(
-            std::string{"Cannot copy surface! SDL_Error: ", SDL_GetError()});
+    if (!surf) {
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Cannot copy surface!"};
+    }
 
     m_surfPtr.reset(surf);
 }
@@ -315,41 +313,43 @@ Texture::Texture(const Texture& other) : m_texPtr{nullptr, sdl_deleter()}
 {
     SDL_Renderer* renderer{nullptr};
     renderer = SDL_GetRendererFromTexture(other.get());
-    if (!renderer)
-        throw SdlException(std::string{
-            "Failed to get renderer while copying texture! SDL_Error: ",
-            SDL_GetError()});
+    if (!renderer) {
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Failed to get renderer while copying texture!"};
+    }
 
     SDL_Window* window{nullptr};
     window = SDL_GetRenderWindow(renderer);
-    if (!window)
-        throw SdlException(std::string{
-            "Failed to get window while copying texture! SDL_Error: ",
-            SDL_GetError()});
+    if (!window) {
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Failed to get window while copying texture!"};
+    }
 
     SDL_PixelFormat format{SDL_GetWindowPixelFormat(window)};
-    if (!format)
-        throw SdlException(std::string{"Failed to get window pixel format "
-                                       "while copying texture! SDL_Error: ",
-                                       SDL_GetError()});
+    if (!format) {
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{
+            "Failed to get window pixel format while copying texture!"};
+    }
 
     auto accessnum{SDL_GetNumberProperty(SDL_GetTextureProperties(other.get()),
                                          "SDL_PROP_TEXTURE_ACCESS_NUMBER",
                                          SDL_TEXTUREACCESS_STATIC)};
     float w{};
     float h{};
-    if (!SDL_GetTextureSize(other.get(), &w, &h))
-        throw SdlException(std::string{
-            "Failed to get texture size while copying texture! SDL_Error: ",
-            SDL_GetError()});
+    if (!SDL_GetTextureSize(other.get(), &w, &h)) {
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Failed to get texture size while copying texture!"};
+    }
 
     SDL_Texture* tex{nullptr};
     tex = SDL_CreateTexture(renderer, format, SDL_TextureAccess(accessnum),
                             static_cast<int>(w), static_cast<int>(h));
 
-    if (!tex)
-        throw SdlException(
-            std::string{"Cannot copy texture! SDL_Error: ", SDL_GetError()});
+    if (!tex) {
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Cannot copy texture!"};
+    }
 
     m_texPtr.reset(tex);
 }
@@ -384,8 +384,8 @@ textureAndSize createTextTexture(const Font& font, const std::string& text,
         font.get(), text.c_str(), text.length(), text_colour)};
 
     if (!textSurface) {
-        throw SdlException(
-            std::string{"Cannot create surface! SDL_Error: ", SDL_GetError()});
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Cannot create surface!"};
     }
 
     int w{textSurface->w};
@@ -397,7 +397,7 @@ textureAndSize createTextTexture(const Font& font, const std::string& text,
 
     if (!textTexture) {
         ERRLOGF("%s\n", SDL_GetError());
-        throw SdlException("Could not create texture!");
+        throw SdlException{"Could not create texture!"};
     }
 
     LOG("destroying the surface\n");
@@ -416,9 +416,10 @@ Font::Font(const Font& other) : m_fontPtr{nullptr, sdl_deleter()}
     TTF_Font* font{nullptr};
     font = TTF_OpenFont(other.m_path.string().c_str(),
                         TTF_GetFontSize(other.get()));
-    if (!font)
-        throw SdlException(
-            std::string{"Failed to copy Font! TTF_Error: ", SDL_GetError()});
+    if (!font) {
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Failed to copy Font!"};
+    }
 
     m_fontPtr.reset(font);
 }
@@ -444,8 +445,8 @@ Font createFont(const std::filesystem::path& path, int font_size)
         TTF_OpenFont(path.string().c_str(), static_cast<float>(font_size))};
 
     if (!font) {
-        throw SdlException(
-            std::string{"Failed to make font! TTF_Error: ", SDL_GetError()});
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Failed to make font!"};
     }
     return Font{font, path};
 }
@@ -519,9 +520,10 @@ void Rect::draw(Renderer& renderer)
 Mixer::Mixer(std::uint32_t playback_dev_id, const SDL_AudioSpec* spec)
     : m_mixerPtr{MIX_CreateMixerDevice(playback_dev_id, spec), sdl_deleter()}
 {
-    if (!m_mixerPtr)
-        throw SdlException(
-            std::string{"Failed to make mixer! MIX_Error: ", SDL_GetError()});
+    if (!m_mixerPtr) {
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Failed to make mixer!"};
+    }
 }
 
 MIX_Mixer* Mixer::get()
@@ -532,25 +534,28 @@ MIX_Mixer* Mixer::get()
 Track::Track(Mixer& mixer)
     : m_trackPtr{MIX_CreateTrack(mixer.get()), sdl_deleter()}
 {
-    if (!m_trackPtr)
-        throw SdlException(
-            std::string{"Failed to make track! MIX_Error: ", SDL_GetError()});
+    if (!m_trackPtr) {
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Failed to make track!"};
+    }
 }
 
 Music::Music(Mixer& mixer, std::filesystem::path data)
     : m_musicPtr{MIX_LoadAudio(mixer.get(), data.string().c_str(), true)}
 {
-    if (!m_musicPtr)
-        throw SdlException(
-            std::string{"Failed to load music! MIX_Error: ", SDL_GetError()});
+    if (!m_musicPtr) {
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Failed to load music!"};
+    }
 }
 
 Effect::Effect(Mixer& mixer, std::filesystem::path data)
     : m_effectPtr{MIX_LoadAudio(mixer.get(), data.string().c_str(), true)}
 {
-    if (!m_effectPtr)
-        throw SdlException(
-            std::string{"Failed to load effect! MIX_Error: ", SDL_GetError()});
+    if (!m_effectPtr) {
+        ERRLOGF("%s\n", SDL_GetError());
+        throw SdlException{"Failed to load effect!"};
+    }
 }
 
 void process_input(Box& screen, uint32_t windowID,
