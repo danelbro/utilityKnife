@@ -16,38 +16,34 @@ endif()
 
 # set up engine
 set(ENGINE_NAME ${PROJECT_NAME})
-add_library(${ENGINE_NAME} STATIC)
-target_sources(${ENGINE_NAME}
-PRIVATE
-	engine/src/utl_Application.cpp
-	engine/src/utl_random.cpp
-	engine/src/utl_ScoreBoard.cpp
-	engine/src/utl_SDLInterface.cpp
-	engine/src/utl_StageManager.cpp
-	engine/src/utl_TextObject.cpp
-	engine/src/utl_ValtrAlgorithm.cpp
-	engine/src/utl_VecGraphPhysComp.cpp
-	engine/src/utl_VecGraphPhysEnt.cpp
-	engine/src/utl_VectorDraw.cpp
-	engine/src/utl_Vec2d.cpp
-)
+set(ENGINE_SRC_PATH "engine/src")
+set(ENGINE_INC_PATH "engine/include")
+file(GLOB_RECURSE ENGINE_SOURCES
+	"${ENGINE_SRC_PATH}/*.cpp")
+file(GLOB_RECURSE ENGINE_HEADERS
+	"${ENGINE_INC_PATH}/*.hpp")
 
-target_include_directories(${ENGINE_NAME} PUBLIC engine/include)
-
+add_library(${ENGINE_NAME} STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
+source_group("Source Files"	FILES ${ENGINE_SOURCES})
+source_group("Header Files" FILES ${ENGINE_HEADERS})
+target_include_directories(${ENGINE_NAME} PUBLIC ${ENGINE_INC_PATH})
 target_compile_features(${ENGINE_NAME} PUBLIC cxx_std_20)
 
 # set up editor
 set(EDITOR_NAME "utl_Editor")
-add_executable(${EDITOR_NAME})
-target_sources(${EDITOR_NAME}
-PRIVATE
-	editor/src/editor.cpp
-	editor/src/EditorApp.cpp
-	editor/src/EditorMain.cpp
-)
-
-target_include_directories(${EDITOR_NAME} PUBLIC editor/include)
-
+set(EDITOR_SRC_PATH "editor/src")
+set(EDITOR_INC_PATH "editor/include")
+file(GLOB_RECURSE EDITOR_SOURCES
+	"${EDITOR_SRC_PATH}/*.cpp")
+file(GLOB_RECURSE EDITOR_HEADERS
+	"${EDITOR_INC_PATH}/*.hpp")
+	
+add_executable(${EDITOR_NAME} ${EDITOR_SOURCES} ${EDITOR_HEADERS})
+set_target_properties(${EDITOR_NAME} 
+	PROPERTIES WIN32_EXECUTABLE $<AND:$<PLATFORM_ID:Windows>,$<CONFIG:Release>>)
+source_group("Source Files" FILES ${EDITOR_SOURCES})
+source_group("Header Files" FILES ${EDITOR_HEADERS})
+target_include_directories(${EDITOR_NAME} PUBLIC ${EDITOR_INC_PATH})
 target_compile_features(${EDITOR_NAME} PUBLIC cxx_std_20)
 
 
@@ -140,3 +136,15 @@ target_link_libraries(${EDITOR_NAME} PUBLIC
 	${ENGINE_NAME})
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT "${EDITOR_NAME}")
+
+set_target_properties(freetype
+					  harfbuzz
+					  plutosvg
+					  plutovg
+					  tiff
+					  SDL_uclibc
+					  SDL3-shared
+					  SDL3_image-shared
+					  SDL3_ttf-shared
+					  SDL3_mixer-shared
+					  PROPERTIES FOLDER "Dependencies")
