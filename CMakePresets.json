@@ -3,36 +3,26 @@
   "configurePresets": [
     {
       "name": "Debug",
-      "displayName": "Linux Debug",
-      "description": "Target the Windows Subsystem for Linux (WSL) or a remote system. (Debug)",
+      "displayName": "Debug",
+      "description": "Debug configuration with Ninja",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
-      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" },
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Linux"
-      }
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
     },
     {
       "name": "Release",
-      "displayName": "Linux Release",
-      "description": "Target the Windows Subsystem for Linux (WSL) or a remote system. (Release)",
+      "displayName": "Release",
+      "description": "Release configuration with Ninja",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
-      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" },
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Linux"
-      }
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
     },
     {
-      "name": "x64",
+      "name": "MSVC",
       "description": "Target Windows (64-bit) with the Visual Studio development environment.",
-      "displayName": "x64",
+      "displayName": "MSVC",
       "generator": "Visual Studio 18 2026",
-      "binaryDir": "${sourceDir}/build/",
+      "binaryDir": "${sourceDir}/build/${presetName}",
       "architecture": {
         "value": "x64",
         "strategy": "external"
