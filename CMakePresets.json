@@ -33,5 +33,19 @@
         "rhs": "Windows"
       }
     }
-  ]
+  ],
+    "buildPresets": [
+        {
+            "name": "Debug",
+            "displayName": "Debug",
+            "configurePreset": "Debug",
+            "description": "Default debug build"
+        },
+        {
+            "name": "Release",
+            "displayName": "Release",
+            "configurePreset": "Release",
+            "description": "Default release build"
+        }
+    ]
 }

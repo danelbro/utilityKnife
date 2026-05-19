@@ -61,9 +61,9 @@ if(PROJECT_IS_TOP_LEVEL)
 		"${EDITOR_SRC_PATH}/*.cpp")
 	file(GLOB_RECURSE EDITOR_HEADERS
 		"${EDITOR_INC_PATH}/*.hpp")
-	
+
 	add_executable(${EDITOR_NAME} ${EDITOR_SOURCES} ${EDITOR_HEADERS})
-	set_target_properties(${EDITOR_NAME} 
+	set_target_properties(${EDITOR_NAME}
 		PROPERTIES WIN32_EXECUTABLE $<AND:$<PLATFORM_ID:Windows>,$<CONFIG:Release>>)
 	source_group("Source Files" FILES ${EDITOR_SOURCES})
 	source_group("Header Files" FILES ${EDITOR_HEADERS})
@@ -146,14 +146,16 @@ endif()
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT "${EDITOR_NAME}")
 
-set_target_properties(freetype
-					  harfbuzz
-					  plutosvg
-					  plutovg
-					  tiff
-					  SDL_uclibc
-					  SDL3-shared
-					  SDL3_image-shared
-					  SDL3_ttf-shared
-					  SDL3_mixer-shared
-					  PROPERTIES FOLDER "Dependencies")
+if(MSVC)
+  set_target_properties(freetype
+	harfbuzz
+	plutosvg
+	plutovg
+	tiff
+	SDL_uclibc
+	SDL3-shared
+	SDL3_image-shared
+	SDL3_ttf-shared
+	SDL3_mixer-shared
+	PROPERTIES FOLDER "Dependencies")
+endif()
