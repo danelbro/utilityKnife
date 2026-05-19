@@ -54,6 +54,18 @@ void sdl_deleter::operator()(MIX_Mixer* m) const
     MIX_DestroyMixer(m);
 }
 
+void sdl_deleter::operator()(MIX_Track* t) const
+{
+    LOG("destorying a track\n");
+    MIX_DestroyTrack(t);
+}
+
+void sdl_deleter::operator()(MIX_Audio* a) const
+{
+    LOG("destroying audio\n");
+    MIX_DestroyAudio(a);
+}
+
 bool init_SDL(const std::string& title, const std::string& version,
               const std::string& identifier, uint32_t sdlFlags)
 {
@@ -526,7 +538,7 @@ Track::Track(Mixer& mixer)
 }
 
 Music::Music(Mixer& mixer, std::filesystem::path data)
-    : m_musicPtr{MIX_LoadAudio(mixer.get(), data.c_str(), true)}
+    : m_musicPtr{MIX_LoadAudio(mixer.get(), data.string().c_str(), true)}
 {
     if (!m_musicPtr)
         throw SdlException(
@@ -534,7 +546,7 @@ Music::Music(Mixer& mixer, std::filesystem::path data)
 }
 
 Effect::Effect(Mixer& mixer, std::filesystem::path data)
-    : m_effectPtr{MIX_LoadAudio(mixer.get(), data.c_str(), true)}
+    : m_effectPtr{MIX_LoadAudio(mixer.get(), data.string().c_str(), true)}
 {
     if (!m_effectPtr)
         throw SdlException(
