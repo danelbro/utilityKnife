@@ -15,10 +15,12 @@ if(MSVC)
 	endif()
 endif()
 
+set(UTL_PREFIX "utl_")
+
 # set up engine
-set(ENGINE_NAME ${PROJECT_NAME})
-set(ENGINE_SRC_PATH "engine/src")
-set(ENGINE_INC_PATH "engine/include")
+set(ENGINE_NAME "${UTL_PREFIX}engine")
+set(ENGINE_SRC_PATH "${ENGINE_NAME}/src")
+set(ENGINE_INC_PATH "${ENGINE_NAME}/include")
 file(GLOB_RECURSE ENGINE_SOURCES
 	"${ENGINE_SRC_PATH}/*.cpp")
 file(GLOB_RECURSE ENGINE_HEADERS
@@ -30,33 +32,8 @@ source_group("Header Files" FILES ${ENGINE_HEADERS})
 target_include_directories(${ENGINE_NAME} PUBLIC ${ENGINE_INC_PATH})
 target_compile_features(${ENGINE_NAME} PUBLIC cxx_std_20)
 
-# set up editor
-set(EDITOR_NAME "utl_Editor")
-set(EDITOR_SRC_PATH "editor/src")
-set(EDITOR_INC_PATH "editor/include")
-file(GLOB_RECURSE EDITOR_SOURCES
-	"${EDITOR_SRC_PATH}/*.cpp")
-file(GLOB_RECURSE EDITOR_HEADERS
-	"${EDITOR_INC_PATH}/*.hpp")
-	
-add_executable(${EDITOR_NAME} ${EDITOR_SOURCES} ${EDITOR_HEADERS})
-set_target_properties(${EDITOR_NAME} 
-	PROPERTIES WIN32_EXECUTABLE $<AND:$<PLATFORM_ID:Windows>,$<CONFIG:Release>>)
-source_group("Source Files" FILES ${EDITOR_SOURCES})
-source_group("Header Files" FILES ${EDITOR_HEADERS})
-target_include_directories(${EDITOR_NAME} PUBLIC ${EDITOR_INC_PATH})
-target_compile_features(${EDITOR_NAME} PUBLIC cxx_std_20)
-
-
 if(MSVC)
 	target_compile_options(${ENGINE_NAME} PRIVATE
-		/W4
-		/permissive-
-		/w44365
-		/external:W3
-	)
-
-	target_compile_options(${EDITOR_NAME} PRIVATE
 		/W4
 		/permissive-
 		/w44365
@@ -73,8 +50,35 @@ else()
 		-Werror
 		-std=c++20
 	)
+endif()
 
-	target_compile_options(${EDITOR_NAME} PRIVATE
+if(PROJECT_IS_TOP_LEVEL)
+# set up editor
+	set(EDITOR_NAME "${UTL_PREFIX}editor")
+	set(EDITOR_SRC_PATH "${EDITOR_NAME}/src")
+	set(EDITOR_INC_PATH "${EDITOR_NAME}/include")
+	file(GLOB_RECURSE EDITOR_SOURCES
+		"${EDITOR_SRC_PATH}/*.cpp")
+	file(GLOB_RECURSE EDITOR_HEADERS
+		"${EDITOR_INC_PATH}/*.hpp")
+	
+	add_executable(${EDITOR_NAME} ${EDITOR_SOURCES} ${EDITOR_HEADERS})
+	set_target_properties(${EDITOR_NAME} 
+		PROPERTIES WIN32_EXECUTABLE $<AND:$<PLATFORM_ID:Windows>,$<CONFIG:Release>>)
+	source_group("Source Files" FILES ${EDITOR_SOURCES})
+	source_group("Header Files" FILES ${EDITOR_HEADERS})
+	target_include_directories(${EDITOR_NAME} PUBLIC ${EDITOR_INC_PATH})
+	target_compile_features(${EDITOR_NAME} PUBLIC cxx_std_20)
+
+	if(MSVC)
+		target_compile_options(${EDITOR_NAME} PRIVATE
+		/W4
+		/permissive-
+		/w44365
+		/external:W3
+	)
+	else()
+		target_compile_options(${EDITOR_NAME} PRIVATE
 		-pedantic
 		-pedantic-errors
 		-Wall
@@ -84,6 +88,7 @@ else()
 		-Werror
 		-std=c++20
 	)
+	endif()
 endif()
 
 # set up SDL
@@ -134,8 +139,10 @@ target_link_libraries(${ENGINE_NAME} PUBLIC
 	SDL3_image::SDL3_image
 	SDL3::SDL3)
 
-target_link_libraries(${EDITOR_NAME} PUBLIC
-	${ENGINE_NAME})
+if(PROJECT_IS_TOP_LEVEL)
+	target_link_libraries(${EDITOR_NAME} PUBLIC
+		${ENGINE_NAME})
+endif()
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT "${EDITOR_NAME}")
 
