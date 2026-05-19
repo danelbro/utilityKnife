@@ -1,3 +1,3 @@
 #! /bin/bash
 
-cmake --build build/$1 -j$((`nproc`+1))
+cmake --build --preset $1 -j$((`nproc`+1))
