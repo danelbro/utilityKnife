@@ -6,10 +6,9 @@
 
 #include <utl_Application.hpp>
 #include <utl_Box.hpp>
+#include <utl_Entity.hpp>
 #include <utl_Stage.hpp>
 #include <utl_SDLInterface.hpp>
-
-#include "EditorApp.hpp"
 
 class EditorMain : public utl::Stage
 {
@@ -31,5 +30,6 @@ private:
     utl::Application* m_app{};
     utl::Box* m_screen{};
     utl::Renderer* m_renderer{};
+    std::vector<std::unique_ptr<utl::Entity>> entities{};
 };
 
