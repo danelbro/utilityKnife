@@ -15,7 +15,7 @@ int main(int, char**)
         editor.run();
     }
     catch (utl::SdlException& e) {
-	ERRLOGF("%s\n", e.what());
+        ERRLOGF("%s\n", e.what());
         return 1;
     }
     return 0;
