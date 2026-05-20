@@ -1,4 +1,4 @@
-﻿{
+{
   "version": 3,
   "configurePresets": [
     {
@@ -24,6 +24,34 @@
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" }
+    },
+    {
+      "name": "Termux base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_SYSTEM_NAME": "Linux",
+	"SDL_KMSDRM": "OFF",
+	"CMAKE_C_FLAGS": "-U__ANDROID__",
+	"CMAKE_CXX_FLAGS": "-U__ANDROID__",
+	"CMAKE_EXE_LINKER_FLAGS": "-landroid-shmem",
+        "CMAKE_SHARED_LINKER_FLAGS": "-landroid-shmem"
+      }
+    },
+    {
+      "name": "Debug-termux",
+      "displayName": "Termux Debug",
+      "description": "Default debug build for Termux",
+      "inherits": "Termux base",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "DEBUG" }
+    },
+    {
+      "name": "Release-termux",
+      "displayName": "Termux Release",
+      "description": "Default release build for Termux",
+      "inherits": "Termux base",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
     },
     {
       "name": "MSVC",
@@ -60,6 +88,18 @@
             "displayName": "RelWithDebInfo",
             "configurePreset": "RelWithDebInfo",
             "description": "Default RelWithDebInfo build"
+        },
+        {
+            "name": "Debug-termux",
+            "displayName": "Termux Debug",
+            "configurePreset": "Debug-termux",
+            "description": "Termux debug build"
+        },
+        {
+            "name": "Release-termux",
+            "displayName": "Termux Release",
+            "configurePreset": "Release-termux",
+            "description": "Termux release build"
         }
     ]
 }
