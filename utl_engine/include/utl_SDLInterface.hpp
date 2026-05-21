@@ -183,6 +183,7 @@ private:
 
 struct Font {
 public:
+    Font() = default;
     Font(TTF_Font*, const std::filesystem::path& path);
     ~Font() = default;
     Font(const Font&);
@@ -193,8 +194,8 @@ public:
     TTF_Font* get() const;
 
 private:
-    std::unique_ptr<TTF_Font, sdl_deleter> m_fontPtr;
-    std::filesystem::path m_path;
+    std::unique_ptr<TTF_Font, sdl_deleter> m_fontPtr{nullptr, sdl_deleter()};
+    std::filesystem::path m_path{};
 };
 
 // Create a TTF_Font. Throw an SdlException if creation fails
