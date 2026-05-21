@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <string>
-#include <utility>
 
 #include <utl_Application.hpp>
 #include <utl_StageManager.hpp>

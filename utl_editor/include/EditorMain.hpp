@@ -32,7 +32,4 @@ private:
     utl::Renderer* m_renderer{};
     std::vector<std::unique_ptr<utl::Entity>> entities{};
     std::array<utl::Font, 256> fonts{};
-    std::chrono::milliseconds elapsedTime{0};
-    std::chrono::seconds displayTime{0};
 };
-
