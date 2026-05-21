@@ -269,6 +269,7 @@ enum KeyFlag
     K_ENTER,
     K_LSHIFT,
     K_ESCAPE,
+    K_BACKSPACE,
     K_LCTRL,
     K_Z,
     K_X,

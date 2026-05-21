@@ -5,6 +5,8 @@
 
 #include <chrono>
 #include <string>
+#include <functional>
+#include <unordered_map>
 
 namespace utl {
 
@@ -55,6 +57,25 @@ protected:
     Entity& operator=(const Entity&) = default;
     Entity(Entity&&) = default;
     Entity& operator=(Entity&&) = default;
+};
+
+class EntityPool {
+public:
+    EntityPool() = default;
+
+    void update(std::chrono::milliseconds t,
+        std::chrono::milliseconds dt);
+    
+    void render(Renderer& renderer);
+
+    size_t registerEntity(std::unique_ptr<Entity>&& entity);
+    void removeEntity(size_t id);
+    std::unique_ptr<Entity>& get(size_t id);
+
+    void for_each(const std::function<void(std::unique_ptr<Entity>& e)>& f);
+private:
+    std::vector<std::unique_ptr<Entity>> m_entities{};
+    std::unordered_map<size_t, size_t> indexMap{};
 };
 
 }  // namespace utl

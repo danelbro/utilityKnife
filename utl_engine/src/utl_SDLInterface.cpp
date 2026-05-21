@@ -582,6 +582,9 @@ void process_input(Box& screen, uint32_t windowID,
             case SDLK_ESCAPE:
                 key_state[KeyFlag::K_ESCAPE] = true;
                 break;
+            case SDLK_BACKSPACE:
+                key_state[KeyFlag::K_BACKSPACE] = true;
+                break;
             case SDLK_LEFT:
                 key_state[KeyFlag::K_LEFT] = true;
                 break;
@@ -622,6 +625,9 @@ void process_input(Box& screen, uint32_t windowID,
             switch (ev.key.key) {
             case SDLK_ESCAPE:
                 key_state[KeyFlag::K_ESCAPE] = false;
+                break;
+            case SDLK_BACKSPACE:
+                key_state[KeyFlag::K_BACKSPACE] = false;
                 break;
             case SDLK_LEFT:
                 key_state[KeyFlag::K_LEFT] = false;

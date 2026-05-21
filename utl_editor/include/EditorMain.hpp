@@ -30,6 +30,8 @@ private:
     utl::Application* m_app{};
     utl::Box* m_screen{};
     utl::Renderer* m_renderer{};
-    std::vector<std::unique_ptr<utl::Entity>> entities{};
+    utl::EntityPool entities{};
     std::array<utl::Font, 256> fonts{};
+    std::vector<size_t> testObjectIDs{};
+    size_t titleID{};
 };
