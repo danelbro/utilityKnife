@@ -3,12 +3,14 @@
 #include <array>
 #include <chrono>
 #include <string>
+#include <unordered_map>
 
 #include <utl_Application.hpp>
 #include <utl_Box.hpp>
 #include <utl_Entity.hpp>
 #include <utl_Stage.hpp>
 #include <utl_SDLInterface.hpp>
+#include "flags.hpp"
 
 class EditorMain : public utl::Stage
 {
@@ -31,7 +33,14 @@ private:
     utl::Box* m_screen{};
     utl::Renderer* m_renderer{};
     utl::EntityPool entities{};
-    std::array<utl::Font, 256> fonts{};
-    std::vector<size_t> testObjectIDs{};
+    std::unordered_map<utl::Fonts, utl::Font> fonts{};
+    std::unordered_map<size_t, size_t> entityMap{};
     size_t titleID{};
+    size_t text1ID{};
+    size_t text2ID{};
+    size_t text3ID{};
+    size_t text4ID{};
+    size_t text5ID{};
+    bool popped1{false};
+    bool popped2{false};
 };

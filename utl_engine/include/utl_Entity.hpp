@@ -4,8 +4,9 @@
 #include "utl_Vec2d.hpp"
 
 #include <chrono>
-#include <string>
+#include <cstddef>
 #include <functional>
+#include <string>
 #include <unordered_map>
 
 namespace utl {
@@ -63,19 +64,21 @@ class EntityPool {
 public:
     EntityPool() = default;
 
-    void update(std::chrono::milliseconds t,
-        std::chrono::milliseconds dt);
-    
+    void update(std::chrono::milliseconds t, std::chrono::milliseconds dt);
+
     void render(Renderer& renderer);
 
     size_t registerEntity(std::unique_ptr<Entity>&& entity);
-    void removeEntity(size_t id);
+    size_t
+    removeEntity(size_t idx);  // i'll need the old size and the new mid index
+                               // so i can find the id that used to be at the
+                               // back and assign the new mid idx to it
     std::unique_ptr<Entity>& get(size_t id);
 
     void for_each(const std::function<void(std::unique_ptr<Entity>& e)>& f);
+
 private:
     std::vector<std::unique_ptr<Entity>> m_entities{};
-    std::unordered_map<size_t, size_t> indexMap{};
 };
 
 }  // namespace utl
