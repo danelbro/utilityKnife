@@ -69,11 +69,12 @@ public:
     void render(Renderer& renderer);
 
     size_t registerEntity(std::unique_ptr<Entity>&& entity);
-    size_t
+    void
     removeEntity(size_t idx);  // i'll need the old size and the new mid index
                                // so i can find the id that used to be at the
                                // back and assign the new mid idx to it
     std::unique_ptr<Entity>& get(size_t id);
+    size_t size() { return m_entities.size(); }
 
     void for_each(const std::function<void(std::unique_ptr<Entity>& e)>& f);
 

@@ -24,7 +24,7 @@ size_t EntityPool::registerEntity(std::unique_ptr<Entity>&& entity)
     return m_entities.size() - 1;
 }
 
-size_t EntityPool::removeEntity(size_t entityToEraseIDX)
+void EntityPool::removeEntity(size_t entityToEraseIDX)
 {
     size_t back_idx = m_entities.size() - 1;
 
@@ -41,7 +41,6 @@ size_t EntityPool::removeEntity(size_t entityToEraseIDX)
 
     std::swap(m_entities.at(entityToEraseIDX), m_entities.at(back_idx));
     m_entities.pop_back();
-    return std::entities.size() - 1;
 }
 
 std::unique_ptr<Entity>& EntityPool::get(size_t id)

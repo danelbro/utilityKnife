@@ -36,11 +36,7 @@ private:
     std::unordered_map<utl::Fonts, utl::Font> fonts{};
     std::unordered_map<size_t, size_t> entityMap{};
     size_t titleID{};
-    size_t text1ID{};
-    size_t text2ID{};
-    size_t text3ID{};
-    size_t text4ID{};
-    size_t text5ID{};
     bool popped1{false};
     bool popped2{false};
+    bool popped3{false};
 };
