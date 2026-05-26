@@ -34,3 +34,10 @@ BUILD_SHARED_LIBS=OFF
 SDLTTF_VENDORED=ON	// requires that the repository is cloned recursively - otherwise you'll need SDL_ttf installed on your system
 SDL_TEST_LIBRARY=OFF
 ```
+
+## Attribution ## 
+
+### Sounds ###
+(all sound from [opengameart.org](https://opengameart.org/))
+- [“Menu Music.mp3”](https://opengameart.org/content/menu-music-loop) by HorrorPen 
+- [“laser7.wav”](https://opengameart.org/content/laser-fire) by dklon

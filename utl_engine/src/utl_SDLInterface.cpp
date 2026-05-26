@@ -531,6 +531,11 @@ MIX_Mixer* Mixer::get()
     return m_mixerPtr.get();
 }
 
+void Mixer::stopAll()
+{
+    MIX_StopAllTracks(m_mixerPtr.get(), 0);
+}
+
 Track::Track(Mixer& mixer)
     : m_trackPtr{MIX_CreateTrack(mixer.get()), sdl_deleter()}
 {
@@ -556,6 +561,43 @@ Effect::Effect(Mixer& mixer, std::filesystem::path data)
         ERRLOGF("%s\n", SDL_GetError());
         throw SdlException{"Failed to load effect!"};
     }
+}
+
+void Track::addAudio(Music& music)
+{
+    MIX_SetTrackAudio(m_trackPtr.get(), music.get());
+    musicChunks.push_back(&music);
+}
+
+void Track::addAudio(Effect& effect)
+{
+    MIX_SetTrackAudio(m_trackPtr.get(), effect.get());
+    effectChunks.push_back(&effect);
+}
+
+void Track::play(std::uint32_t properties)
+{
+    MIX_PlayTrack(m_trackPtr.get(), properties);
+}
+
+void Track::pause()
+{
+    MIX_PauseTrack(m_trackPtr.get());
+}
+
+void Track::stop()
+{
+    MIX_StopTrack(m_trackPtr.get(), 0);
+}
+
+bool Track::isPlaying() const
+{
+    return MIX_TrackPlaying(m_trackPtr.get());
+}
+
+bool Track::isPaused() const
+{
+    return MIX_TrackPaused(m_trackPtr.get());
 }
 
 void process_input(Box& screen, uint32_t windowID,

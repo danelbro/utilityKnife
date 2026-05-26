@@ -5,12 +5,14 @@
  */
 
 #include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
 #include <SDL3_mixer/SDL_mixer.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <array>
 #include <cstdint>
 #include <filesystem>
 #include <memory>
+#include <vector>
 #include <stdexcept>
 
 #ifndef NDEBUG
@@ -216,28 +218,23 @@ textureAndSize createTextTexture(const Font& font, const std::string& text,
 
 struct Mixer {
 public:
-    Mixer();
+    Mixer() = default;
     Mixer(std::uint32_t playback_dev_id, const SDL_AudioSpec* spec);
 
     MIX_Mixer* get();
+
+    void stopAll();
 
 private:
     std::unique_ptr<MIX_Mixer, sdl_deleter> m_mixerPtr{nullptr, sdl_deleter()};
 };
 
-class Track {
-public:
-    Track();
-    Track(Mixer& mixer);
-
-private:
-    std::unique_ptr<MIX_Track, sdl_deleter> m_trackPtr{nullptr, sdl_deleter()};
-};
-
 class Music {
 public:
-    Music();
+    Music() = default;
     Music(Mixer& mixer, std::filesystem::path data);
+
+    MIX_Audio* get() { return m_musicPtr.get(); }
 
 private:
     std::unique_ptr<MIX_Audio, sdl_deleter> m_musicPtr{nullptr, sdl_deleter()};
@@ -245,11 +242,35 @@ private:
 
 class Effect {
 public:
-    Effect();
+    Effect() = default;
     Effect(Mixer& mixer, std::filesystem::path data);
+
+    MIX_Audio* get() { return m_effectPtr.get(); }
 
 private:
     std::unique_ptr<MIX_Audio, sdl_deleter> m_effectPtr{nullptr, sdl_deleter()};
+};
+
+class Track {
+public:
+    Track() = default;
+    Track(Mixer& mixer);
+
+    void addAudio(Music& music);
+    void addAudio(Effect& music);
+    void play(std::uint32_t properties);
+    void pause();
+    void stop();
+
+    MIX_Track* get() { return m_trackPtr.get(); }
+
+    bool isPlaying() const;
+    bool isPaused() const;
+
+private:
+    std::unique_ptr<MIX_Track, sdl_deleter> m_trackPtr{nullptr, sdl_deleter()};
+    std::vector<Music*> musicChunks{};
+    std::vector<Effect*> effectChunks{};
 };
 
 void clearScreen(Renderer&);

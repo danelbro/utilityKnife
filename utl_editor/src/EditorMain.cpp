@@ -12,6 +12,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "SDL3/SDL_audio.h"
 #include "flags.hpp"
 #include "utl_Application.hpp"
 #include "utl_Entity.hpp"
@@ -27,15 +28,18 @@ static void animateText(utl::EntityPool& entities, size_t id, size_t index,
 static std::size_t addEntity(std::unique_ptr<utl::Entity>&& new_entity,
                              utl::EntityPool& entities,
                              std::unordered_map<size_t, size_t>& ids);
-static void removeEntity(utl::EntityPool& entities,
-                         std::unordered_map<size_t, size_t>& ids, size_t id);
+[[maybe_unused]] static void
+removeEntity(utl::EntityPool& entities, std::unordered_map<size_t, size_t>& ids,
+             size_t id);
 
 EditorMain::EditorMain(utl::Application& app)
     : utl::Stage{}, m_app{&app}, m_screen{&app.screen()},
-      m_renderer{&app.renderer()}
+      m_renderer{&app.renderer()},
+      m_mixer{SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, nullptr}, musicTrackID{0},
+      effectsTrackID{1}
 {
     auto fontPath = std::filesystem::path{"data/Silkscreen.ttf"};
-    fonts[utl::Fonts::SILKSCREEN] = utl::Font{utl::createFont(fontPath, 72)};
+    fonts[utl::Fonts::SILKSCREEN] = utl::createFont(fontPath, 72);
 
     titleID = addEntity(std::make_unique<utl::TextObject>(
                             this, &fonts.at(utl::Fonts::SILKSCREEN),
@@ -43,15 +47,16 @@ EditorMain::EditorMain(utl::Application& app)
                         entities, entityMap);
     LOGF("title entity index: %zu\n", entityMap[titleID]);
 
-    for (size_t i{0}; i < 5; ++i) {
-        size_t testObjId =
-            addEntity(std::make_unique<utl::TextObject>(
-                          this, &fonts.at(utl::Fonts::SILKSCREEN),
-                          utl::Colour{0xff, 0xff, 0xff, 0xff},
-                          "test_" + std::to_string(i + 1)),
-                      entities, entityMap);
-        LOGF("created test_%zu\n", testObjId);
-    }
+    m_tracks[musicTrackID] = utl::Track{m_mixer};
+    m_tracks[effectsTrackID] = utl::Track{m_mixer};
+
+    auto musicPath = std::filesystem::path{"data/Menu Music.mp3"};
+    auto effectPath = std::filesystem::path{"data/laser7.wav"};
+    m_music = utl::Music{m_mixer, musicPath};
+    m_effects.emplace_back(m_mixer, effectPath);
+    m_tracks[musicTrackID].addAudio(m_music);
+    m_tracks[effectsTrackID].addAudio(m_effects.back());
+    m_tracks[musicTrackID].play(0);
 }
 
 std::string
@@ -64,6 +69,7 @@ EditorMain::handle_input([[maybe_unused]] milliseconds t,
     if (key_state[utl::KeyFlag::QUIT] || key_state[utl::KeyFlag::K_ESCAPE])
         return "QUIT";
     else if (key_state[utl::KeyFlag::K_SPACE]) {
+        m_tracks[effectsTrackID].play(0);
         return "EditorMain";
     } else if (key_state[utl::KeyFlag::K_BACKSPACE]) {
         return "EditorMain";
@@ -159,24 +165,6 @@ std::string EditorMain::update([[maybe_unused]] milliseconds t,
     entities.update(t, dt);
     for (auto& id : entityMap)
         animateText(entities, id.first, id.second, *m_screen, t);
-    if (t > 5s && !popped1) {
-        removeEntity(entities, entityMap, 3);
-        popped1 = true;
-    }
-    if (t > 10s && !popped2) {
-        addEntity(std::make_unique<utl::TextObject>(
-                      this, &fonts.at(utl::Fonts::SILKSCREEN),
-                      utl::Colour{0xff, 0xff, 0xff, 0xff}, "test_3"),
-                  entities, entityMap);
-        popped2 = true;
-    }
-    if (t > 15s && !popped3) {
-        addEntity(std::make_unique<utl::TextObject>(
-                      this, &fonts.at(utl::Fonts::SILKSCREEN),
-                      utl::Colour{0xff, 0xff, 0xff, 0xff}, "test_6"),
-                  entities, entityMap);
-        popped3 = true;
-    }
     return "EditorMain";
 }
 

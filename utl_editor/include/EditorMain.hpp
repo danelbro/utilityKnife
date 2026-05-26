@@ -10,6 +10,7 @@
 #include <utl_Entity.hpp>
 #include <utl_Stage.hpp>
 #include <utl_SDLInterface.hpp>
+#include <vector>
 #include "flags.hpp"
 
 class EditorMain : public utl::Stage
@@ -32,6 +33,12 @@ private:
     utl::Application* m_app{};
     utl::Box* m_screen{};
     utl::Renderer* m_renderer{};
+    utl::Mixer m_mixer{};
+    std::unordered_map<size_t, utl::Track> m_tracks;
+    size_t musicTrackID{};
+    size_t effectsTrackID{};
+    std::vector<utl::Effect> m_effects{};
+    utl::Music m_music{};
     utl::EntityPool entities{};
     std::unordered_map<utl::Fonts, utl::Font> fonts{};
     std::unordered_map<size_t, size_t> entityMap{};
