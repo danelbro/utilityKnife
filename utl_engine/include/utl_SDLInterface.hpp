@@ -260,7 +260,9 @@ public:
     void addAudio(Effect& music);
     void play(std::uint32_t properties);
     void pause();
+    void resume();
     void stop();
+    void setTrackGain(float gain);
 
     MIX_Track* get() { return m_trackPtr.get(); }
 

@@ -585,6 +585,11 @@ void Track::pause()
     MIX_PauseTrack(m_trackPtr.get());
 }
 
+void Track::resume()
+{
+    MIX_ResumeTrack(m_trackPtr.get());
+}
+
 void Track::stop()
 {
     MIX_StopTrack(m_trackPtr.get(), 0);
@@ -598,6 +603,11 @@ bool Track::isPlaying() const
 bool Track::isPaused() const
 {
     return MIX_TrackPaused(m_trackPtr.get());
+}
+
+void Track::setTrackGain(float gain)
+{
+    MIX_SetTrackGain(m_trackPtr.get(), gain);
 }
 
 void process_input(Box& screen, uint32_t windowID,
